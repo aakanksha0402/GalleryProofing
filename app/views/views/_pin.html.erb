@@ -1,0 +1,25 @@
+<div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <%#= form_tag gallery_password_path, remote: true do %>
+        <%#= hidden_field_tag :gallery, params[:gallery] %>
+        <div class="modal-body text-center">
+          <div class="row">
+            <div class="col-xs-3 col-xs-offset-5">
+              <div class="sp-modal-content">
+                  <h1 class="theme-color-primary no-description">
+                    <span class="font-text ng-binding">DOWNLOAD PHOTO</span>
+                  </h1>
+                <div>
+              
+              <div class="btn-style text-center">
+                <%= link_to "Click to download",views_download_digital_path(brand: params[:brand], gallery: params[:gallery], photo: params[:photo_id]), "data-photo": params[:photo_id], class: "btn photo-action digital-download" %>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>

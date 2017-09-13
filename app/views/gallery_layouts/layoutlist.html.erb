@@ -1,0 +1,7 @@
+<% @gallery_layouts.each do |gallery_layout| %>
+  <tr>
+    <td><%= gallery_layout.name %></td>
+  </tr>
+  <br>
+  <%end%>
+<%=link_to "AddSet",gallery_layouts_addset_path%>

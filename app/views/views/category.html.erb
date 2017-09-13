@@ -1,0 +1,42 @@
+<% content_for :body_class, "index_index_1" %>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12 text-center">
+      <div class="brand-page ng-scope" id="pageBrandHome">
+        <h5 class="theme-color-primary effects_from_primary"><%= @brand.brand_name %></h5>
+        <div>
+          <%= link_to "ALL CATEGORIES", view_path(brand: params[:brand]), class: "effects_from_secondary"%>
+          <h2 class="effects_from_primary"><%= @category.name %></h2><br>
+        </div>
+      </div>
+        <% if @galleries.count == 0 %>
+          <p style="color:white;"> There are no galleries in this category. </p>
+        <% else %>
+          <div class="col-md-offset-1">
+            <% @galleries.each do |g| %>
+              <%= link_to view_gallery_path(gallery: g.id) do %>
+                <div class="view-home-set-2">
+                  <div class="event-cover no-cover ng-scope effects_from_theme_div">
+                      <span class="fa fa-picture-o effects_from_theme_icon"></span>
+                  </div>
+                  <h4 class="event-name theme-color-secondary">
+                    <span class="font-text tab-greeen-sub effects_from_secondary"><%= g.name %></span>
+                  </h4>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+    </div>
+</div>
+<script>
+  $(document).ready(function(){
+    $("body").css('background-color', '<%= session[:theme] %>');
+    $(".effects_from_theme_div").css('background-color', '<%= session[:div] %>');
+    $(".effects_from_theme_icon").css('color', '<%= session[:icon] %>');
+    $(".effects_from_primary").css('color', '<%= session[:primary_color] %>');
+    $(".effects_from_secondary").css('color', '<%= session[:secondary_color] %>');
+  });
+</script>

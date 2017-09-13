@@ -1,0 +1,81 @@
+<%= form_for(@studio_home_page) do |f| %>
+  <% if @studio_home_page.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@studio_home_page.errors.count, "error") %> prohibited this studio_home_page from being saved:</h2>
+
+      <ul>
+      <% @studio_home_page.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :subdomain %>
+    <%= f.text_field :subdomain %>
+  </div>
+  <div class="field">
+    <%= f.label :color_logo_id, "Homepage Color Set" %>
+    <%= f.collection_select :color_logo_id, current_brand.color_logos.all, :id, :name%>
+  </div>
+  <div class="field">
+    <%= f.label :homepage_layout, "Homepage Layout" %>
+    <%= f.select :homepage_layout,StudioHomePage::LAYOUT %>
+  </div>
+  <div class="field">
+    <%= f.label :event_list %>
+    <%= f.check_box :event_list %>
+  </div>
+  <div class="field">
+    <%= f.label :email_field %>
+    <%= f.check_box :email_field %>
+  </div>
+  <div class="field">
+    <%= f.label :sort_on %>
+    <%= f.select :sort_on , StudioHomePage::SORT %>
+  </div>
+  <div class="field">
+    <%= f.label :about %>
+    <%= f.text_area :about %>
+  </div>
+  <div class="field">
+    <%= f.label :fb_url %>
+    <%= f.text_field :fb_url %>
+  </div>
+  <div class="field">
+    <%= f.label :twitter_username %>
+    <%= f.text_field :twitter_username %>
+  </div>
+  <div class="field">
+    <%= f.label :intagram_username %>
+    <%= f.text_field :intagram_username %>
+  </div>
+  <div class="field">
+    <%= f.label :pinterest_username %>
+    <%= f.text_field :pinterest_username %>
+  </div>
+  <div class="field">
+    <%= f.label :show_about %>
+    <%= f.check_box :show_about %>
+  </div>
+  <div class="field">
+    <%= f.label :show_phone %>
+    <%= f.check_box :show_phone %>
+  </div>
+  <div class="field">
+    <%= f.label :show_address %>
+    <%= f.check_box :show_address %>
+  </div>
+  <div class="field">
+    <%= f.label :show_email %>
+    <%= f.check_box :show_email %>
+  </div>
+  <div class="field">
+    <%= f.label :show_website_link %>
+    <%= f.check_box :show_website_link %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

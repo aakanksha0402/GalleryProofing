@@ -1,0 +1,5 @@
+// alert("yo");
+$('#shipping_row').hide();
+$('#shipping_summary_row').hide();
+$('#total_price').html('$<%= @total_price.to_d %>');
+$('#checkout_amount').val('<%= @total_price.to_d %>');

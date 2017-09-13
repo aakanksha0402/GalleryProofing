@@ -1,0 +1,52 @@
+require 'rails_helper'
+
+RSpec.describe "orders/index", type: :view do
+  before(:each) do
+    assign(:orders, [
+      Order.create!(
+        :email_id => "Email",
+        :first_name => "First Name",
+        :last_name => "Last Name",
+        :address => "MyText",
+        :city => "City",
+        :country => "Country",
+        :pin => 1,
+        :phone_no => 2,
+        :notes_to_studio => "MyText",
+        :gallery => nil,
+        :studio_internal_notes => "MyText",
+        :status => "Status"
+      ),
+      Order.create!(
+        :email_id => "Email",
+        :first_name => "First Name",
+        :last_name => "Last Name",
+        :address => "MyText",
+        :city => "City",
+        :country => "Country",
+        :pin => 1,
+        :phone_no => 2,
+        :notes_to_studio => "MyText",
+        :gallery => nil,
+        :studio_internal_notes => "MyText",
+        :status => "Status"
+      )
+    ])
+  end
+
+  it "renders a list of orders" do
+    render
+    assert_select "tr>td", :text => "Email".to_s, :count => 2
+    assert_select "tr>td", :text => "First Name".to_s, :count => 2
+    assert_select "tr>td", :text => "Last Name".to_s, :count => 2
+    assert_select "tr>td", :text => "MyText".to_s, :count => 2
+    assert_select "tr>td", :text => "City".to_s, :count => 2
+    assert_select "tr>td", :text => "Country".to_s, :count => 2
+    assert_select "tr>td", :text => 1.to_s, :count => 2
+    assert_select "tr>td", :text => 2.to_s, :count => 2
+    assert_select "tr>td", :text => "MyText".to_s, :count => 2
+    assert_select "tr>td", :text => nil.to_s, :count => 2
+    assert_select "tr>td", :text => "MyText".to_s, :count => 2
+    assert_select "tr>td", :text => "Status".to_s, :count => 2
+  end
+end

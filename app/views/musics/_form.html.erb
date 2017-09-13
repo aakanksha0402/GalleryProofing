@@ -1,0 +1,63 @@
+<%= form_for(@music) do |f| %>
+  <% if @music.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@music.errors.count, "error") %> prohibited this music from being saved:</h2>
+
+      <ul>
+      <% @music.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :theme %><br>
+    <%= f.select :theme, Music::THEME %>
+  </div>
+  <div class="field">
+    <%= f.label :style %><br>
+    <%= f.select :style, Music::STYLE %>
+  </div>
+  <div class="field">
+    <%= f.label :mood %><br>
+    <%= f.select :mood, Music::MOOD %>
+  </div>
+  <div class="field">
+    <%= f.label :song_type %><br>
+    <%= f.select :song_type, Music::SONG_TYPE %>
+  </div>
+  <div class="field">
+    <%= f.label :tempo %><br>
+    <%= f.select :tempo, Music::TEMPO %>
+
+  </div>
+  <div class="field">
+    <%= f.label :instrument %><br>
+    <%= f.select :instrument, Music::INSTRUMENT %>
+
+  </div>
+  <div class="field">
+    <%= f.label :artist %><br>
+    <%= f.select :artist, Music::ARTIST %>
+  </div>
+  <div class="field">
+    <%= f.label :music_category_id %><br>
+    <%= f.collection_select :music_category_id, MusicCategory.all, :id, :name %>
+  </div>
+  <div class = "field">
+    <%= f.label :song %><br>
+    <%= f.file_field :song %>
+  </div>
+  <div class = "field">
+    <%= f.label :photo %><br>
+    <%= f.file_field :photo %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

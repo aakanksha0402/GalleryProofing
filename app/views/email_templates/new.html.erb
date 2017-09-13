@@ -1,0 +1,130 @@
+<% content_for :head, "GalleryProofing | New Template"%>
+<% content_for :body_class, "contact-index"%>
+<% content_for :studio_class, "active"%>
+
+<% if @not_authorized_to_add == true %>
+  <%= render '/dashboards/no_authorization' %>
+<% else %>
+
+<%= form_for(@email_template, remote: true) do |f| %>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-12">
+            <%= link_to email_templates_path do %>
+              <span class="fa circle fa-arrow-left back-btn"></span>
+            <% end %>
+            <h2>
+                <div id="pageTitleHeaderText"><%= params[:name] %></div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-12">
+
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><%= link_to "#", target: "_blank" do %>
+                  <span class="email"><i class="fa fa-envelope"></i></span>Email-Us
+                <% end %></li>
+              </ul>
+            </div>
+
+            <div class="right-buttons text-right tempbuttons">
+              <%= f.submit "Save", class: "btn btn-primary", id: "save_email_template" %>
+              <%= link_to "Cancel", email_templates_path, class: "btn btn-default" %>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+
+<!-- main -->
+<div class="container-fluid email-preview">
+    <div class="row">
+        <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
+          <div class="row">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+              <%= f.label :default_email_template_id, "Template Type" %>
+              <%= f.grouped_collection_select :id, DefaultEmailTemplateType.all, :default_email_templates, :name, :id, :email_type, {prompt: "Select one"}, {:data => {remote: true}, class: "form-control input-lg selectpicker", "data-size": 5, "data-live-search": true} %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="templateDescription">
+                <p id= "text-after-select"></p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="name">
+              <%= f.hidden_field :name, value: params[:name] %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group email_subject">
+              <%= f.label :email_subject %>
+              <%= f.text_field :email_subject, class: "form-control" %>
+            </div>
+          </div>
+          <div id= "hideForEmailTemplate">
+          <div class="row">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group headline">
+              <%= f.label :headline %>
+              <%= f.text_field :headline, class: "form-control" %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group button_text">
+              <%= f.label :button_text, id: "label_button_text" %>
+              <p id= "text-for-button" class="form-input-description"></p>
+              <div class="row">
+                <div class="col-lg-8 col-md-7 col-sm-8 col-xs-12">
+                  <%= f.text_field :button_text, class: "form-control" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12 form-group email_body">
+            <%= f.label :email_body %>
+            <div class="redactor-box">
+              <%= f.text_area :email_body, class: "form-control", size: "30x10" %>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="col-lg-8 col-md-7 col-sm-12 col-xs-12 hidden-xs">
+          <%= render 'email_preview' %>
+        </div>
+    </div>
+</div>
+<!-- /main -->
+<% end %>
+
+<script>
+$(document).ready(function(){
+  $('#email_template_email_subject').prop('disabled', true);
+  $('#hideForEmailTemplate').css('display', 'none');
+  $('#email_template_headline').prop('disabled', true);
+  $('#email_template_button_text').prop('disabled', true);
+  $('#email_template_email_body').prop('disabled', true);
+  $('#save_email_template').prop('disabled', true);
+});
+</script>
+<% end %>

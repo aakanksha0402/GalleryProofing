@@ -1,0 +1,9 @@
+<% if @automation_series.errors.present? %>
+  $('.automation-series-name').find('p').remove();
+  $('.automation-series-name').append('<% @automation_series.errors[:name].each do |error| %>' +
+      '<p style="color:red;">Name <%= error %></p>' +
+      '<% end %>');
+      $('#automation_series_name').css('border-color', 'red');
+<% else %>
+  location.reload()
+<% end %>

@@ -1,0 +1,9 @@
+$("#delete_template_modal").modal('show');
+$("#DeleteTemplate").click(function(){
+  var id = "<%= @template.id %>";
+  $.ajax({
+    type: 'get',
+    url: 'invoice_template/delete_invoice_template',
+    data: {id: id}
+  }).success();
+});

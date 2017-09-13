@@ -1,0 +1,10 @@
+//alert("<%= @line_item.quantity %>");
+<% if @line_item.quantity >= 9999 %>
+  $('#quantity-increase_<%= @line_item.id %>').prop('disabled', true);
+<% end %>
+$('#quantity_<%= @line_item.id %>').val('<%= @line_item.quantity %>');
+$('#quantity-reduce_<%= @line_item.id %>').prop('disabled', false);
+var v = $('#price-span-<%= @line_item.id %>').attr('data-price');
+var c = $('#cancel-price-span-<%= @line_item.id %>').attr('data-cancel-price');
+$('#price-span-<%= @line_item.id %>').html(v * '<%= @line_item.quantity %>');
+$('#cancel-price-span-<%= @line_item.id %>').html(c * '<%= @line_item.quantity %>');

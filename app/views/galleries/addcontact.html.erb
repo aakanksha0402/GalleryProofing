@@ -1,0 +1,5 @@
+<%= form_tag(galleries_add_link_with_contact_path) do %>
+  <%= collection_select(:id1, :contact_id, current_brand.contacts.all, :id, :firstname) %>
+  <%= hidden_field_tag :gallery_id, params[:gallery_id] %>
+  <%= submit_tag "Add contact to gallery", name: nil %>
+<% end %>

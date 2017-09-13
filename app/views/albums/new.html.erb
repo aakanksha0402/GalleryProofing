@@ -1,0 +1,43 @@
+<%= params[:gallery_id]%>
+<h1>New Album</h1>
+
+<%= form_for(@album,{action: 'create', album_id: params[:album_id],p: "p"}) do |f| %>
+  <% if @album.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@album.errors.count, "error") %> prohibited this album from being saved:</h2>
+
+      <ul>
+        <% @album.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <%= f.hidden_field :album_id,value: params[:album_id]%>
+
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title ,  class: "form-control",required: true%>
+  </div>
+  <% if params[:album_id].present?%>
+    <div>
+      <%= f.hidden_field :gallery_id, value: params[:gallery_id]%>
+      <%= f.hidden_field :parent, value: params[:album_id]%>
+      <%= f.hidden_field :level, value: @level.level+1%>
+    </div>
+  <%else%>
+    <div>
+      <%= f.hidden_field :gallery_id, value: params[:gallery_id]%>
+      <%= f.hidden_field :parent, value: 0%>
+      <%= f.hidden_field :level, value: 0%>
+    </div>
+    <%end%>
+    <div class="actions">
+      <%= f.submit "Add Album"%>
+    </div>
+
+<% end %>
+
+
+
+<%= link_to 'Back', albums_path %>

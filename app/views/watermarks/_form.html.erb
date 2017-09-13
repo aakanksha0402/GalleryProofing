@@ -1,0 +1,65 @@
+<%= form_for(@watermark) do |f| %>
+  <% if @watermark.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@watermark.errors.count, "error") %> prohibited this watermark from being saved:</h2>
+
+      <ul>
+      <% @watermark.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :text_name %><br>
+    <%= f.text_field :text_name %>
+  </div>
+  <div class="field">
+    <%= f.label :font_set %><br>
+    <%= f.text_field :font_set %>
+  </div>
+  <div class="field">
+    <%= f.label :color %><br>
+    <%= f.text_field :color %>
+  </div>
+  <div class="field">
+    <%= f.label :text_opacity_value %><br>
+    <%= f.text_field :text_opacity_value %>
+  </div>
+  <div class="field">
+    <%= f.label :image_url %><br>
+    <%= f.text_field :image_url %>
+  </div>
+  <div class="field">
+    <%= f.label :image_placement %><br>
+    <%= f.text_field :image_placement %>
+  </div>
+  <div class="field">
+    <%= f.label :size %><br>
+    <%= f.text_field :size %>
+  </div>
+  <div class="field">
+    <%= f.label :image_opacity_value %><br>
+    <%= f.text_field :image_opacity_value %>
+  </div>
+  <div class="field">
+    <%= f.label :selected_as %><br>
+    <%= f.check_box :selected_as %>
+  </div>
+  <div class="field">
+    <%= f.label :is_default %><br>
+    <%= f.check_box :is_default %>
+  </div>
+  <div class="field">
+    <%= f.label :brand_id %><br>
+    <%= f.text_field :brand_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,365 @@
+<% content_for :head, "GalleryProofing | Account" %>
+<% content_for :body_class, "account-contactinfo" %>
+<!-- top -->
+<% if @not_authorized == true || @not_authorized_to_edit == true%>
+<%= render partial: "/dashboards/no_authorization" %>
+<% else %>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+              <div id="pageTitleHeaderText">Contact Info</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><%= link_to "#", target: "_blank" do %>
+                  <span class="email"><i class="fa fa-envelope"></i></span>Email-Us
+                <% end %>
+                </li>
+              </ul>
+            </div>
+            <% if @brands.count < 4 %>
+            <div class="right-buttons pull-right">
+              <%= link_to "Add Brand","#", class: "btn btn-default add-brand" %>
+            </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+
+<!-- main -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <% @brands.each do |brand| %>
+
+      <div class="datacon-1">
+        <h4 class="more-8">
+          <% if brand.default == true %>
+          <div class="col-lg-12"><span class="icon-1"><i class="fa fa-angle-up"></i> </span><span class="more-2"><%= brand.brand_name  %></span>
+          </div>
+          <% else %>
+          <div class="col-lg-12"><span class="icon-1"><i class="fa fa-angle-down"></i> </span><span class="more-2"><%= brand.brand_name  %></span>
+            <%= link_to "Make Default Brand", "#change_brand_#{brand.id}", "data-toggle": "modal", class: "btn btn-default pull-right" %>
+          </div>
+          <% end %>
+        </h4>
+        <% if brand.default == true %>
+          <div class="termlist-1" style="display:block;">
+        <% else %>
+          <div class="termlist-1" style="display:none;">
+        <% end %>
+            <%= form_for(brand, remote: true) do |f|   %>
+            <div class="col-lg-12" id = 'brand-detail' >
+              <div class="row">
+                <div class="col-lg-6">
+                  <h3>Brand Details</h3>
+                  <%= f.hidden_field :brand, value: true %>
+                  <div class="form-group brand_name">
+                    <%= f.label :brand_name  %>
+                    <%= f.text_field :brand_name, class: "form-control", onkeyup: "nospaces(this)" %>
+                  </div>
+                  <div class="form-group website_url">
+                    <%= f.label :website_url %>
+                    <%= f.text_field :website_url, class: "form-control" %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.label :primary_country_id %>
+                    <%= f.collection_select :primary_country_id, Country.all, :id, :name, {}, class: "selectpicker", "data-live-search": "true", "data-size": 5  %>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <h3>Brand Contact</h3>
+                  <p>This information may be shown publicly in your galleries, on your ShootProof Homepage, and in certain emails you send through ShootProof.</p>
+                  <div class="form-group brand_email">
+                    <%= f.label :email %>
+                    <%= f.email_field :email , class: "form-control"%>
+                  </div>
+                  <div class="form-group phone_number">
+                    <%= f.label :phone_number %>
+                    <%= f.text_field :phone_number, class: "form-control", oninput: "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);", maxlength: 15, id: 'phone_number' %>
+                  </div>
+                  <div class="form-group address1">
+                    <%= f.text_field :address1, class: "form-control", placeholder: "Street Address Line 1" %>
+                    <div class="second-address">
+                      <%= f.text_field :address2, class: "form-control", placeholder: "Street Address Line 2(Optional)"%>
+                    </div>
+                  </div>
+                  <div class="form-group" >
+                    <%= f.label :brand_country_id %>
+                    <%= f.collection_select :brand_country_id, Country.all, :id, :name, {}, class: "selectpicker", "data-live-search": "true", "data-size": 5 , remote: true %>
+                  </div>
+                  <% if brand.state_province_id.present? %>
+                    <div class="form-group state" >
+                      <div id = "state_provinces" >
+                        <% @state = get_state(brand.brand_country_id) %>
+                        <% if @state.present? %>
+                          <%= f.label :brand_state_province_id, id: "label_for_state" %>
+                          <%= f.collection_select :state_province_id, @state, :id, :name, {}, class: "look-like-selectpicker", "data-live-search": "true", "data-size": 5 , remote: true %>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% else %>
+                    <div class="form-group state" >
+                      <div id = "state_provinces">
+                      </div>
+                    </div>
+                  <% end %>
+                  <div class="form-group city">
+                    <%= f.label :city %>
+                    <%= f.text_field :city, class: "form-control", placeholder: "City" %>
+                  </div>
+                  <div class="form-group" style="display: none;">
+                    <select name="state" id="state" style="width: 100%; display: none;" tabindex="-1"></select>
+                    <span class="select2 select2-container select2-container--default" dir="ltr" style="width: 100%;">
+                      <span class="selection">
+                        <span class="select2-selection select2-selection--single" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-state-container">
+                          <span class="select2-selection__rendered" id="select2-state-container"></span>
+                          <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>
+                        </span>
+                      </span>
+                      <span class="dropdown-wrapper" aria-hidden="true"></span></span></div>
+
+                      <div class="form-group pincode">
+                        <%= f.text_field :pincode, class: "form-control", placeholder: "Postal Code" %>
+                        <%= f.hidden_field :default %>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="pull-right">
+                        <%= link_to "Cancel", brands_path, class: "btn btn-default set-inside-btn" %>
+                        <%= f.submit "Save", class: "btn btn-primary", "data-disable-with": "Saving" %>
+                      </div>
+                      <% unless brand.default == true %>
+                      <%= link_to "Delete Brand", "#delete_brand_#{brand.id}", "data-toggle": "modal", class: "btn btn-default set-inside-btn" %>
+                      <% else %>
+                      <%= link_to "Delete Brand", "#cannot_delete_brand_#{brand.id}", "data-toggle": "modal", class: "btn btn-default set-inside-btn" %>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% end %>
+            </div>
+            <!-- Change brand -->
+            <!-- Modal -->
+            <div class="modal" id="change_brand_<%= brand.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Make Default Brand</h4>
+                  </div>
+                  <div class="modal-body">
+                    <p>Are you sure you want to make '<%= brand.brand_name %>' your default brand?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <%= link_to "Yes, Change My Default Brand", brands_change_brand_path(brand: brand.id ), method: :post, class: "btn btn-sm btn-danger" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /mMdal -->
+            <!-- Change brand -->
+
+            <!-- Delete Brand -->
+            <!-- Modal -->
+            <div class="modal" id="delete_brand_<%= brand.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Delete Brand</h4>
+                  </div>
+                  <div class="modal-body">
+                    <p>Are you sure you want to delete '<%= brand.brand_name %>'?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <%= link_to 'Delete Brand', brand, method: :delete, class: "btn btn-danger" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /mMdal -->
+            <!-- Delete Brand -->
+
+            <!-- Cannot Delete Brand -->
+            <!-- Modal -->
+            <div class="modal" id="cannot_delete_brand_<%= brand.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">You Cannot Delete Your Default Brand</h4>
+                  </div>
+                  <div class="modal-body">
+                    <p>'<%= brand.brand_name %>' is your default brand.</p>
+                    <p>Deleting your default brand is like deleting your account. If you want to delete your default brand or account, please contact Support.  </p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /mMdal -->
+            <!-- Cannot Delete Brand -->
+            <% end %>
+            <!-- Add Brand -->
+            <div class="datacon-1 add-brand-more" style="display:none;">
+             <h4 class="more-8">
+               <div class="col-lg-12">
+                 <span class="icon-1">
+                   <i class="fa fa-angle-down"></i>
+                 </span>
+                 <span class="more-2">Add Brand</span>
+               </div>
+             </h4>
+             <div class="termlist-1">
+              <%= form_for(@brand, remote: true) do |f| %>
+              <%= f.hidden_field :brand, value: true %>
+              <div class="col-lg-12">
+                <div class="row" id="add_brand">
+                  <div class="col-lg-6">
+                    <h3>Brand Details</h3>
+                    <div class="form-group brand_name">
+                      <%= f.label :brand_name %>
+                      <%= f.text_field :brand_name, class: "form-control" %>
+                    </div>
+                    <div class="form-group website_url">
+                      <%= f.label :website_url %>
+                      <%= f.text_field :website_url, class: "form-control" %>
+                    </div>
+                    <div class="form-group">
+                      <%= f.label :primary_country_id %>
+                      <%= f.collection_select :primary_country_id, Country.all, :name, :name, {}, class: "selectpicker", "data-live-search": "true", "data-size": 5 %>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <h3>Brand Contact</h3>
+                    <p>This information may be shown publicly in your galleries, on your ShootProof Homepage, and in certain emails you send through ShootProof.</p>
+                    <div class="form-group brand_email">
+                      <%= f.label :email %>
+                      <%= f.text_field :email , class: "form-control"%>
+                    </div>
+                    <div class="form-group phone_number">
+                      <%= f.label :phone_number %>
+                      <%= f.number_field :phone_number, class: "form-control", oninput: "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);", maxlength: 15 %>
+                    </div>
+                    <div class="form-group address1">
+                      <%= f.text_field :address1, class: "form-control", placeholder: "Street Address Line 1" %>
+                      <div class="second-address">
+                        <%= f.text_field :address2, class: "form-control", placeholder: "Street Address Line 2(Optional)" %>
+                      </div>
+                    </div>
+                    <div class="form-group" id= "parent">
+                      <%= f.label :brand_country_id %>
+                      <%= f.collection_select :primary_country_id, Country.all, :name, :name, {}, class: "selectpicker", "data-live-search": "true", "data-size": 5 %>
+                    </div>
+                    <div class="form-group city">
+                      <%= f.text_field :city, class: "form-control", placeholder: "City" %>
+                    </div>
+                    <div class="form-group" style="display: none;">
+                      <select name="state" id="state" style="width: 100%; display: none;" tabindex="-1"></select>
+                      <span class="select2 select2-container select2-container--default" dir="ltr" style="width: 100%;">
+                        <span class="selection">
+                          <span class="select2-selection select2-selection--single" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-state-container">
+                            <span class="select2-selection__rendered" id="select2-state-container"></span>
+                            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>
+                          </span>
+                        </span>
+                        <span class="dropdown-wrapper" aria-hidden="true"></span></span></div>
+                        <div class="form-group pincode">
+                          <%= f.text_field :pincode, class: "form-control", placeholder: "Postal Code" %>
+                          <%= f.hidden_field :default %>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="pull-right">
+                          <%= link_to "Cancel", brands_path, class: "btn btn-default set-inside-btn" %>
+                          <%= f.submit "Save", class: "btn btn-primary", "data-disable-with": "Saving" %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              <% end %>
+            </div>
+            </div>
+            <!-- Add Brand -->
+           </div>
+          </div>
+        </div>
+      </div>
+      <!-- /main -->
+
+      <script type="text/javascript">
+      $(".datacon-1 .icon-1").click(function (event) {
+        if ($(this).data('clicked')) {
+          $(this).find('i').removeClass('fa-angle-down').addClass('fa-angle-up');
+          $(this).data('clicked', false);
+        } else {
+          $(this).find('i').removeClass('fa-angle-up').addClass('fa-angle-down');
+          $(this).data('clicked', true);
+        };
+        $(this).parents('.datacon-1').find('.termlist-1').stop(true, false).slideToggle(300);
+      });
+      </script>
+
+      <script type="text/javascript">
+        $(document).ready(function(){
+          $(".add-brand").click(function(){
+              $(".add-brand").hide();
+              $(".add-brand-more").show();
+          });
+          });
+      </script>
+
+
+<% end %>
+
+
+<script>
+
+  $("#brand_brand_country_id").change(function(){
+        $.ajax({
+      type: "get",
+      url: "/brands/get_states",
+      data: {country_id: $(this).val() }
+    });
+  });
+
+
+
+    function nospaces(t){
+
+    if(t.value.match(/\s/g)){
+    alert('Sorry, you are not allowed to enter any spaces');
+    t.value=t.value.replace(/\s/g,'');
+    }
+}
+
+</script>

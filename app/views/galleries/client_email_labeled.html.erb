@@ -1,0 +1,258 @@
+
+<% content_for :body_class, "gallery-index" %>
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <%= link_to "<span class='fa circle fa-arrow-left back-btn'></span>".html_safe, galleries_galleryhome_path(id: params[:id]) %>
+            <h2>
+              <div id="pageTitleHeaderText">Hidden & Labeled</div>
+            </h2>
+            <h5 id="pageTitleSubHeaderText"><%= @gallery.contact.firstname %> <%= @gallery.contact.lastname %> | <%= @gallery.name %></h5>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><a href="#" >Email Us</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+<!-- main -->
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <ul class="nav nav-pills in-pills tab-hide">
+        <% if params[:tab] == "hidden" %>
+          <li class="active"><a id="tab1"  href="#hide" data-toggle="tab">Hidden</a></li>
+        <% else %>
+          <li class="type"><a id="tab1"  href="#hide" data-toggle="tab">Hidden</a></li>
+        <% end %>
+        <% @gallery.labels.each do |label| %>
+          <li class='<%= params[:tab]=="tab_#{label.id}" ? 'active' : '' %>'><a id='<%="tab#{label.id}"%>'  href='<%= "#tag-#{label.id}"%>' data-toggle="tab"><%= label.name %></a></li>
+        <% end %>
+        <!-- <li class="type"><a id="tab3"  href="#label-2" data-toggle="tab">label 2</a></li> -->
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="tab-content clearfix">
+        <% if params[:tab] == "hidden" %>
+          <div class="tab-pane active" id="hide">
+        <% else %>
+          <div class="tab-pane" id="hide">
+        <% end %>
+          <!-- in-side -->
+
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-12">
+                <%if  @photos.count == 0 %>
+                  <p>At this time <%= @gallery.contact.firstname %> has not <strong>hidden</strong> any photos in the gallery.</p>
+                <% else %>
+                  <div class="col-lg-6">
+                    <p>To give your clients access to these files, use the "Send Files to Contact" button or set up digital downloads in the gallery.</p>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="text-right">
+                      <button type="button" class="btn btn-default">Copy Filenames to Clipboard</button>
+                      <!-- <button type="button" class="btn btn-default">Delete Photos from Gallery</button> -->
+                      <%= link_to "Delete Photos from Gallery","#",'data-toggle': "modal",'data-target': "#delete_hidden",class: "btn btn-default favourite-btn " %>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="table-responsive has-dropdown">
+                        <table class="table table-body">
+                          <thead>
+                            <tr>
+                              <th align="center" width="70"></th>
+                              <th>Filename</th>
+                              <th>album</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% @photos.each do |photo| %>
+                              <tr>
+                                <td align="center"><a href="#"> <%= image_tag photo.image.url %> </a></td>
+                                <td><%= photo.image_file_name %></td>
+                                <td>
+                                  <% if photo.imageable_type == "Album" %>
+                                    <%= photo.imageable.title %>
+                                  <% end %>
+                                </td>
+                                <td align="right"><td class="pull-right"> <%= link_to "Download",galleries_download_path(photo_id:  photo.id) %> </td></td>
+                              </tr>
+                            <% end %>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="panel panel-default">
+                        <div class="panel-heading">
+                          Filenames
+                        </div>
+                        <div class="panel-body">
+                          <p id="copy-tag-12293">
+                            <% @photos.uniq.pluck(:image_file_name).each  do |photo| %>
+                              <%= photo.split(".").first %><%= "," unless photo == @photos.uniq.pluck(:image_file_name).last %>
+                            <% end %>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% @gallery.labels.each do |label| %>
+          <div class="tab-pane <%= params[:tab]=="tab_#{label.id}" ? 'active' : '' %>" id='<%= "tag-#{label.id}"%>'>
+            <!-- in-side -->
+
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-12">
+                  <% if label.photos.count == 0 %>
+                    <p>At this time XYZ has not labeled any photos <strong><%= label.name %></strong>.</p>
+                  <% else %>
+                    <div class="col-lg-6">
+                      <p>To give your clients access to these files, use the "Send Files to Contact" button or set up digital downloads in the gallery.</p>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="text-right">
+                        <button type="button" class="btn btn-default">Copy Filenames to Clipboard</button>
+                        <button type="button" class="btn btn-default">Create Mobile App</button>
+                        <button type="button" class="btn btn-default">Send Files to Contact</button>
+                        <button type="button" class="btn btn-default" style="display: none;">Download Checked Files</button>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="table-responsive has-dropdown">
+                          <table class="table table-body">
+                            <thead>
+                              <tr>
+                                <th>
+                                  <div class="checkbox inside-check">
+                                    <input type="checkbox" id="selAll">
+                                  </div>
+                                </th>
+                                <th align="center" width="70"></th>
+                                <th>Filename</th>
+                                <th>album</th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% label.photos.each do |photo| %>
+                                <tr>
+                                  <td>
+                                    <div class="checkbox inside-check">
+                                      <input type="checkbox">
+                                    </div>
+                                  </td>
+                                  <td align="center"><a href="#"><%= image_tag photo.image.url %></a></td>
+                                  <td><%= photo.image_file_name %></td>
+                                  <td>
+                                    <% if photo.imageable_type == "Album" %>
+                                      <%= photo.imageable_id %>
+                                    <% end %>
+                                  </td>
+                                  <td align="right"><%= link_to "Download",galleries_download_path(photo_id:  photo.id) %></td>
+                                </tr>
+                              <% end %>
+
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="panel panel-default">
+                          <div class="panel-heading">
+                            Filenames
+                          </div>
+                          <div class="panel-body">
+                            <p id="copy-tag-12293">
+                              <% label.photos.each do |photo| %>
+                                <%= photo.image_file_name.split(".").first %><%= "," unless photo == @photos.uniq.pluck(:image_file_name).last %>
+                              <% end %>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- /main -->
+
+
+
+<!-- Modal -->
+<div id="delete_hidden" class="modal" role="dialog" data-backdrop="static" data-keyboard="false"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirm Deletion</h4>
+      </div>
+      <%= form_tag delete_hidden_photos_galleries_path do %>
+      <div class="modal-body">
+        <%= hidden_field_tag "hidden_photos",@photos.ids.join(",") %>
+        <%= hidden_field_tag "id", params[:id] %>
+        <p>Are you sure that you want to permanently delete these hidden photos from the gallery?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <%= submit_tag "Yes, Delete",class: "btn btn-danger" %>
+      </div>
+      <% end %>
+    </div>
+
+  </div>
+</div>
+<script>
+</script>

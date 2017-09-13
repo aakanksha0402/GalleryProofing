@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @default_receipient_type.name %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @default_receipient_type.active %>
+</p>
+
+<%= link_to 'Edit', edit_default_receipient_type_path(@default_receipient_type) %> |
+<%= link_to 'Back', default_receipient_types_path %>

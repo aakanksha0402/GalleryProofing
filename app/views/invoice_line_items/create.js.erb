@@ -1,0 +1,27 @@
+<% if @created == true %>
+  location.reload();
+<% elsif @created == false %>
+  var $name = $('#New-Line').find('.modal-body .line_item_name');
+  $name.find('p').remove();
+  var $description = $('#New-Line').find('.modal-body .line_item_description');
+  $description.find('p').remove();
+  var $line_item_quantity = $('#New-Line').find('.modal-body .line_item_quantity');
+  $line_item_quantity.find('p').remove();
+  var $line_item_price = $('#New-Line').find('.modal-body .line_item_price');
+  $line_item_price.find('p').remove();
+
+<% if @invoice_line_item.errors[:name].present? %>
+  $name.append('<p style="color:red" ><% error = @invoice_line_item.errors.messages[:name] %><%= error[0] %></p>');
+<% end %>
+<% if @invoice_line_item.errors[:description].present? %>
+  $description.append('<p  style="color:red" ><% error = @invoice_line_item.errors.messages[:description] %><%= error[0] %></p>');
+<% end %>
+<% if @invoice_line_item.errors[:quantity].present? %>
+  $line_item_quantity.append('<p  style="color:red" ><% error = @invoice_line_item.errors.messages[:quantity] %><%= error[0] %></p>');
+<% end %>
+<% if @invoice_line_item.errors[:price].present? %>
+  $line_item_price.append('<p  style="color:red" ><% error = @invoice_line_item.errors.messages[:price] %><%= error[0] %></p>');
+<% end %>
+
+  // $('#New-Line').find('.modal-body .line_item_price').append('<p>Please enter the description for Line Item.</p>');
+<% end %>

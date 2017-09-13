@@ -1,0 +1,379 @@
+<p id="notice"><%= notice %></p>
+
+
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+                <div id="pageTitleHeaderText">Invoices</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><a href="#" >Email Us</a></li>
+              </ul>
+            </div>
+            <div class="right-buttons text-right">
+              <%= link_to "New Line Item","#",'data-toggle': "modal",'data-target': "#New-Line",class: "btn btn-primary"%>
+            </div>
+
+         <!--    <div class="right-buttons text-right">
+              <a class="btn btn-primary" id="btn-newtemp" href="newTemplate.html" data-toggle="modal" data-target="#newtemp-filter" >New Template</a>
+              <a class="btn btn-default" id="btn-newauto" href="newAutomation.html" data-toggle="modal" data-target="#newauto-filter" >New Automation Series</a>
+            </div -->
+
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+
+<!-- main -->
+<div class="container-fluid">
+      <div class="row">
+          <div class="col-lg-12">
+            <ul class="nav nav-pills in-pills">
+                <li class="type"><%= link_to "Invoices",invoices_path(id: current_user.id) %></li>
+                <li class="type active"><%= link_to "Line Items",invoice_line_items_path(id: current_user.id) %></li>
+                <li class="type "><%= link_to "Templates",invoice_template_index_path(id: current_user.id) %></li>
+            </ul>
+          </div>
+      </div>
+</div>
+
+
+
+<div class="tab-pane" id="LineItems_in">
+
+         <!-- in-side -->
+         <% if @invoice_line_items.count == 0 %>
+         <%= render "no_line_items" %>
+        <% else %>
+        <!-- /in-side -->
+         <div class="tab-pane" id="LineItems_in">
+           <div class="container-fluid">
+             <div class="row">
+                   <div class="col-lg-12">
+                     <div class="col-lg-12 templates-container">
+                        <div class="table-responsive">
+                          <div class="table">
+                            <div class="table-head">
+                              <div class="tr">
+                                <div class="th"><a href="#">Name</a></div>
+                                <div class="th"><a href="#">Quantity</a></div>
+                                <div class="th"><a href="#">Original Price</a></div>
+                                <div class="th"><a href="#">Price</a></div>
+                                <div class="th"><a href="#">Taxable</a></div>
+                                <div class="th"><a href"#">Date Created</a></div>
+                                <div class="th">Actions</div>
+                              </div>
+                            </div>
+                            <div class="table-body">
+                              <% @invoice_line_items.each do |invoice_line_item|%>
+                              <!-- <a class="tr clickable-row" id="new_line" data-id="<%="#{invoice_line_item.id}"%>" data-href="<%= %>" > -->
+                                <%= link_to item_update_invoice_line_items_path(id: invoice_line_item.id),class: "tr clickable-row",id: "new_line",remote: true do %>
+                                <div class="td"><%= invoice_line_item.name %></div>
+                                <div class="td"><%= invoice_line_item.quantity %></div>
+                                <div class="td">$ <%= invoice_line_item.price %></div>
+                                <div class="td">$ <%= invoice_line_item.quantity * invoice_line_item.price %></div>
+                                <div class="td">
+                                  <% if invoice_line_item.is_taxable == true %>
+                                    Yes
+                                  <% else %>
+                                    No
+                                  <% end %>
+                                </div>
+                                <div class="td"><%= invoice_line_item.created_at.to_date.strftime('%d-%b-%Y') %></div>
+                                <div class="td">
+                                  <div class="btn-group"><button type="button" data-id='<%="#{invoice_line_item.id}"%>' class="js-delete-invoice-template" remote="true">Delete</button></div>
+
+                                </div>
+                                <% end %>
+                              <!-- </a> -->
+                              <!-- Modal -->
+                               <div id='<%="line_item_delete_#{invoice_line_item.id}"%>' class="modal description-modal" role="dialog"  data-backdrop="static" data-keyboard="false">
+                                 <div class="modal-dialog">
+
+                                   <!-- Modal content-->
+                                   <div class="modal-content">
+                                     <div class="modal-header">
+                                       <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                       <h4 class="modal-title">Delete Line Item Template?</h4>
+                                     </div>
+                                     <div class="modal-body">
+                                       <p>Are you sure you want to delete line item "Item 1"?</p>
+
+                                       <p>The invoice line item template will no longer be accessible. This action cannot be undone!</p>
+                                     </div>
+                                     <div class="modal-footer">
+                                       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                       <%= link_to "Yes,Delete",invoice_line_item_path(id: invoice_line_item.id),method: :delete, class: "btn btn-danger" %>
+                                     </div>
+                                   </div>
+
+                                 </div>
+                               </div>
+                               <!-- /mModal-->
+                              <% end %>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                   </div>
+                 </div>
+            </div>
+          </div>
+        <% end %>
+      <!-- /in-side -->
+
+
+<!-- Modal -->
+<div class="modal description-modal" id="New-Line" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add Line Item Template</h4>
+      </div>
+      <%= form_for @invoice_line_item,url: invoice_line_items_path, remote: true do |f|%>
+        <div class="modal-body">
+            <div class="form-group line_item_name">
+                <label>Name</label>
+                <%= f.text_field :name,class: "form-control",placeholder: "Name" %>
+                <!-- <input type="text" class="form-control" Placeholder="Name"> -->
+            </div>
+            <div class="form-group line_item_description">
+                <label>Description</label>
+                <%= f.text_area :description,class: "form-control",placeholder: "Description" %>
+                <!-- <input type="text" class="form-control" Placeholder="Description"> -->
+            </div>
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="form-group line_item_quantity">
+                  <label>Quantity</label>
+                  <%= f.text_field :quantity,class: "form-control",placeholder: "Quantity"%>
+                  <!-- <input type="text" class="form-control" Placeholder="Quantity"> -->
+                </div>
+              </div>
+              <div class="col-lg-4 line_item_price">
+                <label>Item Price</label>
+                <div class="input-group">
+                  <div class="input-group-addon" >$</div>
+                  <%= f.text_field :price,class: "form-control",placeholder: "Unit Price" %>
+                  <!-- <input type="text" class="form-control"> -->
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label>Price</label>
+                  <%= label_tag 'Total_Price','',size: "9", maxlength: "9",id: "Total_Price" %>
+                  </div>
+              </div>
+
+              <div class="col-lg-12">
+                <div class="checkbox">
+                  <input type="checkbox" name="remember" checked="checked">
+                  <%= f.check_box :is_taxable %>
+                  <label for="remember" class="optional">Taxable</label>
+               </div>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+          <!-- <button class="btn btn-primary" type="button">Submit</button> -->
+          <%= f.submit "Submit", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+
+
+
+<!-- Modal -->
+<div class="modal description-modal" id="edit_line_item" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add Line Item Template</h4>
+      </div>
+
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Name</label>
+                <%= text_field_tag "name",'',class: "form-control",placeholder: "Name" %>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <%= text_area_tag "description",'',class: "form-control",placeholder: "Description" %>
+            </div>
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label>Quantity</label>
+                  <%= text_field_tag "quantity",'',class: "form-control",placeholder: "Quantity"%>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Item Price</label>
+                <div class="input-group">
+                  <div class="input-group-addon">$</div>
+                  <%= text_field_tag "price",'',class: "form-control",placeholder: "Unit Price" %>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label>Price</label>
+                  <%= label_tag 'Total_Price','',size: "9", maxlength: "9",id: "Total_Price" %>
+                  </div>
+              </div>
+
+              <div class="col-lg-12">
+                <div class="checkbox">
+                  <%= check_box_tag "is_taxable",true,true %>
+                  <label for="remember" class="optional">Taxable</label>
+               </div>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+          <!-- <button class="btn btn-primary" type="button">Submit</button> -->
+          <%= submit_tag "Submit",id: "UpdateItem", class: "btn btn-primary" %>
+        </div>
+
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+
+<!-- Delete Modal -->
+<div id="delete_line_item" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Delete Line Item Template?</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete line item "Item 2"?</p>
+
+        <p>The invoice line item template will no longer be accessible. This action cannot be undone!</p>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <%= link_to "Yes, Delete","#",class: "btn btn-danger",id: "DeleteItem" %>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- /mModal -->
+
+<script>
+$(document).ready(function()
+{
+    $('input[id$="invoice_line_item_quantity"]').on('focusout',function()
+    {
+      var v
+      if (isNaN($(this).val())){
+        v = "";
+        $(this).val();
+      }
+      else if($(this).val() == 0 )
+      {
+        v = "";
+        $(this).val("");
+      }
+      else
+      {
+        v= $(this).val();
+      }
+
+      });
+
+      $('input[id$="invoice_line_item_price"]').on('focusout',function()
+      {
+        var v
+        if (isNaN($(this).val()))
+        {
+          v = "";
+          $(this).val("");
+        }
+        else if($(this).val().length == 0 )
+        {
+          v = "";
+          $(this).val("");
+        }
+        else
+        {
+          v= $(this).val();
+        }
+
+        });
+  })
+</script>
+
+<script>
+$("#invoice_line_item_price").on('focusout',function(){
+  if($(this).val().length == 0){
+    $(this).val(0.00);
+  }
+  $("#Total_Price").text($("#invoice_line_item_price").val() * $("#invoice_line_item_quantity").val());
+});
+$("#invoice_line_item_quantity").on('focusout',function(){
+  if($("#invoice_line_item_price").val().length == 0){
+    $("#invoice_line_item_price").val(0.00);
+  }
+  $("#Total_Price").text($("#invoice_line_item_price").val() * $("#invoice_line_item_quantity").val());
+});
+</script>
+
+<script>
+  $(".clickable-row").click(function() {
+    // $("#New-Line").modal('show');
+    var id = $(this).data('id');
+    $.ajax({
+      type: 'get',
+      url: '/invoice_line_items/item_update',
+      data: {id: id}
+    }).success();
+  });
+
+  $(".js-delete-invoice-template").click(function(){
+    var id = $(this).data('id');
+    $("#edit_line_item").on('shown.bs.modal',function(){
+      $("#edit_line_item .cancel").click();
+    });
+
+    $.ajax({
+      type: 'get',
+      url: '/invoice_line_items/delete_line_item',
+      data: {id: id}
+    });
+  });
+</script>

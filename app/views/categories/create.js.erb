@@ -1,0 +1,6 @@
+<% if @not_created == true %>
+location.reload();
+<% else %>
+$('#error-for-name').remove();
+$('#add-category').find('.modal-body').find('.form-group').append('<p style="color: red" id="error-for-name">Please enter a category name to proceed.</p>');
+<% end %>

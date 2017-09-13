@@ -1,0 +1,12 @@
+var s = '<%= session[:download] %>';
+alert(s);
+// $('#download-digital').modal('hide');
+alert("yo");
+location.reload();
+alert("yo");
+$('.digital-download').each(function(){
+  if($(this).data('photo') == s){
+    alert($(this).data('photo'));
+    $(this).click();
+  }
+});

@@ -1,0 +1,2 @@
+module GatewaySetupsHelper
+end

@@ -1,0 +1,74 @@
+<h1>Duplicate Contact</h1>
+<!-- <%= debug params %> -->
+<%= form_for(@contact, url: contacts_create_duplicate_path(@contact)) do |f| %>
+  <% if @contact.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@contact.errors.count, "error") %> prohibited this contact from being saved:</h2>
+      <ul>
+      <% @contact.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :firstname %><br>
+    <%= f.text_field :firstname %>
+  </div>
+  <div class="field">
+    <%= f.label :lastname %><br>
+    <%= f.text_field :lastname %>
+  </div>
+  <div class="field">
+    <%= f.label :email %><br>
+    <%= f.text_field :email %>
+  </div>
+  <div class="field">
+    <%= f.label :address1 %><br>
+    <%= f.text_field :address1 %>
+  </div>
+  <div class="field">
+    <%= f.label :address2 %><br>
+    <%= f.text_field :address2 %>
+  </div>
+  <div class="field">
+    <%= f.label :city %><br>
+    <%= f.text_field :city %>
+  </div>
+  <div class="field">
+    <%= f.label :country %><br>
+    <%= f.text_field :country %>
+  </div>
+  <div class="field">
+    <%= f.label :pincode %><br>
+    <%= f.number_field :pincode %>
+  </div>
+  <div class="field">
+    <%= f.label :phone_number %><br>
+    <%= f.number_field :phone_number %>
+  </div>
+  <div class="field" >
+    <%= f.label :vendor %><br>
+    <%= f.check_box :vendor %>
+  </div>
+  <div class="field">
+    <%= f.label :buisinessname %><br>
+    <%= f.text_field :buisinessname %>
+  </div>
+  <div class="field">
+    <%= f.label :tags %><br>
+    <%= f.text_field :tags %>
+  </div>
+  <div class="field">
+    <%= f.label :referredby %><br>
+    <%= f.text_field :referredby %>
+  </div>
+  <div class="actions">
+    <%= f.submit "Save Duplicate" %>
+  </div>
+<% end %>
+
+
+<%= link_to 'Show', @contact %> |
+<%= link_to 'Back', contacts_path %>

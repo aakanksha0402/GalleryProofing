@@ -1,0 +1,14 @@
+//alert("<%= @line_item.quantity %>");
+<% if @line_item.quantity >= 9999 %>
+$('#quantity-increase').prop('disabled', true);
+$('#quantity_<%= @line_item.id %>').val(9999);
+<% elsif @line_item.quantity <= 1 %>
+$('#quantity-reduce').prop('disabled', true);
+$('#quantity_<%= @line_item.id %>').val(1);
+<% else %>
+$('#quantity-increase').prop('disabled', false);
+$('#quantity-reduce').prop('disabled', false);
+$('#quantity_<%= @line_item.id %>').val('<%= @line_item.quantity %>');
+<% end %>
+// alert("<%= @price %>");
+$('#price-span-<%= @line_item.id %>').html("$<%= @price %>");

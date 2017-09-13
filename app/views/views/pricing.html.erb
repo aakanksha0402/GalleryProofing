@@ -1,0 +1,68 @@
+<% content_for :body_class, "contact-index  clientview-home" %>
+<% content_for :info, "active" %>
+  <!--nav-->
+
+<%= render "navbar" %>
+
+<div class="container-fluid">
+  <div class="row">
+    <ul class="nav nav-pills in-pills center-tabs">
+      <li class="active"><a>Pricing</a></li>
+      <li class="type "><%= link_to view_contact_path do %>Contact<% end %></li>
+    </ul>
+  </div>
+<div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="tab-content clearfix">
+        <div class="tab-pane active" id="Pricing-menu">
+          <% @groups.each do |group|%>
+            <% if group.fix_group_id != 6 %>
+            <!-- ngRepeat: group in priceSheetGroups -->
+              <div class="ng-scope">
+                <h5 class="theme-title">
+                  <span class="font-style ng-binding"><%= group.name %></span>
+                </h5>
+                <% @catalogs.each do |catalog| %>
+                <% if catalog.group_id == group.id %>
+                <div class="group-bounds">
+                  <!-- ngRepeat: bound in group.bounds -->
+                  <div class="bound ng-scope">
+                    <span class="font-text">
+                      <span class="ng-binding"><%= catalog.print_size_one %> x <%= catalog.print_size_two %>
+                        <% if catalog.depth.present? %>
+                        <span>(<%= catalog.depth %>) Wallets</span>
+                        <% end %>
+                      </span>
+                      <!-- ngIf: group.isDigitalDownload && (boundUsedForAlbum(bound) || boundUsedForAll(bound)) -->
+                    </span>
+
+                    <div class="bound-pricing">
+                      <span class="font-text">
+                        <span class="ng-binding">
+                          <% if catalog.price.present? %>
+                            $<%= catalog.price %>
+                            <% else %>
+                            <span>$ 0.00</span>
+                          <% end %>
+                        </span>
+                        <span class="bound-pricing-min-indicator"></span>
+                      </span>
+                    </div>
+                    <!-- ngIf: !bound.price -->
+                    <span class="bound-min-price ng-scope">
+                      <span class="font-text ng-binding"></span>
+                    </span><!-- end ngIf: !bound.price -->
+                  </div><!-- end ngRepeat: bound in group.bounds -->
+                </div>
+                <% end %>
+                <% end %>
+              </div><!-- end ngRepeat: group in priceSheetGroups -->
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

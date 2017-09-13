@@ -1,0 +1,9 @@
+<% if @playlist.errors.present? %>
+  $(".modal-body").find('.form-group.playlist-name').find('p').remove();
+  $(".modal-body").find('.form-group.playlist-name').append('<% @playlist.errors[:name].each do |error| %>' +
+  '<p style="color:red;">Name <%= error %></p>'+
+  '<% end %>');
+  $('#playlist_name').css('border-color', 'red');
+<% else %>
+  location.reload();
+<% end %>

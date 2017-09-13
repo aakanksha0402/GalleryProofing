@@ -1,0 +1,43 @@
+<%= form_for(@color_logo) do |f| %>
+  <% if @color_logo.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@color_logo.errors.count, "error") %> prohibited this color_logo from being saved:</h2>
+      <ul>
+      <% @color_logo.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :font_set %>
+    <%= f.select :font_set, ColorLogo::FONT_SET %>
+  </div>
+  <div class="field">
+    <%= f.label :theme %>
+    <%= f.select :theme,ColorLogo::THEME %>
+  </div>
+  <div class="field">
+    <%= f.label :primary_color %>
+    <%= f.text_field :primary_color %>
+  </div>
+  <div class="field">
+    <%= f.label :secondary_color %>
+    <%= f.text_field :secondary_color %>
+  </div>
+  <div class="field">
+    <%= f.label :gallery_logo %>
+    <%= f.file_field :gallery_logo %>
+  </div>
+  <div class="field">
+    <%= f.label :email_logo %>
+    <%= f.file_field :email_logo %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

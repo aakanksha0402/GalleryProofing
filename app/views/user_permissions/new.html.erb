@@ -1,0 +1,187 @@
+<% content_for :head, "GalleryProofing | New User" %>
+<% content_for :body_class, "account-useredit" %>
+
+<%= form_for(@user, url: user_permissions_path) do |f|%>
+<!-- top -->
+<%= hidden_field_tag :sub_user, true %>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-12">
+            <%= link_to user_permissions_path do %>
+              <span class="fa circle fa-arrow-left back-btn"></span>
+            <% end %>
+            <h2>
+                <div id="pageTitleHeaderText">New User</div>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-12">
+
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><a href="#" >Email Us</a></li>
+              </ul>
+            </div>
+
+            <div class="right-buttons text-right tempbuttons">
+              <%= f.submit "Create User", class: "btn btn-primary" %>
+              <%= link_to "Cancel", user_permissions_path, class: "btn btn-default" %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+<!-- main -->
+  <div class="container-fluid user-section">
+    <div class="row">
+      <div class="col-lg-4">
+        <h4>User Info</h4>
+        <div class"row">
+          <div class="col-sm-3">
+            <%= f.label :firstname, "Name" %>
+          </div>
+          <div class="col-sm-9">
+            <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <%= f.text_field :firstname, class: "form-control", placeholder: "First" %>
+                    <% if @user.errors.messages[:firstname].present? %>
+                      <% error = @user.errors.messages[:firstname] %>
+                      <script>
+                      $('#user_firstname').css('border-color', 'red');
+                      </script>
+                      <p style="color:red;"><%= error[0] %></p>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <%= f.text_field :lastname, class: "form-control", placeholder: "Last" %>
+                    <% if @user.errors.messages[:lastname].present? %>
+                      <% error = @user.errors.messages[:lastname] %>
+                      <script>
+                      $('#user_lastname').css('border-color', 'red');
+                      </script>
+                      <p style="color:red;"><%= error[0] %></p>
+                    <% end %>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class"row">
+          <div class="col-sm-3">
+            <%= f.label :email %>
+          </div>
+          <div class="col-sm-9">
+            <div class="form-group">
+              <%= f.text_field :email, class: "form-control", placeholder: "user@example.org"  %>
+                <% if @user.errors.messages[:email].present? %>
+                  <% error = @user.errors.messages[:email] %>
+                  <script>
+                  $('#user_email').css('border-color', 'red');
+                  </script>
+                  <p style="color:red;"><%= error[0] %></p>
+                <% end %>
+            </div>
+          </div>
+        </div>
+        <div class"row">
+           <div class="col-sm-3">
+            <%= f.label :password %>
+          </div>
+          <div class="col-sm-9">
+            <div class="form-group">
+              <%= f.password_field :password, class: "form-control", placeholder: "Password" %>
+              <% if @user.errors.messages[:password].present? %>
+                <% error = @user.errors.messages[:password] %>
+                <script>
+                $('#user_password').css('border-color', 'red');
+                </script>
+                <p style="color:red;"><%= error[0] %></p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <% Section.all.each do |section| %>
+        <div class="col-lg-6">
+          <div class="form-group">
+            <div class="col-lg-11">
+              <div class="form-group" style="border-bottom: solid 2px gray;width: 100%;float: left;">
+                <div class="col-xs-6">
+                  <h4><%= section.section_name %> </h4>
+                </div>
+                <div class="col-xs-2">
+                  <div class="checkbox">
+                    <%= check_box_tag "all_select_#{section.section_name.downcase}_view"%>
+                  </div>
+                </div>
+                <div class="col-xs-2">
+                   <div class="checkbox">
+                     <%= check_box_tag "all_select_#{section.section_name.downcase}_add"%>
+                  </div>
+                </div>
+                <div class="col-xs-2">
+                   <div class="checkbox">
+                     <%= check_box_tag "all_select_#{section.section_name.downcase}_edit"%>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-xs-6"></div>
+                <% @permission_action.all.each do |pa| %>
+                <div class="col-xs-2"><small><%= pa.name %></small></div>
+                <% end %>
+              </div>
+                <% if params[:duplicate].present? %>
+                  <%= render partial: 'permission', locals: {section: section} %>
+                <% else %>
+                  <% PermissionSection.where(section_id: section.id).each do |ps| %>
+                    <div class="form-group">
+                        <div class="col-xs-6"><%= ps.name %></div>
+                        <% PermissionActionPermissionSection.where(permission_section_id: ps.id).each do |e| %>
+                          <% @permission_action.all.each do |pa| %>
+                            <% if e.permission_action_id == pa.id %>
+                                <div class="col-xs-2">
+                                  <div class="checkbox first-row">
+                                    <%= check_box_tag "values[]", e.id, false, id: e.name.tr(" ", "_").downcase %>
+                                  </div>
+                                </div>
+                              <% else %>
+                              <div class="col-xs-2">
+
+                              </div>
+                            <% end %>
+                          <% end %>
+                        <% end %>
+                    </div>
+                <% end %>
+              <% end %>
+            </div>
+            <div class="col-lg-1">
+            </div>
+          </div>
+        </div>
+        <% end %>
+  </div>
+
+<!-- /main -->
+<% end %>
+<script>
+$('#hideNav').remove();
+</script>

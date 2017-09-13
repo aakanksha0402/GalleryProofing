@@ -1,0 +1,5 @@
+<% if @pass == true %>
+location.reload();
+<% else %>
+$('#email_error').append('<p style="color:red;">The Emails Sholud Match</p>');
+<% end %>

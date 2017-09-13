@@ -1,0 +1,1 @@
+json.extract! @contact, :id, :firstname, :lastname, :email, :address1, :address2, :city, :country, :pincode, :phone_number, :vendor, :buisinessname, :tags, :referredby, :user_id, :created_at, :updated_at

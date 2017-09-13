@@ -1,0 +1,285 @@
+<% content_for :head, "GalleryProofing | Studio Home Page"%>
+<% content_for :body_class, "brand-homepage" %>
+<% content_for :studio_class, "active"%>
+<% if @not_authorized == true %>
+<%= render partial: "/dashboards/no_authorization" %>
+<% else %>
+<%= form_for(@studio_home_page) do |f| %>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+              <div id="pageTitleHeaderText">Homepage</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li>
+                  <a href="#" target="_blank">Can I download all of my contacts' information?</a>
+                </li>
+                <li>
+                  <a href="#" target="_blank">How do I add and edit contacts?</a>
+                </li>
+                <li>
+                  <a href="#" target="_blank">How do I view a contact's activity?</a>
+                </li>
+                <li>
+                  <a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a>
+                </li>
+                <li><%= link_to "#", target: "_blank" do %>
+                  <span class="email">
+                    <i class="fa fa-envelope"></i>
+                  </span>Email-Us
+                  <% end %></li>
+              </ul>
+            </div>
+            <div class="right-buttons text-right">
+              <%= f.submit "Save", class: "btn btn-primary" %>
+              <%= link_to 'Manage Categories', categories_path, class: "btn btn-default" %>
+              <%= link_to 'View HomePage', view_url(brand: $subdomain), target: "_blank", class: "btn btn-default" %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+
+<!-- main -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <ul class="nav nav-pills in-pills">
+        <li class="active">
+          <a id="tab-color-more-1" href="#home-color" data-toggle="tab">Homepage</a>
+        </li>
+        <li class="type ">
+          <a id="tab-color-more-2" class="display-type" href="#Embed-color" data-toggle="tab">Embed Code</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="tab-content clearfix">
+        <div class="tab-pane active" id="home-color">
+          <!-- in-side -->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-6">
+                <%= f.label :subdomain %>
+                <p id="subdomainError" style="display: none; color: red;">Please enter the subdomain for your brand.</p>
+                <% if @studio_home_page.errors.messages[:subdomain].present? %>
+                <% error = @studio_home_page.errors.messages[:subdomain] %>
+                <p style="color:red;"><%= error[0] %></p>
+                <% end %>
+                <div class="input-group pull-left form-group">
+                  <%= f.text_field :subdomain, class: "form-control", placeholder: "mybrand" %>
+                  <div class="input-group-addon" id="subdomainDiv">.GalleryProofing.com</div>
+                </div>
+                <div class="form-group set-select-Access-1 color-custom">
+                  <%= f.label :color_logo_id, "Homepage Color Set" %>
+                  <%= f.collection_select :color_logo_id, current_brand.color_logos.all, :id, :name, {prompt: "- Choose -"}, {class: "selectpicker"}%>
+                </div>
+                <div class="form-group set-select-Access-1 color-custom">
+                  <%= f.label :homepage_layout, "Homepage Layout" %>
+                  <%= f.select :homepage_layout,StudioHomePage::LAYOUT, {}, {class: "selectpicker"} %>
+                </div>
+                <div id="show_widget" class="email-template-no">
+                  <label>Widget Settings</label>
+                  <div class="checkbox color-check-box" id="event_list">
+                    <%= f.check_box :event_list, class: "checkbox" %>
+                    <%= f.label :event_list %>
+                  </div>
+                  <div class="checkbox color-check-box" id="email_field">
+                    <%= f.check_box :email_field %>
+                    <%= f.label :email_field %>
+                  </div>
+                </div>
+                <div class="form-group set-select-Access-1 color-custom">
+                  <%= f.label :sort_on, "Sort Galleries on Homepage by" %>
+                  <%= f.select :sort_on , StudioHomePage::SORT, {},{class: "selectpicker"} %>
+                </div>
+                <div class="form-group">
+                  <label>About Your Studio/Bio</label>
+                  <div class="redactor-box">
+                    <%= f.text_area :about %>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <%= f.label :fb_url, "Facebook Fan Page URL" %>
+                  <%= f.text_field :fb_url, placeholder: "http://", class: "form-control" %>
+                </div>
+                <%= f.label :twitter_username, "Twitter Handle" %>
+                <div class="form-group input-group color-custom-box">
+                  <span class="input-group-addon">@</span>
+                  <%= f.text_field :twitter_username, class: "form-control" %>
+                </div>
+                <%= f.label :intagram_username, "Instagram Username" %>
+                <div class="form-group input-group color-custom-box">
+                  <span class="input-group-addon">@</span>
+                  <%= f.text_field :intagram_username, class: "form-control" %>
+                </div>
+                <div class="form-group color-custom-box">
+                  <%= f.label :pinterest_username %>
+                  <%= f.text_field :pinterest_username, class: "form-control" %>
+                </div>
+                <label>Show on Homepage |<%= link_to "Edit Contact Info", brands_path %></label>
+                <div class="checkbox color-check-box" id="show_about">
+                  <%= f.check_box :show_about %>
+                  <%= f.label :show_about, "About Your Studio/Bio Text" %>
+                </div>
+                <div class="checkbox color-check-box" id="show_address">
+                  <input type="checkbox">
+                  <%= f.check_box :show_address %>
+                  <%= f.label :show_address, "Address" %>
+                </div>
+                <div class="checkbox color-check-box" id="show_phone">
+                  <%= f.check_box :show_phone %>
+                  <%= f.label :show_phone, "Phone" %>
+                </div>
+                <div class="checkbox color-check-box" id="show_email">
+                  <%= f.check_box :show_email %>
+                  <%= f.label :show_email, "Email"%>
+                </div>
+                <div class="checkbox color-check-box" id="show_website_link">
+                  <%= f.check_box :show_website_link %>
+                  <%= f.label :show_website_link, "Your Website Link" %>
+                </div>
+                <div class="form-group">
+                  <label>Google Analytics Tracking ID</label>
+                  <input type="text" class="form-control">
+                </div>
+                <label>Custom Subdomain</label>
+                <p class="color-style-tag">Advanced option to use your brand's URL (instead of shootproof.com) in your homepage, gallery, and mobile app links.
+                  <a href="#">Learn how to create a custom subdomain with your registrar.</a>
+                  Changes to your custom domain will change the URL for your ShootProof Homepage, galleries, and mobile apps. If you've previously given out links, you'll need to resend them.</p>
+                <div class="checkbox color-check-box">
+                  <input type="checkbox">
+                  <label>I set up a CNAME with my registrar.</label>
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /in-side -->
+
+        <div class="tab-pane" id="Embed-color">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="color-embed-text">
+                  <p>ShootProof galleries can be embedded in your website by using an iframe. Copy the embed code and paste it into an area of your website that accepts HTML.</p>
+                  <p>* Studios using PayPal Basic as their payment gateways CANNOT use the embedded method of integration. Clients will not be able to successfully check out when placing an order.</p>
+                  <p>* The embed code works in self-hosted Wordpress sites (through wordpress.org) and not in the free Wordpress sites (wordpress.com); javascript is not supported by wordpress.com sites.</p>
+                </div>
+
+                <h5 class="code-style">Code<a href="#" class="btn btn-default" id="copy-code">Copy code</a>
+                </h5>
+
+                <div class="form-group">
+                  <textarea class="form-control" contenteditable="true">
+                    <script type="text/javascript">
+                      var _spRemote = {
+                        width: 960,
+                        height: 650
+                      };
+                      var _ce = parseInt(Math.random() * 99999999);
+                      document.write('<script type="text/javascript" src="//something.shootproof.com/remote/embed?ce=' + _ce + '"></script>');
+                    </script>
+                  </textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>
+<!-- /main -->
+
+<script>
+
+  var textarea = document.getElementById("text-area-script-code");
+  var copy = document.getElementById("copy-code");
+  var answer = document.getElementById("copyAnswer");
+  copy.addEventListener('click', function (e) {
+
+    // Select some text (you could also create a range)
+    textarea.select();
+
+    // Use try & catch for unsupported browser
+    try {
+
+      // The important part (copy selected text)
+      var ok = document.execCommand('copy');
+
+      if (ok)
+        console.log("copied");
+
+else
+        answer.innerHTML = 'Unable to copy!';
+      }
+    catch (err) {
+      answer.innerHTML = 'Unsupported Browser!';
+    }
+  });
+
+  $(document).ready(function () {
+    <% if @studio_home_page.homepage_layout == "Widget" %>
+    $("#show_widget").css('display', 'block');
+    <% end %>
+    <% if @studio_home_page.event_list == true %>
+    $("#event_list").addClass('checked-box');
+    <% end %>
+    <% if @studio_home_page.email_field == true %>
+    $("#email_field").addClass('checked-box');
+    <% end %>
+    <% if @studio_home_page.show_about== true %>
+    $("#show_about").addClass('checked-box');
+    <% end %>
+    <% if @studio_home_page.show_address == true %>
+    $("#show_address").addClass('checked-box');
+    <% end %>
+    <% if @studio_home_page.show_phone == true %>
+    $("#show_phone").addClass('checked-box');
+    <% end %>
+    <% if @studio_home_page.show_email == true %>
+    $("#show_email").addClass('checked-box');
+    <% end %>
+    <% if @studio_home_page.show_website_link == true %>
+    $("#show_website_link").addClass('checked-box');
+    <% end %>
+  });
+</script>
+<script>
+  $('#studio_home_page_homepage_layout').change(function () {
+    if ($('#studio_home_page_homepage_layout').val() === 'Widget') {
+      $('#show_widget').css('display', 'block');
+    } else {
+      $('#show_widget').css('display', 'none');
+    }
+  });
+</script>
+<% end %>

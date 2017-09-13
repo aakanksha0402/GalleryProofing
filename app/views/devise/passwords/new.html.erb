@@ -1,0 +1,41 @@
+<% content_for :head, "GalleryProofing | Forgot Password"%>
+<% content_for :body_class, "login-index" %>
+<div class="container-fluid">
+  <div class="row">
+    <div class="login-box">
+      <div class="logo-login">
+
+      </div>
+      <div class="form">
+        <h3>Reset Your Password</h3>
+        <div class="login">
+
+          <%= form_for(resource, as: resource_name, url: user_password_path, html: { method: :post }) do |f| %>
+          <div class="form-group">
+            <%= f.label :email %><br />
+            <%= f.email_field :email, autofocus: true, class: "form-control forgot_email", placeholder: "example@email.com" %>
+            <div style = "color:red;">
+              <% if resource.errors.messages[:email].present? %>
+              <% error = resource.errors.messages[:email] %>
+              <%= "Email " + error[0] %>
+              <script>
+                $('.forgot_email').css('border-color', 'red');
+              </script>
+              <% end %>
+            </div>
+          </div>
+          <div class="instructions">
+            Enter your email address and we'll send you a link to reset your password.
+          </div>
+          <div class="button-row text-center">
+            <div class="form-group">
+              <%= f.submit "Reset Password", name: "submit", id: "submit", class: "btn btn-primary" %>
+            </div>
+          </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="legal">© 2009-2016 GalleryProofing</div>
+    </div>
+  </div>
+</div>

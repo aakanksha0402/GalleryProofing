@@ -1,0 +1,523 @@
+<% content_for :head, "GalleryProofing"%>
+<div>
+  <%if user_signed_in?%>
+    <!-- top -->
+    <% content_for :active_class, "active"%>
+    <% content_for :body_class, "dashboard-index"%>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <!-- title -->
+          <div class="page-title dashbord-title">
+            <div class="row">
+              <div class="col-md-6 col-sm-5 col-xs-5">
+              </div>
+              <div class="col-md-6 col-sm-7 col-xs-7">
+                <div class="btn-group on-page-help-container">
+                  <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                    <span class="fa fa-question"></span>
+                  </a>
+                  <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                    <li><a href="#" target="_blank">Browse Full Knowledge Base</a></li>
+                    <li><a href="#"><span class="email"><i class="fa fa-envelope"></i></span>Email Us</a></li>
+                  </ul>
+                </div>
+                <div class="right-buttons text-right">Help</div>
+              </div>
+            </div>
+          </div>
+          <!-- /title -->
+        </div>
+      </div>
+    </div>
+    <!-- /top -->
+
+    <!-- main -->
+<div class="modules-container">
+  <div class="container-fluid col-md-offset-1 col-md-10">
+    <div class="row">
+      <div class="module notifications">
+        <div class="module-heading">
+          Notifications
+          <a href="/v2/103809/notification" class="heading-right">View All</a>
+        </div>
+        <div class="module-body">
+          <div class="notification-item notification-item-style-container" data-notification-id="927050">
+            <div class="notification-details">
+              <a href="/v2/103809/order/view/1116269">
+                <div class="top-line-container">
+                  <div class="type-and-descriptor-container">
+                    <div class="notification-type notification-type-id-1">
+                      Order
+                    </div>
+                    <div class="notification-descriptor">
+                      $&nbsp;316.20
+                    </div>
+                  </div>
+                  <div class="notification-created">
+                    12-Apr-2016
+                  </div>
+                </div>
+                <div class="notification-message">
+                  foo bar placed a new order
+                </div>
+              </a>
+            </div>
+            <div class="notification-dismiss">
+              <button class="dismiss js-dismiss-notification" ng-click="dismissNotification(927050)">
+                <span class="fa fa-times-circle-o"></span>
+              </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="module recent-gallery-activity">
+        <div class="module-heading">
+          Recent Gallery Activity
+          <a href="/v2/103809/report/recentgalleryactivity" class="heading-right">View All</a>
+        </div>
+    <div class="module-body">
+        <table class="recent-gallery-activity-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th class="fav"><div class="activity-type-heading" data-toggle="tooltip" data-placement="top" title="Visitors with Favorites" data-original-title="" title=""><span class="fa fa-star"></span></div>
+                    </th>
+                    <th class="cart"><div class="activity-type-heading" data-toggle="tooltip" data-placement="top" data-container="body" title="Visitors with Items in Cart" data-original-title="" title=""><span class="fa fa-shopping-cart"></span></div>
+                    </th>
+                    <th class="order-not-placed"><div class="activity-type-heading" data-toggle="tooltip" data-placement="top" data-container="body" title="Visitors who have not placed an Order" data-original-title="" title=""><span class="fa fa-ban"></div>
+                    </th>
+                    <th class="ordered"><div class="activity-type-heading" data-toggle="tooltip" data-placement="top" data-container="body" title="Visitors who have placed an Order" data-original-title="" title=""><span class="fa fa-money"></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                  <tr>
+                      <td class="recent-gallery-name"><a href="#">mygallery</a></td>
+                      <td class="recent-gallery-count visitors-with-favorites">
+                          <div class="zero-value"></div>
+                      </td>
+                      <td class="recent-gallery-count visitors-with-cart-items">
+                          <div class="zero-value"></div>
+                      </td>
+                      <td class="recent-gallery-count visitors-never-ordered">
+                          <div class="zero-value"></div>
+                      </td>
+                      <td class="recent-gallery-count visitors-with-submitted-orders">
+                          <a href="#">
+                              <div class="circle-count">1</div>
+                          </a>
+                      </td>
+                  </tr>
+          </tbody>
+        </table>
+    </div>
+</div>
+<div class="module dashboard-message">
+    <div class="module-cover">
+        <div class="cover-icon">
+            <img src="/assets/dashboard-tiles-09_(1).svg">
+        </div>
+
+        <p class="cover-title">Invite Your Friends</p>
+
+        <p class="cover-desc">Receive a free month of service after their first paid billing cycles!</p>
+
+
+        <div class="cover-cta">
+          <%= link_to "Refer Now", refer_friends_refer_path, class: "btn btn-default main-cta" %>
+        </div>
+
+    </div>
+</div>
+
+
+</div>
+<h3>Dashboard | Work in Progress (Static Data)</h3>
+<h3>Currently logged in with <%= session[:user].email %> </h3>
+<h3>Main user: <%= current_user.email %></h3>
+</div>
+</div>
+    <!-- /main -->
+  <% else %>
+
+  <% content_for :body_class, "index_index"%>
+
+
+<nav class="navbar navbar-default navbar-fixed-top header">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="label menu">Menu</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#"><img src="/assets/logo.png"></a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav sitemenu">
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Plans</a></li>
+        <li><a href="#">Demos</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">blog</a></li>
+      </ul>
+
+    <ul class="nav navbar-nav sitemenu pull-right hidden-xs hidden-sm animate-btn">
+            <li class="login"><%= link_to "Login", new_user_session_path %></li>
+            <li><a href="#"><%= button_to "Get Started", new_user_registration_path ,class: "btn btn-primary", method: :get%></a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<!-- /navbar -->
+
+
+
+<!-- main -->
+<div class="hero">
+  <div class="container feature">
+    <div class="row feature-text">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-12 col-sm-offset-0">
+        <h2>Stunning galleries and sales tools for your business</h2>
+        <div class="started-btn text-center">
+          <%= button_to "Get Started", new_user_registration_path ,class: "btn btn-primary", method: :get%>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+  <div id="home-table">
+    <div id="home-laptop" class="browser-desktop">
+     <svg class="" viewBox="0 0 1082 692" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+    <mask id="desktopScreen1" fill="#FFFFFF">
+        <rect x="0" y="24" width="1082" height="670" rx="3"></rect>
+    </mask>
+</defs>
+<g stroke="none" fill="none">
+    <path d="M 3 0 H 1079 A 3 3 0 0 1 1082 3 V 24 H 0 V 3 A 3 3 0 0 1 3 0 Z" fill="#EBEBEB"></path>
+    <image mask="url(#desktopScreen1)" x="0" y="22" width="1082" height="670" xlink:href="https://d1icb03h9nte03.cloudfront.net/201605261464295063/www/v2/images/homepage/stunning_galleries_desktop.jpg"></image>
+    <rect fill="transparent" stroke="#000000" stroke-opacity="0.14" stroke-width="2" x="1" y="1" width="1080" height="690" rx="3"></rect>
+    <circle fill="#9BA1A3" cx="14" cy="12" r="5"></circle>
+    <circle fill="#9BA1A3" cx="30" cy="12" r="5"></circle>
+    <circle fill="#9BA1A3" cx="46" cy="12" r="5"></circle>
+</g>
+</svg>
+    </div>
+  </div>
+</div>
+<div class="container feature">
+      <div class="animation-element bounce-up cf">
+        <div class="subject">
+    <div class="row feature-text">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-12 col-sm-offset-0">
+        <h2>Online Photo Proofing</h2>
+        <p>Allow clients to mark favorites and select images for albums, retouching, and more.</p>
+        <p><a href="#">See Features</a></p>
+      </div>
+    </div>
+    <div class="row set-landing-style">
+      <div class="browser img-responsive ">
+        <div class="browser-desktop">
+          <svg class="" viewBox="0 0 1082 692" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <defs>
+                <mask id="desktopScreen2" fill="#FFFFFF">
+                    <rect x="0" y="24" width="1082" height="670" rx="3"></rect>
+                </mask>
+            </defs>
+            <g stroke="none" fill="none">
+              <path d="M 3 0 H 1079 A 3 3 0 0 1 1082 3 V 24 H 0 V 3 A 3 3 0 0 1 3 0 Z" fill="#EBEBEB"></path>
+              <image mask="url(#desktopScreen2)" x="0" y="22" width="1082" height="670" xlink:href="https://d1icb03h9nte03.cloudfront.net/201605201463776427/www/v2/images/homepage/look_good_desktop.jpg"></image>
+              <rect fill="transparent" stroke="#000000" stroke-opacity="0.14" stroke-width="2" x="1" y="1" width="1080" height="690" rx="3"></rect>
+              <circle fill="#9BA1A3" cx="14" cy="12" r="5"></circle>
+              <circle fill="#9BA1A3" cx="30" cy="12" r="5"></circle>
+              <circle fill="#9BA1A3" cx="46" cy="12" r="5"></circle>
+            </g>
+          </svg>
+        </div>
+        <div class="browser-mobile">
+          <svg class="" viewBox="0 0 288 560" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <defs>
+                <mask id="phoneScreen2" fill="#FFFFFF">
+                    <rect x="12" y="48" width="264" height="454" rx="2"></rect>
+                </mask>
+            </defs>
+            <g stroke="none" fill="none">
+              <rect fill="#FAFAFA" stroke="#E0E1E2" stroke-width="2" x="1" y="1" width="286" height="558" rx="20"></rect>
+              <image mask="url(#phoneScreen2)" x="12" y="48" width="264" height="454" xlink:href="https://d1icb03h9nte03.cloudfront.net/201605201463776427/www/v2/images/homepage/look_good_mobile.jpg"></image>
+              <rect fill="transparent" stroke="#E0E1E2" stroke-width="2" x="12" y="48" width="264" height="454" rx="2"></rect>
+              <circle fill="#FAFAFA" stroke="#E0E1E2" stroke-width="2" cx="144" cy="530" r="16"></circle>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+</div>
+</div>
+</div>
+<div class="container-fluid detail animated spFadeInUp" id="home-sales" style="opacity: 1;">
+   <div class="animation-element bounce-up cf">
+        <div class="subject">
+    <div class="row">
+        <div class="col-md-7 detail-cell">
+            <div class="browser img-responsive">
+                <div class="browser-desktop">
+                    <svg class="" viewBox="0 0 1082 692" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <defs>
+                            <mask id="desktopScreen4" fill="#FFFFFF">
+                                <rect x="0" y="24" width="1082" height="670" rx="3"></rect>
+                            </mask>
+                        </defs>
+                        <g stroke="none" fill="none">
+                        <path d="M 3 0 H 1079 A 3 3 0 0 1 1082 3 V 24 H 0 V 3 A 3 3 0 0 1 3 0 Z" fill="#EBEBEB"></path>
+                        <image mask="url(#desktopScreen4)" x="0" y="22" width="1082" height="670" xlink:href="https://d1icb03h9nte03.cloudfront.net/201605201463776427/www/v2/images/homepage/maximize_profit_desktop.jpg"></image>
+                        <rect fill="transparent" stroke="#000000" stroke-opacity="0.14" stroke-width="2" x="1" y="1" width="1080" height="690" rx="3"></rect>
+                        <circle fill="#9BA1A3" cx="14" cy="12" r="5"></circle>
+                        <circle fill="#9BA1A3" cx="30" cy="12" r="5"></circle>
+                        <circle fill="#9BA1A3" cx="46" cy="12" r="5"></circle>
+                        </g>
+                    </svg>
+                </div>
+                <div class="browser-mobile">
+                    <svg class="" viewBox="0 0 288 560" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                      <defs>
+                          <mask id="phoneScreen4" fill="#FFFFFF">
+                              <rect x="12" y="48" width="264" height="454" rx="2"></rect>
+                          </mask>
+                      </defs>
+                      <g stroke="none" fill="none">
+                        <rect fill="#FAFAFA" stroke="#E0E1E2" stroke-width="2" x="1" y="1" width="286" height="558" rx="20"></rect>
+                        <image mask="url(#phoneScreen4)" x="12" y="48" width="264" height="454" xlink:href="https://d1icb03h9nte03.cloudfront.net/201605201463776427/www/v2/images/homepage/maximize_profit_mobile.jpg"></image>
+                        <rect fill="transparent" stroke="#E0E1E2" stroke-width="2" x="12" y="48" width="264" height="454" rx="2"></rect>
+                        <circle fill="#FAFAFA" stroke="#E0E1E2" stroke-width="2" cx="144" cy="530" r="16"></circle>
+                      </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 col-lg-4 detail-cell">
+            <div class="detail-text">
+                <h2>Intuitive sales tools</h2>
+                <p>Offer digitals and lab-printed products, manage orders quickly and easily, and never pay commission fees.</p>
+                <p><a href="#">Learn More</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+  </div>
+<div class="banner" id="try-free-alt">
+  <div class="container">
+      <h2>Start your free trial today.</h2>
+      <p>
+          <%= link_to "Get Started", new_user_registration_path, class: "btn btn-danger" %>
+      </p>
+  </div>
+</div>
+
+<div class="container-fluid detail animated spFadeInUp" id="home-studio" style="opacity: 1;">
+  <div class="animation-element bounce-up cf">
+        <div class="subject">
+    <div class="row">
+        <div class="col-sm-5 col-sm-push-6 detail-cell">
+            <div class="detail-image">
+                <img class="img-responsive" src="/assets/dashboard.png">
+            </div>
+        </div>
+        <div class="col-sm-5 col-sm-pull-4 detail-cell">
+            <div class="detail-text">
+                <h2>Client management</h2>
+                <p>Keep track of contacts, control email marketing, and access your sales and gallery visitor information easily.</p>
+                <p><a href="#">Learn More</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+ </div>
+</div>
+<div class="container-fluid" id="next-proof-features">
+<div class="row">
+    <div class="col-xs-10 col-xs-offset-1">
+        <div class="row">
+            <div class="col-sm-6 col-md-3 next-proof-feature">
+                <div class="next-proof-icon animated fadeIn-style">
+                  <img src="/assets/tickit.png"/>
+                </div>
+                <h6>Commission-Free Sales</h6>
+                <p>Keep your profits, 100% of the time/p>
+            </div>
+            <div class="col-sm-6 col-md-3 next-proof-feature">
+                <div class="next-proof-icon animated fadeIn-style">
+                   <img src="/assets/download.png"/>
+                </div>
+                <h6>Simple Digital Delivery</h6>
+                <p>Get <a href="#">digital files</a> to your clients in a snap</p>
+            </div>
+            <div class="col-sm-6 col-md-3 next-proof-feature">
+                <div class="next-proof-icon animated fadeIn-style">
+                   <img src="/assets/cartoon.png"/>
+                </div>
+                <h6>Amazing Support</h6>
+                <p>We’re here to answer your questions with phone and email support</p>
+            </div>
+            <div class="col-sm-6 col-md-3 next-proof-feature">
+                <div class="next-proof-icon animated fadeIn-style">
+                  <img src="/assets/Home.png"/>
+                </div>
+                <h6>All in One Place</h6>
+                <p>Proofing, invoicing, <a href="#">print fulfillment</a>, mobile apps, and more</p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id="testimonials">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="quotation-mark">“</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 col-sm-offset-1 col-md-4 col-md-offset-2 quotation">
+                <img class="headshot" src="https://d1icb03h9nte03.cloudfront.net/201605211463854770/www/v2/images/headshots/blumes.jpg">
+                <h6>Phillip &amp; Eileen Blume</h6>
+                <p class="text-main-landing">Blume Photography</p>
+                <p class="small">“We’ve fallen in love with ShootProof and how easy it is to customize
+                    to our unique sales model.”</p>
+            </div>
+            <div class="col-sm-5 col-md-4 quotation">
+                <img class="headshot" src="https://d1icb03h9nte03.cloudfront.net/201605211463854770/www/v2/images/headshots/ginny-corbett.jpg">
+                <h6>Ginny Corbett</h6>
+                <p class="text-main-landing">Ginny Corbett Photography</p>
+                <p class="small">“ShootProof has changed the game in showing and selling my photographs.”</p>
+            </div>
+            <div class="clearfix hidden-xs"></div>
+            <div class="col-sm-5 col-sm-offset-1 col-md-4 col-md-offset-2 quotation hidden-xs">
+                <img class="headshot" src="https://d1icb03h9nte03.cloudfront.net/201605211463854770/www/v2/images/headshots/davis.jpg">
+                <h6>Bob &amp; Dawn Davis</h6>
+                <p class="text-main-landing">Bob &amp; Dawn Davis Photography</p>
+                <p class="small">“ShootProof was an easy transition with their easy interface and great
+                    customer service. Our clients love their galleries!”</p>
+            </div>
+            <div class="col-sm-5 col-md-4 quotation hidden-xs">
+                <img class="headshot" src="https://d1icb03h9nte03.cloudfront.net/201605211463854770/www/v2/images/headshots/holli-true.jpg">
+                <h6>Holli True</h6>
+                <p class="text-main-landing">Holli True Photography</p>
+                <p class="small">“ShootProof makes me look cool, professional, and on top of current trends
+                    with my young clientele!”</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="banner inside-second" id="try-free">
+  <div class="container">
+    <h2>Try it free for 30 days</h2>
+    <p>No credit card required.</p>
+    <p class="landing-btn-in">
+        <%= link_to "Get Started", new_user_registration_path, class: "btn btn-danger" %>
+    </p>
+  </div>
+</div>
+<div class="container navbar-next-proof-footer" role="navigation">
+<div class="row">
+    <div class="col-lg-10 col-lg-offset-1">
+        <div class="row">
+            <div class="col-xs-6 col-sm-3 col-md-2">
+                <h6>About</h6>
+                <ul>
+                    <li><a href="#">Company</a></li>
+                    <li><a href="#">Graphics</a></li>
+                    <li><a href="#">API</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Use</a></li>
+                </ul>
+            </div>
+            <div class="col-xs-6 col-sm-3 col-md-2">
+                <h6>Features</h6>
+                <ul>
+                    <li><a href="#">Share Photos</a></li>
+                    <li><a href="#">Commerce</a></li>
+                    <li><a href="#">Your Studio</a></li>
+                    <li><a href="#">Digital Downloads</a></li>
+                    <li><a href="#">Printing</a></li>
+                </ul>
+            </div>
+            <div class="col-xs-6 col-sm-3 col-md-2">
+                <h6>Community</h6>
+                <ul>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Learn Portal</a></li>
+                    <li><a href="#">Podcast</a></li>
+                    <li><a href="#">Knowledge Base</a></li>
+                    <li><a href="#">Partners</a></li>
+                </ul>
+            </div>
+            <div class="col-xs-6 col-sm-3 col-md-3 col-md-offset-3 contact">
+                <h6 class="logo fotter"><a href="#"></a></h6>
+                <h6>Phone</h6>
+                <p>
+                    <a href="#">
+                        <span class="support-phone">866.516.5130</span>
+                    </a>
+                </p>
+                <p class="support-phone"><a href="#">Contact Us</a></p>
+                <p class="social">
+                    <a href="#"><span class="fotter-chat fa fa-twitter"></span></a>
+                    <a href="#"><span class="fotter-chat fa fa-facebook"></span></a>
+                    <a href="#"><span class="fotter-chat fa fa-instagram"></span></a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script type="text/javascript">
+var $animation_elements = $('.animation-element');
+var $window = $(window);
+
+function check_if_in_view() {
+var window_height = $window.height();
+var window_top_position = $window.scrollTop();
+var window_bottom_position = (window_top_position + window_height);
+
+$.each($animation_elements, function() {
+var $element = $(this);
+var element_height = $element.outerHeight();
+var element_top_position = $element.offset().top;
+var element_bottom_position = (element_top_position + element_height);
+
+//check to see if this current container is within viewport
+if ((element_bottom_position >= window_top_position) &&
+  (element_top_position <= window_bottom_position)) {
+  $element.addClass('in-view');
+} else {
+  $element.removeClass('in-view');
+}
+});
+}
+
+$window.on('scroll resize', check_if_in_view);
+$window.trigger('scroll');
+    </script>
+
+
+    <script type="text/javascript">
+    $(window).scroll(function() {
+if ($(window).scrollTop() > 1800) {
+    $('.fadeIn-style').css("opacity",1).fadeIn("4000");;
+}
+else{
+    $('.fadeIn-style').css("opacity", 0.1).fadeIn("4000") ;
+}
+});
+    </script>
+  <%end%>
+</div>

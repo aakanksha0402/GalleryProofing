@@ -1,0 +1,12 @@
+  <% if @shipping_states.count != 0 %>
+    $('#checkout_shipping_state_id').remove();
+    $('#shipping_state').append('<%=j select_tag "checkout_shipping_state_id", options_from_collection_for_select(@shipping_states, "id", "name") %>');
+  <% else %>
+    $('#checkout_shipping_state_id').hide();
+  <% end %>
+  <% if @billing_states.count != 0 %>
+    $('#checkout_billing_state_id').remove();
+    $('#billing_state').append('<%=j select_tag "checkout_billing_state_id", options_from_collection_for_select(@billing_states, "id", "name") %>');
+  <% else %>
+    $('#checkout_billing_state_id').hide();
+  <% end %>

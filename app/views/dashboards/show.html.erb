@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Show video:</strong>
+  <%= @dashboard.show_video %>
+</p>
+
+<p>
+  <strong>Add gallery:</strong>
+  <%= @dashboard.add_gallery %>
+</p>
+
+<p>
+  <strong>Upload photos:</strong>
+  <%= @dashboard.upload_photos %>
+</p>
+
+<p>
+  <strong>Customize watermark:</strong>
+  <%= @dashboard.customize_watermark %>
+</p>
+
+<p>
+  <strong>Setup colo logo:</strong>
+  <%= @dashboard.setup_colo_logo %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @dashboard.user %>
+</p>
+
+<%= link_to 'Edit', edit_dashboard_path(@dashboard) %> |
+<%= link_to 'Back', dashboards_path %>

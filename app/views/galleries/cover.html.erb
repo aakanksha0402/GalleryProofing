@@ -1,0 +1,25 @@
+<%= form_for @gallery_cover,html: {:class => "upload", multipart: true},url: gallery_path(id: params[:id]),method: :patch do |f| %>
+<div>
+  <%=f.file_field :cover_url%>
+</div>
+<div>
+<%= f.hidden_field :id, value: params[:id]%>
+</div>
+
+<!-- <div class="actions">
+  <%= f.submit %>
+</div> -->
+<% end %>
+<script>
+function showImage(input) {
+  if (input.files) {
+    var reader = new FileReader();
+
+    reader.readAsDataURL(input.files[0]);
+    $( "#edit_gallery_<%= params[:id] %>" ).submit();
+  }
+}
+$("#gallery_cover_url").change(function(){
+  showImage(this);
+});
+</script>

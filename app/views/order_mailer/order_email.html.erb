@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Hi GalleryProofing User</h1>
+    
+    <p> <%= @message %> </p>
+    <p> <%= @order.gallery.name %> </p>
+    <p> <%= @order.created_at.strftime("%d-%b-%Y") %> </p>
+    <p>Shipping address</p>
+    <p><%= @order.first_name %>  <%= @order.last_name %></p>
+    <p><%= @order.address %></p>
+    <p><%= @order.city %> <%= @order.pin %></p>
+    <p><%= @order.country %></p>
+  </body>
+</html>

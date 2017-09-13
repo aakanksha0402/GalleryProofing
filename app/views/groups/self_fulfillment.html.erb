@@ -1,0 +1,182 @@
+<% content_for :body_class, "pricing-catalog" %>
+
+
+<!-- top -->
+<%= form_tag update_selffulfillment_groups_path, method: :put do %>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <%= link_to "<span class=\"fa circle fa-arrow-left back-btn\"></span>".html_safe,show_group_groups_path(id: params[:id])%>
+            <h2>
+              <div id="pageTitleHeaderText"><%=@pricings.name%>- Self Fulfilled Items</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><a href="#" ><span class="email"><i class="fa fa-envelope"></i></span>Email Us</a></li>
+              </ul>
+            </div>
+            <div class="right-buttons text-right">
+              <%= link_to "Cancel",show_group_groups_path(id: params[:id]),class: "btn btn-default"%>
+              <%= submit_tag "Save",class: "btn btn-primary"%>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <ul class="nav nav-pills in-pills">
+        <%@fix_groups.each do |fg|%>
+        <%if [1,3].include? fg.fix_group_id%>
+        <%if fg.id== params[:group].to_i%>
+        <li class="active"><a id='<%="tab_#{fg.id}"%>'  href="#" data-toggle="tab"><%=fg.name%><span class="count" id='<%="span-#{fg.id}"%>'>0</span></a></li>
+        <%else%>
+        <li><a id='<%="tab_#{fg.id}"%>'  href="#" data-toggle="tab"><%=fg.name%><span class="count" id='<%="span-#{fg.id}"%>'>0</span></a></li>
+        <% end %>
+        <script>
+        $('#<%="tab_#{fg.id}"%>').click(function(){
+          $('div[id^=groupList_]').each(function(){
+            $(this).css("display","none");
+          });
+          $("#groupList_<%=fg.id%>").css("display","block");
+        });
+        </script>
+        <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="tab-content clearfix">
+        <div class="tab-pane active" id="Prints">
+          <div class="row">
+            <div class="col-lg-4">
+              <%@add_class=@fix_groups[0].id%>
+              <%@fix_groups.each do |fg|%>
+              <%@count=0%>
+              <% if [1,3].include? fg.fix_group_id %>
+                <% if fg.fix_group_id == params[:group].to_i %>
+                  <div id='<%="groupList_#{fg.id}"%>' class="group-pane">
+                <% else %>
+                  <div id='<%="groupList_#{fg.id}"%>' class="group-pane" style="display:none">
+                <% end %>
+                <div class="table">
+                  <div class="table-head">
+                      <div class="tr">
+                          <div class="th"></div>
+                          <div class="th">Item</div>
+                          <%if @pricings.pricing_style_id > 2%>
+                            <%if params[:type]=="lab"%>
+                              <div class="th">Cost</div>
+                            <% end %>
+                          <% end %>
+                      </div>
+                  </div>
+                  <div class="table-body">
+                    <%@checked_count=0%>
+
+                    <% @resolution.each do |resolution| %>
+                      <% if resolution.fix_group_id == fg.fix_group_id %>
+                        <div class="tr">
+                          <div class="td crop-heading">&nbsp;</div>
+                          <div class="td crop-heading"><%= resolution.size_one %> x <%=resolution.size_two%></div>
+                          <% if @pricings.pricing_style_id > 2 %>
+                            <div class="td crop-heading">&nbsp;</div>
+                          <% end %>
+                        </div>
+                      <% end %>
+                      <% @default_pricing_items.each do |items| %>
+                        <% if items.group_id==fg.id %>
+                          <% if resolution.fix_group_id==fg.fix_group_id %>
+                            <% if resolution.id == items.item_list_id %>
+                              <div class="tr">
+                                <div class="td check">
+                                  <% if items.checked == true %>
+                                    <div class="checkbox checked-box">
+                                      <% @checked_count=@checked_count+1 %>
+                                      <%= check_box_tag "task_ids[]", items.id , items.checked%>
+                                    </div>
+                                  <% else %>
+                                    <div class="checkbox">
+                                      <%= check_box_tag "task_ids[]", items.id , items.checked%>
+                                    </div>
+                                  <% end %>
+                                </div>
+                                <div class="td">
+                                  <%= items.sub_item_name%>
+                                  <%= hidden_field_tag "id", params[:id] %>
+                                </div>
+                                <%if @pricings.pricing_style_id > 2%>
+                                  <%if params[:type]=="lab"%>
+                                    <div class="td">
+                                      <%=items.cost%>
+                                    </div>
+                                  <% end %>
+                                <% end %>
+                              </div>
+                              <script>
+                                $('#<%="span-#{fg.id}"%>').text("<%=@checked_count%>");
+                              </script>
+                            <% end %>
+                          <% end %>
+                        <% end %>
+                      <% end %>
+                    <% end %>
+
+                  </div>
+                </div>
+              </div>
+              <% end %>
+              <% @count=@count+1 %>
+
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<% end %>
+
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $("#groupList_"+"<%=@add_class%>").css("display","block");
+  $(".checkbox input").click(function(){
+    if($(this).is(':checked')){
+      $(this).parent('.checkbox').addClass('checked-box');
+    }
+    else{
+      $(this).parent('.checkbox').removeClass('checked-box');
+    }
+  })
+});
+</script>

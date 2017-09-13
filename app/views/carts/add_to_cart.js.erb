@@ -1,0 +1,62 @@
+<% if @gallery_visitor.nil? %>
+  $('.model-title-side').hide();
+  $('.modal-back').hide();
+  $('#do_not_delete').hide();
+  $('#add-cart-item').find($('.modal-body')).append('<div class="email-for-cart">' +
+  '<p>We\'ll save your cart items by using your email address.</p> ' +
+  '<%= form_tag carts_save_email_path, remote: true do %>' +
+  '<%= hidden_field_tag :gallery, params[:gallery] %>' +
+  '<%= hidden_field_tag :from, params[:from] %>' +
+  '<%= hidden_field_tag :brand, params[:brand] %>' +
+  '<%= hidden_field_tag :photo, params[:photo] %>' +
+  '<%= hidden_field_tag :quantity, params[:quantity] %>' +
+  '<%= hidden_field_tag :catalog, params[:catalog] %>' +
+  '<% if params[:lineitem].present? %>' +
+  '<%= hidden_field_tag :lineitem, params[:lineitem] %>' +
+  '<% end %>' +
+  '<div class="form-group">' +
+    '<%= label_tag :email, "EMAIL ADDRESS" %>' +
+    '<%= email_field_tag :email, nil, class: "form-control", required: true %>' +
+  '</div>' +
+  '<div class="form-group">' +
+    '<%= label_tag :email, "CONFIRM EMAIL ADDRESS" %>' +
+    '<%= email_field_tag :confirm_email, nil, class: "form-control", required: true %>' +
+  '</div>' +
+  '<div id = "email_error">' +
+
+  '</div>' +
+  '<div class="btn-style text-center">' +
+    '<% if params[:lineitem].present? %>' +
+    '<%= submit_tag "Update Item", class: "btn btn-primary", disabled: true, id: "save_email" %>' +
+    '<% else %>' +
+    '<%= submit_tag "Add to Cart", class: "btn btn-primary", disabled: true, id: "save_email" %>' +
+    '<% end %>' +
+  '</div>' +
+  '<% end %> '+
+  '</div>');
+
+  var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+  $('#email, #confirm_email').keyup(function(){
+    $('#email').val().length == 0 || $('#confirm_email').val().length == 0 ? $('#save_email').attr('disabled', true) : $('#save_email').attr('disabled', false)
+    $('#confirm_email').val() == $('#email').val() ?  $('#save_email').attr('disabled', false) : $('#save_email').attr('disabled', true)
+    email_test = pattern.test($('#email').val());
+    email_test1 = pattern.test($('#confirm_email').val());
+    email_test && email_test1 ?  $('#save_email').attr('disabled', false) : $('#save_email').attr('disabled', true)
+  });
+<% else %>
+  $('#add_to_cart').prop('disabled', false);
+  $('.email-for-cart').css('display', 'none');
+  $('.model-title-side').css('display', 'none');
+  $('#do_not_delete').css('display', 'none');
+  $('#back-button').css('display', 'none');
+  $('#add-cart-item').find($('.modal-body')).append('<div class="added-to-cart">'+
+  '<div class="theme-color-primary circle-side">' +
+  '<svg class="sp-svg" version="1.1" viewBox="0 0 13.615 11.057"><path d="M3.41,10.911L0.146,7.647c-0.195-0.195-0.195-0.512,0-0.707l0.707-0.707c0.195-0.195,0.512-0.195,0.707,0l2.203,2.203l8.291-8.29c0.195-0.195,0.512-0.195,0.707,0l0.707,0.707c0.195,0.195,0.195,0.512,0,0.707l-9.351,9.35C3.922,11.106,3.605,11.106,3.41,10.911z"></path></svg>' +
+  '</div>' +
+  '<h3 class="model-title-side">ITEM HAS BEEN ADDED TO THE CART</h3>' +
+  '<div class="add-cart-btn">' +
+  '<div class="btn btn-primary third-side"><%= link_to "view cart", view_cart_path(brand: params[:brand], gallery: params[:gallery],from: params[:from]) %></div>' +
+  '<div class="btn btn-default"><%= link_to "Buy Another Item", view_items_path(brand: params[:brand], gallery: params[:gallery], photo: params[:photo]), remote: true %></div>' +
+  '</div>'+
+  '<div>');
+<% end %>

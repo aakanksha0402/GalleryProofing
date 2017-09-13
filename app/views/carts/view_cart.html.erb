@@ -1,0 +1,295 @@
+<%= render "/views/navbar" %>
+<div class="container-fluid" id="pageCart">
+  <div class="row cartHeader">
+    <div class="col-xs-12">
+      <div class="client-page">
+        <% if session["email_visitor_#{params[:gallery]}"] %>
+        <div class="Album-name"> <span class="main-heaing-album">SHOPPING CART</span> <span class="down-side-text"><%= @total_quantity %>  ITEM SUBTOTAL: $<%= @cart.total_price - @total_discount %></span> </div>
+        <% else %>
+        <div class="Album-name"> <span class="main-heaing-album">SHOPPING CART</span> <span class="down-side-text">0 ITEM SUBTOTAL: $0.00</span> </div>
+        <% end %>
+        <% if session["email_visitor_#{params[:gallery]}"] && @line_items.present? %>
+          <div class="header-btn pull-right">
+            <%= link_to "Checkout", checkout_path, class: "btn btn-default", id: "checkout"%>
+            <!-- <button type="button" class="btn btn-default" id="checkout">Checkout</button> -->
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <% if session["email_visitor_#{params[:gallery]}"] %>
+    <% if @line_items.present? %>
+      <div id = "line-item-div" >
+        <div class="row">
+          <% @line_items.each do |line_item| %>
+            <ul id="cartItems">
+              <!-- ngRepeat: cartItem in cartItems track by $index -->
+                <li class="cart-item " ng-repeat="cartItem in cartItems track by $index">
+                  <div class="cart-item-row">
+                    <h4 class="cart-item-filename">
+                      <span class="font-text ng-binding" ng-bind-html="cartItem.photo.filename">
+                        <%= line_item.photo.image_file_name %><!--  - <%#= line_item.catalog_id %> -->
+                      </span>
+                    </h4>
+                    <ul class="cart-item-bound-items">
+                      <!-- ngRepeat: boundItem in cartItem.boundItems track by $index -->
+                      <li ng-repeat="boundItem in cartItem.boundItems track by $index" class="cart-item-bound-item-container">
+                        <div class="cart-item-bound-item">
+                          <div class="cart-item-bound-item-row">
+                            <button class="bound-item-remove-button btn-close" ng-click=" boundItem.setActionPending('removePrompt') " ng-disabled="boundItem.isActionPending('updateCart')" onclick= "remove_item(<%= line_item.id %>)">
+                            <!-- spSvg: /content/201606131465849799/svg.svg#iconClose --><svg class="sp-svg" version="1.1" viewBox="0 0 11 11">
+                              <path d="M10.853,0.853l-0.707-0.707c-0.195-0.195-0.512-0.195-0.707,0L5.5,4.086L1.561,0.146c-0.195-0.195-0.512-0.195-0.707,0L0.146,0.853c-0.195,0.195-0.195,0.512,0,0.707L4.086,5.5L0.146,9.439c-0.195,0.195-0.195,0.512,0,0.707l0.707,0.707c0.195,0.195,0.512,0.195,0.707,0L5.5,6.914l3.939,3.939c0.195,0.195,0.512,0.195,0.707,0l0.707-0.707c0.195-0.195,0.195-0.512,0-0.707L6.914,5.5l3.939-3.939C11.049,1.365,11.049,1.049,10.853,0.853z"></path>
+                              </svg>
+                            </button>
+                            <div class="bound-item-image">
+                              <span class="photo-image"  style="width: 100%; height: 96px; background-size: cover; background-position: center center; float: left; background-image: url(<%= line_item.photo.image.url %>);"> </span>
+                            </div>
+                            <h4 class="bound-item-bound-name"> <span class="font-text "><%= line_item.catalog.print_size_one %> x  <%= line_item.catalog.print_size_two %><!-- - <%#= line_item.catalog.group_id%> --></span> </h4>
+                            <div class="bound-item-option-name theme-font-primary">
+                              <span class="font-text"><%= line_item.catalog.sub_item_name %></span>
+                            </div>
+                            <div class="quantity-selector bound-item-quantity-selector" >
+                              <button class="btn quantity-reduce" id = "quantity-reduce_<%= line_item.id %>" remote = "true" onclick="reduce_quantity(<%= line_item.id %>)">
+                                <svg class="sp-svg" version="1.1" viewBox="0 0 12 2">
+                                <path d="M11.5,2h-11C0.224,2,0,1.776,0,1.5v-1C0,0.224,0.224,0,0.5,0h11C11.776,0,12,0.224,12,0.5v1C12,1.776,11.776,2,11.5,2z"></path>
+                                </svg>
+                              </button>
+                              <%= text_field_tag :quantity,line_item.quantity, id: "quantity_#{line_item.id}", class: "form-control theme-font-primary text-center", remote: true, onkeyup: "alter(#{line_item.id})" %>
+                              <button class="btn quantity-increase", remote = "true", id = "quantity-increase_<%= line_item.id %>", onclick="increase_quantity(<%= line_item.id%>)">
+                                <svg class="sp-svg" version="1.1" viewBox="0 0 12 12">
+                                <path d="M11.5,5H7V0.5C7,0.224,6.776,0,6.5,0h-1C5.224,0,5,0.224,5,0.5V5H0.5C0.224,5,0,5.224,0,5.5v1C0,6.776,0.224,7,0.5,7H5v4.5C5,11.776,5.224,12,5.5,12h1C6.776,12,7,11.776,7,11.5V7h4.5C11.776,7,12,6.776,12,6.5v-1C12,5.224,11.776,5,11.5,5z"></path>
+                                </svg>
+                              </button>
+                              <div class="bound-item-unit-price theme-font-primary">
+                                <% if line_item.catalog.price  != 0 %>
+                                  <span><%= line_item.catalog.price %></span>
+                                <% else %>
+                                  <% line_item.catalog.digital_media_prices.each do |sub_digital| %>
+                                    <% if params[:from] == "2" %>
+                                      <span><%= sub_digital.indiviual_photo_price %></span>
+                                    <% else %>
+                                      <span><%= sub_digital.all_gallery_photo_price %></span>
+                                    <% end %>
+                                  <% end %>
+                                <% end %>
+
+                              </div>
+                              <div class="bound-item-subtotal-price theme-font-primary">
+
+                                <% if @discount.present? %>
+                                  <!-- Discount Applicable: <%#= b[0] %> -->
+                                  $<%= @discount[line_item.id.to_s] %>
+                                    <% if line_item.catalog.price  != 0 %>
+                                      <span class="font-text" id="cancel-price-span-<%= line_item.id %>" style="text-decoration: line-through;" data-cancel-price="<%= line_item.catalog.price %>">
+                                      $<%= line_item.catalog.price * line_item.quantity %></span>
+                                    <% else %>
+                                      <% line_item.catalog.digital_media_prices.each do |sub_digital| %>
+                                        <% if params[:from] == "2" %>
+                                          <span class="font-text" id="cancel-price-span-<%= line_item.id %>" style="text-decoration: line-through;" data-cancel-price="<%= sub_digital.indiviual_photo_price %>">
+                                          $<%= sub_digital.indiviual_photo_price * line_item.quantity %></span>
+                                        <% else %>
+                                          <span class="font-text" id="cancel-price-span-<%= line_item.id %>" style="text-decoration: line-through;" data-cancel-price="<%= sub_digital.all_gallery_photo_price %>">
+                                          $<%= sub_digital.all_gallery_photo_price * line_item.quantity %></span>
+                                        <% end %>
+                                      <% end %>
+                                    <% end %>
+                                <% else %>
+                                    <% if line_item.catalog.price  != 0 %>
+                                      <span class="font-text" id="price-span-<%= line_item.id %>" data-price="<%= line_item.catalog.price %>">
+                                      $<%= line_item.catalog.price * line_item.quantity %></span>
+                                    <% else %>
+                                      <% line_item.catalog.digital_media_prices.each do |sub_digital| %>
+                                        <% if params[:from] == "2" %>
+                                          <span class="font-text" id="price-span-<%= line_item.id %>" data-price="<%= sub_digital.indiviual_photo_price %>">
+                                          $<%= sub_digital.indiviual_photo_price * line_item.quantity %></span>
+                                        <% else %>
+                                          <span class="font-text" id="price-span-<%= line_item.id %>" data-price="<%= sub_digital.all_gallery_photo_price %>">
+                                          $<%= sub_digital.all_gallery_photo_price * line_item.quantity %></span>
+                                        <% end %>
+                                      <% end %>
+                                    <% end %>
+                                <% end %>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- remove item -->
+                          <div class="cart-item-bound-item-remove-prompt theme-background-color-primary display-remove-prompt" id="remove_<%= line_item.id %>">
+                            <h2 class="remove-bound-item-prompt-text">
+                                <span class="popup-title">Remove <%= line_item.catalog.print_size_one %> x <%= line_item.catalog.print_size_two %> - <%= line_item.catalog.group_id %>?</span>
+                            </h2>
+                            <%= link_to "#", class: "btn btn-no ng-scope", onclick: "$('#remove_#{line_item.id}').hide()" do %>
+                              <span class="btn-style">No</span>
+                            <% end %>
+                            <%= link_to remove_form_cart_path(line_item.id, gallery: params[:gallery]),class: "btn btn-yes theme-color-primary ng-scope", remote: true do %>
+                              <span class="btn-style">Yes</span>
+                            <% end %>
+                            <!-- ngIf: finish.updating -->
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            <% end %>
+          </div>
+          <div id="cartActionsContainer">
+            <div id="cartActions">
+              <div class="cart-action">
+                <a class="text-only" href="#" data-toggle="modal" data-target="#modal-empltycart">
+                  <span class="font-text">Empty Cart</span>
+                </a>
+              </div>
+              <div  id="addPromoCode" class="cart-action "  on="showPromoCodeEntry">
+              <a id="addPromoCodeLink" class="text-only ">
+              <span class="font-text">Add Promo Code</span>
+              </a>
+              <p id="notice"><%= notice %></p>
+              <% if @cart.used_promocodes.present? %>
+              <% @cart.used_promocodes.each do |promo| %>
+                <span class="font-text"><%= promo.promocode %> Applied <%= link_to 'Remove', carts_remove_promocode_path(brand: params[:brand], gallery: params[:gallery],from: params[:from],promo: promo.id),:method => :post %></span></br>
+              <% end %>
+              <p>Discount will be reflected in Checkout</p>
+              <% end %>
+              </div>
+              <div id="promoCodesContainer" class="cart-action" style="display:none;">
+                <%= form_tag  add_promocode_path(brand: params[:brand], gallery: params[:gallery],from: params[:from]) do %>
+                <%= text_field_tag :promo,"", class: 'form-control' %>
+                <%= submit_tag "Apply", :class => "btn btn-default" %>
+                <button id= "promocodeCancle" class="btn btn-default">Cancle</button>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal -->
+          <div class="modal" id="modal-empltycart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body text-center">
+                  <h3 class="font-text1">EMPTY SHOPPING CART?</h3>
+                  <p>All items will be removed. This cannot be undone.</p>
+                  <%= button_to "Yes",carts_empty_cart_path(gallery: params[:gallery]), class: "btn btn-default", remote: true %>
+                  <%= link_to "No", "#", class: "btn btn-default", "data-dismiss": "modal" %>
+                  <!-- <a class="btn btn-default" data-dismiss="modal" href="#">No</a> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Modal -->
+      </div>
+
+      <script type="text/javascript">
+        $('#addPromoCodeLink').click(function(){
+          $('#promoCodesContainer').toggle();
+        });
+        $('#promocodeCancle').click(function(){
+          $('#promoCodesContainer').toggle();
+        });
+      </script>
+
+      <script type="text/javascript">
+      function remove_item(id){
+        $('#remove_'+ id).show();
+      }
+
+      function reduce_quantity(line_item_id){
+        $.ajax({
+          type: "GET",
+          url: "/carts/reduce_quantity/"+line_item_id,
+          data: {gallery: '<%= params[:gallery] %>'}
+        });
+      }
+
+      function increase_quantity(line_item_id){
+        $.ajax({
+          type: "GET",
+          url: "/carts/increase_quantity/"+line_item_id,
+          data: {gallery: '<%= params[:gallery] %>'}
+        });
+      }
+
+      function alter(line_item_id){
+        var quantity = $('#quantity_'+line_item_id).val();
+        $.ajax({
+          type: "get",
+          url: "/carts/alter_quantity_in_cart/"+line_item_id,
+          data: {quantity: quantity, gallery: '<%= params[:gallery] %>'}
+        });
+      }
+      </script>
+    <% else %>
+      <div class="row">
+        <div class="row mange-block">
+          <h2 class="no-photo-value">NO ITEMS IN CART</h2>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="row">
+      <div class="row mange-block">
+        <h2 class="no-photo-value">NO ITEMS IN CART</h2>
+        <h5 class="text-center">Have you already added items to the cart? <%= link_to "Enter Email", "#modal-empltycart", "data-toggle": "modal" %></h5>
+      </div>
+    </div>
+
+    <!-- session_not_set -->
+      <div class="modal fade" id="modal-empltycart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body text-center">
+              <h2 class="font-text1">RECOVER CART</h2>
+              <p>Enter your email address to recover your cart from another device, web browser, or a previous session.</p>
+              <p>This will also recover any favorites you have saved.</p>
+              <%= form_tag carts_verify_email_path, remote: true do%>
+              <%= hidden_field_tag :gallery, params[:gallery] %>
+              <div class="form-group">
+                <%= label_tag :email, "EMAIL ADDRESS" %>
+                <%= email_field_tag :email, nil, class: "form-control", required: true%>
+              </div>
+              <div class="form-group">
+                <%= label_tag :email, "CONFIRM EMAIL ADDRESS" %>
+                <%= email_field_tag :confirm_email, nil, class: "form-control", required: true%>
+              </div>
+              <div id = "email_error">
+
+              </div>
+              <div class="btn-style text-center">
+                <%= submit_tag "OK", class: "btn btn-primary", disabled: true, id: "verify_email" %>
+              </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        $(document).ready(function(){
+          var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+          $('#email, #confirm_email').keyup(function(){
+            $('#email').val().length == 0 || $('#confirm_email').val().length == 0 ? $('#verify_email').attr('disabled', true) : $('#verify_email').attr('disabled', false)
+            $('#confirm_email').val() == $('#email').val() ?  $('#verify_email').attr('disabled', false) : $('#verify_email').attr('disabled', true)
+            email_test = pattern.test($('#email').val());
+            email_test1 = pattern.test($('#confirm_email').val());
+            email_test && email_test1 ?  $('#verify_email').attr('disabled', false) : $('#verify_email').attr('disabled', true)
+          });
+        });
+      </script>
+    <!-- session_not_set -->
+  <% end %>
+</div>
+<script>
+  // $(document).ready(function() {
+  //   $('input[name="quantity"]').each(function(){
+  //     if ($(this).val() == "1") {
+  //       $(this).parent().find('button[id^="quantity-reduce"]').prop('disabled', true);
+  //     }
+  //   })
+  // });
+</script>

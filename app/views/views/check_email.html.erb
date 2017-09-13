@@ -1,0 +1,10 @@
+<% content_for :head, "GalleryProofing | Style"%>
+<% content_for :body_class, "gallery_default-style" %>
+<div class="wrapper"> 
+ <div class="logo-small-logo text-center"><img src="../images/logo-small-logo.jpg" alt="logo"></div>
+<div class="title text-center col-md-12">
+<h1> <%= @gallery_visitor.gallery.name %></h1>
+<p>1-of-1.zip <%= number_to_human_size(@file_size) %> </p>
+<%= link_to "DOWNLOAD",download_zip_path(gallery_visitor_id: params[:gallery_visitor_id]), class: "btn btn-default" %>
+</div>
+</div>

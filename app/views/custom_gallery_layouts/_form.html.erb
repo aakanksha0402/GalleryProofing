@@ -1,0 +1,612 @@
+<% content_for :head, "GalleryProofing | Gallery Settings"%>
+<% content_for :body_class, "gallery-settings"%>
+<% content_for :photo_class, "active"%>
+
+<%= form_for(@custom_gallery_layout) do |f| %>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+              <div id="pageTitleHeaderText"><%=@gallery.name%> Settings
+              </h2>
+            </div>
+            <div class="col-md-6 col-sm-7 col-xs-7">
+              <div class="right-buttons text-right">
+                <%= f.submit "Save", class: "btn btn-primary"%>
+                <%=link_to "Cancel",galleries_galleryhome_path(id: params[:id]),class: "btn btn-default" %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /title -->
+      </div>
+    </div>
+  </div>
+  <!-- /top -->
+
+
+  <!-- main -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-lg-2 scrollspy">
+        <div id="navbar-example">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="setting-tab">
+              <a class="active" href="#settingsLayout">Layout</a>
+            </li>
+            <li class="setting-tab">
+              <a href="#settingsBasic">General</a>
+            </li>
+            <li class="setting-tab">
+              <a href="#settingsAccess">Access & Privacy</a>
+            </li>
+            <li class="setting-tab">
+              <a href="#settingsStudioInfo">Studio Info</a>
+            </li>
+            <li class="setting-tab">
+              <a href="#settingsGallery">Gallery</a>
+            </li>
+            <li class="setting-tab">
+              <a href="#settingsPrint">Prints</a>
+            </li>
+            <li class="setting-tab">
+              <a href="#settingsDigital">Digitals</a>
+            </li>
+            <li class="setting-tab">
+              <a href="#settingsAdvanced">Advanced</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+
+      <%= form_for(@custom_gallery_layout) do |f| %>
+      <% if @custom_gallery_layout.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@custom_gallery_layout.errors.count, "error") %> prohibited this custom_gallery_layout from being saved:</h2>
+
+        <ul>
+          <% @custom_gallery_layout.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+      <% end %>
+      <div class="col-lg-8 col-md-8 col-sm-8">
+        <div class="settings-pane-container">
+          <div id="settingsLayout" class="gallery-settings-page">
+            <div class="section-header"><h4>Layout</h4></div>
+            <div class="row">
+              <div class="col-lg-6"> <!--first-gallary-->
+                <label>Intro Page</label>
+                <div id="TypeDemo" class="full-bottom"></div>
+                <!-- radio -->
+                <div class="radiocon">
+                  <div  class="myradio" id="LimeLight">
+                    <label>
+                      <span></span>
+                      <%= f.radio_button :introduction_page_layout, 'LimeLight',checked: true%>LimeLight
+                    </label>
+                  </div>
+                  <div  class="myradio" id="Marquee">
+                    <label>
+                      <span></span>
+                      <%= f.radio_button :introduction_page_layout, 'Marquee'%>Marquee
+                    </label>
+                  </div>
+                  <div  class="myradio" id="Detail">
+                    <label>
+                      <span></span>
+                      <%= f.radio_button :introduction_page_layout, 'Detail'%>Detail
+                    </label>
+                  </div>
+                  <div  class="myradio" id="Accent">
+                    <label>
+                      <span></span>
+                      <%= f.radio_button :introduction_page_layout, 'Accent'%>Accent
+                    </label>
+                  </div>
+                  <div  class="myradio" id="HeadLine">
+                    <label>
+                      <span></span>
+                      <%= f.radio_button :introduction_page_layout, 'HeadLine'%>HeadLine
+                    </label>
+                  </div>
+                </div>
+                <!-- radio -->
+              </div>
+              <!-- <%= f.text_field :introduction_page_layout %> -->
+              <div class="col-lg-6">
+                <%= f.label :photo_page_layout,"Photo Pages" %>
+                <div id="ViewTypeDemo" class="vmason"></div>
+                <div  class="radiocon">
+                  <div  class="myradio" id="Cascade">
+                    <label>
+                      <span></span>
+                      <%= f.radio_button :photo_page_layout, 'Cascade',checked: true%>Cascade
+                    </label>
+                  </div>
+                  <div  class="myradio" id="Subway">
+                    <label>
+                      <span></span>
+                      <%= f.radio_button :photo_page_layout, 'Subway'%>Subway
+                    </label>
+                  </div>
+                </div>
+                <!-- <%= f.text_field :photo_page_layout %> -->
+              </div>
+            </div>
+          </div>
+          <div id="settingsBasic" class="gallery-settings-page"><!--second-gallary-setting-->
+            <div class="section-header"><h4>General</h4></div>
+            <%=f.fields_for @gallery do |builder|%>
+            <div class="row">
+              <div class="col-lg-3">
+                <div class="form-group set-select-setting">
+                  <%= builder.label :status %>
+                  <%= builder.select :status, CustomGalleryLayout::STATUS,{}, class: "selectpicker"%>
+                </div>
+              </div>
+              <div class="col-lg-9  url-slug-container">
+                <div class="form-group">
+                  <%if @used_custom_link.present?%>
+                    <p id="notice1" style="display:none;color:red;">The custom event URL chosen is already in use by the event <%= @used_custom_link.name %></p>
+                  <%end%>
+                  <%= builder.label :custom_link,"Custom Link",class: "optional" %>
+                  <div class="input-group pull-left">
+                    <div class="input-group-addon"><%="http://#{current_brand.studio_home_page.subdomain}.galleryproofing.com/"%></div>
+                    <%= builder.text_field :custom_link, class: "form-control" %>
+                  </div>
+                  <button class="btn btn-link  pull-left" >Copy</button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <div class="form-group">
+                  <%= builder.label :shoot_date %>
+                  <!-- <input type="text" class="form-control"></input> -->
+                  <div class="input-append date ">
+                     <div id="datetimepicker2">
+                        <%= builder.text_field :shoot_date,value: @gallery.shoot_date.strftime("%d/%m/%Y"),'data-format': "dd/MM/yyyy" %>
+                        <span class="add-on">
+                          <span class="celender"><i aria-hidden="true" class="fa fa-calendar icon-calendar"></i></span>
+                        </span>
+                      </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="form-group">
+                  <%= builder.label :release_date %>
+
+
+                  <!-- <input type="text" class="form-control"></input> -->
+                  <div class="input-append date ">
+                     <div id="datetimepicker3">
+                         <% if @gallery.release_date != nil%>
+                          <%= builder.text_field :release_date,value: @gallery.release_date.strftime("%d/%m/%Y"),'data-format': "dd/MM/yyyy" %>
+                         <%else%>
+                          <%= builder.text_field :release_date,value: @gallery.release_date,'data-format': "dd/MM/yyyy" %>
+                         <% end %>
+                        <span class="add-on">
+                          <span class="celender"><i aria-hidden="true" class="fa fa-calendar icon-calendar"></i></span>
+                        </span>
+                      </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="form-group">
+                  <%= builder.label :expiration_date %>
+
+                  <!-- <input type="text" class="form-control"></input> -->
+                 <div class="input-append date ">
+                     <div id="datetimepicker4">
+                       <%= puts @gallery.expiration_date %>
+                       <% if @gallery.expiration_date != nil%>
+                        <%= builder.text_field :expiration_date,value: @gallery.expiration_date.strftime("%d/%m/%Y"),'data-format': "dd/MM/yyyy" %>
+                       <% else %>
+                        <%= builder.text_field :expiration_date,value: @gallery.expiration_date,'data-format': "dd/MM/yyyy" %>
+                      <% end %>
+                        <span class="add-on">
+                          <span class="celender"><i aria-hidden="true" class="fa fa-calendar icon-calendar"></i></span>
+                        </span>
+                      </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="right-buttons text-left">
+                    <a href="#" class="btn btn-default">Archive Gallery</a>
+                    <a  href="#" class="btn btn-default">Delete Gallery</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <%end%>
+
+            </div>
+        </div><!--second-gallary-setting-->
+        <div id="settingsAccess" class="gallery-settings-page"><!--third-gallary-setting-->
+          <div class="section-header"><h4>Access & Privacy</h4></div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group set-select-Access">
+                <%= f.label :gallery_access_privacy, "Gallery Access"%>
+                <%= f.select :gallery_access_privacy,CustomGalleryLayout::GALLERY_ACCESS_PRIVACY,{},{id: "gallery_access_privacy",class: "selectpicker"} %>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group disabled" id="password">
+                <%= f.label :password %>
+                <%= f.text_field :password, class: "form-control" %>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="check-box-set">
+                <div  class="checkbox" id="email_require">
+                  <%= f.check_box :email_require %>
+                  <%= f.label :email_require %>
+                  <p class="color-style-tag">Require a visitor's email address to view this gallery.</p>
+                </div>
+              </div>
+              <div class="check-box-set">
+                <div class="checkbox" id="preregistration">
+                  <%= f.check_box :preregistration %>
+                  <%= f.label :preregistration,"Pre-Registration" %>
+                  <p class="color-style-tag">Enable this mode to collect visitors' email addresses before the gallery is released. *You may give the Linked Contact private access to the gallery while in pre-registration mode. <a href="#">Learn more</a></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="check-box-set">
+                <div class="checkbox" id="cropping">
+                  <%= f.check_box :cropping %>
+                  <%= f.label :cropping,"Enable Croping" %>
+                  <p class="color-style-tag">Allow clients to crop photos on orders.</p>
+                </div>
+              </div>
+              <div class="check-box-set">
+                <div class="checkbox" id="black_and_white_filtering">
+                  <%= f.check_box :black_and_white_filtering %>
+                  <%= f.label :black_and_white_filtering,"Black & White Filtering" %>
+                  <p class="color-style-tag">Allow clients to see and order a black and white version of an image.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!--third-gallary-setting-->
+        <div id="settingsStudioInfo" class="gallery-settings-page" ><!--fourth-gallary-setting-->
+          <div class="section-header"><h4>Studio Info</h4></div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-group">
+                <%= f.label :studio_link,"HomePage Link" %>
+                <p class="color-hexa">The website link in the Info tab will send clients to:</p>
+
+                <div class="radiocon home-links">
+                  <div class="myradio" id="NoLink">
+                    <label>
+                      <span></span>
+                      <%=f.radio_button :studio_link, "No Link"%>No Link
+                    </label>
+                  </div>
+                  <div class="myradio" id="shootproof">
+                    <label>
+                      <span></span>
+                      <%= f.radio_button :studio_link, "#{@custom_gallery_layout.layout_name}.shootproof.com"%><%=@custom_gallery_layout.layout_name%>.shootproof.com
+                    </label>
+                  </div>
+                  <div class="myradio" id="Website">
+                    <label>
+                      <span></span>
+                      <%= f.radio_button :studio_link, "#{current_brand.website_url}"%><%=current_brand.website_url%>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!--fourth-gallary-setting-->
+        <div id="settingsGallery" class="gallery-settings-page"><!--five-gallary-setting-->
+          <div class="section-header"><h4>Gallery</h4></div>
+          <div class="col-lg-6">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group set-select-Access-1">
+                  <%= f.label :color_logo_id, "Color Set" %>
+                  <%= f.collection_select :color_logo_id,current_brand.color_logos.all,:id, :name , {prompt: "Color Set"}, {class: "selectpicker"}%>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group set-select-Access-1">
+                  <label>Language</label>
+                  <select class="selectpicker" data-live-search="true"> <!-- form-control input-lg -->
+                    <option>Danish</option>
+                    <option>Dutch</option>
+                    <option>English (UK)</option>
+                    <option>English (US)</option>
+                    <option>Finnish</option>
+                    <option>French</option>
+                    <option>German</option>
+                    <option>Italian</option>
+                    <option>Norwegian</option>
+                    <option>Polish</option>
+                    <option>Portuguese</option>
+                    <option>Slovenian</option>
+                    <option>Spanish</option>
+                    <option>Swedish</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <p>To play music in this gallery, you first need to set up your music options and a playlist under the Photos > Music section. <a href="#">Learn more</a></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-group">
+              <div class="check-box-set">
+                <div class="checkbox" id="show_filename">
+                  <%= f.check_box :show_filename %>
+                  <%= f.label :show_filename,"Show Photo Filenames" %>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="check-box-set">
+                <div class="checkbox" id="social_sharing_link">
+                  <%= f.check_box :social_sharing_link %>
+                  <%= f.label :social_sharing_link,"Show Social Sharing Links" %>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <form>
+                <fieldset disabled id="social">
+                  <div class="form-group">
+                    <label class="color-hexa">Gallery Default Settings</label>
+                    <%= f.text_area :content,class: "form-control", placeholder: "Check out the photos from mygallery" %>
+                  </div>
+                </fieldset>
+                </form>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <%= f.label :visitor_info,"Visitor Information" %>
+                  <p class="color-hexa"> classThis text will be shown in the "Info" section of the gallery and on the Intro Page for a gallery in Pre-Registration mode.</p>
+                  <div class="redactor-box">
+                    <ul class="redactor-toolbar">
+                      <li><a class="fa fa-bold" href="#" rel="bold" tabindex="-1"data-toggle="tooltip" data-placement="bottom" title="Bold"></a></li>
+                      <li><a class="fa fa-italic" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="Italic"></a></li>
+                      <li><a class="fa fa-underline" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="Underline"></a></li>
+                      <li><a class="fa fa-link" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="Link"></a></li>
+                      <li><a class="fa fa-align-left" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="alignment"></a></li>
+                      <li><a class="fa fa-list-ul" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="unorderedlist"></a></li>
+                      <li><a class="fa fa-list-ol" href="#" rel="bold" tabindex="-1"  data-toggle="tooltip" data-placement="bottom" title="orderedlist"></a></li>
+                    </ul>
+                    <div contenteditable="true" class="redactor-editor" dir="ltr"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!--five-gallary-setting-->
+          <div id="settingsPrint" class="gallery-settings-page"><!--six-gallary-setting-->
+            <div class="section-header"><h4>Prints</h4></div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="form-group five-select-box">
+                      <%=f.label :pricing_id,"Price Sheet"%>
+                      <p>
+
+                        <%if current_user.pricings.count == 0%>
+                          Your studio does not have a price sheet to select at this time. You can create a price sheet by visiting the
+                          <%= link_to "Pricing Panel",new_pricing_path%>
+                        <%else%>
+                          <%= f.collection_select(:pricing_id, current_user.pricings.all, :id, :name, {include_blank: "Select one"}, class: "selectpicker") %>
+                        <%end%></p>
+                      </div>
+                      <div class="form-group five-select-box requires-pricesheet hide_div">
+                        <%= f.label :min_order,"Minimum Order", id: "min_order_label" %>
+                        <div class="input-group">
+                          <div class="input-group-addon">$</div>
+                          <%= f.number_field :min_order, class: "form-control",id: "min_order_field", min: 0  %>
+
+                        </div>
+                      </div>
+                      <div class="form-group five-select-box add-all-cart">
+                        <div class="check-box-set">
+                          <div class="checkbox" id="add_photo_to_cart">
+                            <%= f.check_box :add_photo_to_cart, id: "add_photo_to_cart_check_box" %>
+                            <%= f.label :add_photo_to_cart,'Show "Add All to Cart" Button', id: "add_photo_to_cart_label" %>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group five-select-box add-all-cart">
+                        <div class="check-box-set">
+                          <div class="checkbox" id="pay_later">
+                            <%= f.check_box :pay_later , id: "pay_later_check_box"%>
+                            <%= f.label :pay_later,"Allow Client to Pay Later", id: "pay_later_label"%>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <%= f.label :pickup_option,"Pick Up Option" %>
+                        <div class="radiocon">
+                          <div class="myradio">
+                            <label>
+                              <span></span>
+                              <%=f.radio_button :pickup_option, "t"%>From Studio
+                            </label>
+                          </div>
+                          <div class="myradio">
+                            <label>
+                              <span></span>
+                              <%=f.radio_button :pickup_option, "f"%>Client's Doorstep
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-8">
+                      <div class="form-group set-message-shown">
+                        <%= f.label :checkout_message,"Optional Message Shown at Checkout" %>
+                        <%= f.text_area :checkout_message,class: "form-control" %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div><!--six-gallary-setting-->
+              <div id="settingsDigital" class="gallery-settings-page"><!--seven-gallary-setting-->
+                <div class="section-header"><h4>Digitals</h4></div>
+                <div class="row">
+                  <div clas="col-lg-12">
+                    <div class="col-lg-3">
+                      <div class="check-box-set">
+                        <div class="checkbox" id="digital_download">
+                          <%= f.check_box :digital_download %>
+                          <%= f.label :digital_download,"Offer Free Digital Downloads" %>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="check-box-set">
+                        <div class="checkbox" id="entire_gallery_download">
+                          <%= f.check_box :entire_gallery_download, id: "entire_gallery_download_check_box" %>
+                          <%= f.label :entire_gallery_download,"Allow download of entire gallery",id: "entire_gallery_download_label" %>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                      <div class="pin-no">
+                        <div class="check-box-set">
+                          <div class="checkbox">
+                            <%= f.check_box :require_PIN, id: "require_PIN_check_box" %>
+                            <%= f.label :require_PIN,"Require PIN:", id: "require_PIN_label"%>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <%= f.text_field :PIN, class: "form-control" , id: "require_PIN_text" %>
+                          <!-- <input type="text" class="form-control" id="require_PIN_text"> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div clas="col-lg-12">
+                    <div class="form-group">
+                      <label>Print Release</label>
+                      <p class="color-hexa">Automatically sent to your client when ShootProof-fulfilled digitals are downloaded.</p>
+                      <div class="redactor-box">
+                        <ul class="redactor-toolbar">
+                          <li><a class="fa fa-bold" href="#" rel="bold" tabindex="-1"data-toggle="tooltip" data-placement="bottom" title="Bold"></a></li>
+                          <li><a class="fa fa-italic" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="Italic"></a></li>
+                          <li><a class="fa fa-underline" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="Underline"></a></li>
+                          <li><a class="fa fa-link" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="Link"></a></li>
+                          <li><a class="fa fa-align-left" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="alignment"></a></li>
+                          <li><a class="fa fa-list-ul" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="unorderedlist"></a></li>
+                          <li><a class="fa fa-list-ol" href="#" rel="bold" tabindex="-1"  data-toggle="tooltip" data-placement="bottom" title="orderedlist"></a></li>
+                        </ul>
+                        <div contenteditable="true" class="redactor-editor editor-set-print" dir="ltr"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div><!--seven-gallary-setting-->
+              <div id="settingsAdvanced" class="gallery-settings-page"><!--eignt-gallary-setting-->
+                <div class="section-header"><h4>Advanced</h4></div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="check-box-set">
+                      <div class="checkbox" id="hide_photos">
+                        <%= f.check_box :hide_photos %>
+                        <%= f.label :hide_photos,'Hide "All Photos" album' %>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group set-select-Access-1">
+                      <label>Category</label>
+                      <p class="color-hexa">Group galleries on your ShootProof homepage. <a href="#">Learn more</a></p>
+                      <%=f.collection_select(:category_id, current_brand.categories.all, :id, :name, {include_blank: "- No Category -"}, {class: "selectpicker", "data-live-search": "true"}) %>
+
+                    </div>
+                    <div class="form-group set-select-Access-1">
+                      <%= f.label :archiving,"Automatically Archive This Gallery After Expiration" %>
+                      <p class="color-hexa">Archived galleries don't count against your plan. <a href="#">Learn more</a></p>
+                      <%= f.text_field :archiving,style: "display:none" %>
+                      <select  id="Archive" class="selectpicker" data-live-search="true"> <!-- form-control input-lg -->
+                        <option>Do Not Archive</option>
+                        <option>1 Day</option>
+                        <option>2 Days</option>
+                        <option>3 Days</option>
+                        <option>4 Days</option>
+                        <option>5 Days</option>
+                        <option>6 Days</option>
+                        <option>7 Days</option>
+                        <option>8 Days</option>
+                        <option>9 Days</option>
+                        <option>10 Days</option>
+                        <option>11 Days</option>
+                        <option>12 Days</option>
+                        <option>13 Days</option>
+                        <option>14 Days</option>
+                        <option>15 Days</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group set-select-Access-1">
+                      <%=f.label :automation_series_id,"Send Automated Emails for this Gallery"%>
+
+                      <p class="color-hexa">Keep in touch with your clients automatically. <a href="#">Learn more</a></p>
+                      <%if current_brand.automation_series.count == 0%>
+                      Your studio doesn't have any automated emails set up at this time.
+                      <%else%>
+                      <%=f.collection_select(:automation_series_id, current_brand.automation_series.all, :id, :name, {include_blank: "Select one"}, {class: "selectpicker"}) %>
+                      <%end%>
+                    </div>
+                    <div class="form-group set-select-Access-1">
+                      <label>EXIF Search Label</label>
+                      <p class="color-hexa">e.g. Race Number or Team Name</p>
+                      <p>Contact Support for Access</p>
+                    </div>
+                  </div>
+                </div>
+              </div><!--eignt-gallary-setting-->
+            </div>
+          </div>
+          <!-- <div class="field">
+          <br>
+          <%= f.text_area :visitor_info %>
+        </div> -->
+
+        <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <!-- /main -->

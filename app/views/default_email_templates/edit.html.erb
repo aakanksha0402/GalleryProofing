@@ -1,0 +1,13 @@
+<h1>Editing Default Email Template</h1>
+
+<%= render 'form' %>
+
+<%= link_to 'Show', @default_email_template %> |
+<%= link_to 'Back', default_email_templates_path %>
+
+<script src="http://cdn.tinymce.com/4/tinymce.min.js"></script>
+
+<script>
+  tinymce.init({ selector:'textarea' });
+
+</script>

@@ -1,0 +1,18 @@
+
+'<% if @photo_load.is_hidden == false %>'
+$("#hide").html('<%=link_to "HIDE" , '' , remote:true ,  class:"hide_unhide" %> ');
+$('.photo-icon.photo-icon-hidden.ng-scope').hide();
+'<% else %>'
+$("#hide").html('<%=link_to "UNHIDE" , '' , remote:true , class:"hide_unhide" %>');
+$('.photo-icon.photo-icon-hidden.ng-scope').show();
+'<% end %>'
+$('.hide_unhide').click(function(){
+  $.ajax({
+      type: 'GET',
+      url: '/views/hide_unhide',
+      data: {
+          id: image_id , gallery:'<%= params[:gallery]%>' ,brand:'<%= params[:brand] %>'
+      }
+  })
+   // Prevent link from following through to its given href
+});

@@ -1,0 +1,20 @@
+var access_code = '<%= @code_access %>';
+alert(access_code);
+if (access_code=="true")
+{
+window.location.href = "http://localhost:3000/<%= params[:brand] %>/gallery/<%= params[:gallery] %>/home";
+// href = "javascript:document.location.href=getUrl();"
+
+}
+else {
+$('#error_for_acess_code').html("The password you entered is incorrect.");
+}
+
+// function getUrl()
+// {
+//   var hostname = window.location.origin
+//   alert(hostname);
+//   var fullpath = "<%#= params[:brand] %>/gallery/<%#= params[:gallery] %>/home"
+//   alert (fullpath);
+//     return fullpath;
+// }

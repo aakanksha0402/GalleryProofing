@@ -1,0 +1,234 @@
+<!-- navbar -->
+
+<% @contact_view = @current_user_permissions.find_by(permission_name: "View Contact").value %>
+<% @email_template_view = @current_user_permissions.find_by(permission_name: "View Email Template").value %>
+<% @color_logo_view = @current_user_permissions.find_by(permission_name: "View Color and Logos").value %>
+<% @homepage_view = @current_user_permissions.find_by(permission_name: "Edit HomePage").value %>
+<% @gallery_view = @current_user_permissions.find_by(permission_name: "View Galleries").value %>
+<% @mobileapp_view = @current_user_permissions.find_by(permission_name: "View Mobile Apps").value %>
+<% @music_view = @current_user_permissions.find_by(permission_name: "View Music").value %>
+<% @watermark_view = @current_user_permissions.find_by(permission_name: "View Watermarks").value %>
+<% @tools_view = @current_user_permissions.find_by(permission_name: "View Tools").value %>
+<% @order_view = @current_user_permissions.find_by(permission_name: "View Orders").value %>
+<% @payment_view = @current_user_permissions.find_by(permission_name: "View Payments").value %>
+<% @pricing_view = @current_user_permissions.find_by(permission_name: "View Pricing").value %>
+<% @invoices_view = @current_user_permissions.find_by(permission_name: "View Invoices").value %>
+<% @gallery_visitors_view = @current_user_permissions.find_by(permission_name: "View Gallery Visitors").value %>
+<% @sales_view = @current_user_permissions.find_by(permission_name: "View Sales").value %>
+<% @orders_view = @current_user_permissions.find_by(permission_name: "View Order and Order Files").value %>
+<% @invoices_report_view = @current_user_permissions.find_by(permission_name: "View Invoices").value %>
+<% @items_view = @current_user_permissions.find_by(permission_name: "View Items").value %>
+<% @account_view = @current_user_permissions.find_by(permission_name: "View Administration").value %>
+<nav class="navbar navbar-default" id = "hideNav">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <%= link_to root_path, class: "navbar-brand" do %>
+      <%= image_tag "/assets/logo-w.png" %>
+      <% end %>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav sitemenu">
+        <li class="<%= yield :active_class %>">
+          <%= link_to root_path do %>
+          Dashboard <span class="sr-only">(current)</span>
+          <% end %>
+        </li>
+        <% if @contact_view == true || @email_template_view == true || @color_logo_view == true || @homepage_view == true %>
+        <li class="dropdown <%= yield :studio_class %>">
+          <%= link_to "Studio","#", class: "dropdown-toggle", "data-toggle": "dropdown", role: "button", "aria-expanded": false%>
+          <ul class="dropdown-menu">
+            <div class="sr-view">
+            <% if @contact_view == true %>
+            <li><%= link_to "Contacts", contacts_path %></li>
+            <% end %>
+            <% if @email_template_view == true %>
+            <li><%= link_to "E-Mail", email_activity_email_templates_path %></li>
+            <% end %>
+            <% if @color_logo_view == true %>
+            <li><%= link_to "Color & Logos", color_logos_path %></li>
+            <% end %>
+            <% if @homepage_view == true %>
+            <li><%= link_to "Studio Home Page", studio_home_pages_path %></li>
+            <% end %>
+          </div>
+          </ul>
+        </li>
+        <% end %>
+        <% if @gallery_view == true || @mobileapp_view == true || @music_view == true || @watermark_view == true || @tools_view == true%>
+        <li class="dropdown <%= yield :photo_class %>">
+          <%= link_to "Photos","#", class: "dropdown-toggle", "data-toggle": "dropdown", role: "button","aria-haspopup": "true", "aria-expanded": false%>
+          <ul class="dropdown-menu">
+            <div class="sr-view">
+            <% if @gallery_view == true%>
+            <li><%= link_to "Galleries", galleries_path%></li>
+            <% end %>
+            <% if @mobileapp_view == true%>
+            <li><%= link_to "Mobile Apps", mobileapps_path %></li>
+            <% end %>
+            <% if @music_view == true%>
+            <li><%= link_to "Music", song_libraries_path %></li>
+            <% end %>
+            <% if @watermark_view == true%>
+            <li><%= link_to "Watermarks", watermarks_path %></li>
+            <% end %>
+            <% if @tools_view == true%>
+            <li><%= link_to "Tools", "#" %></li>
+            <% end %>
+          </div>
+          </ul>
+        </li>
+        <% end %>
+        <% if @order_view == true || @payment_view == true || @pricing_view == true || @invoices_view == true %>
+        <li class="dropdown">
+          <%= link_to "Commerce","#", class: "dropdown-toggle", "data-toggle": "dropdown", role: "button","aria-haspopup": "true", "aria-expanded": false%>
+          <ul class="dropdown-menu">
+              <div class="sr-view">
+            <% if @order_view == true%>
+            <li><%= link_to "Orders", orders_path %></li>
+            <% end %>
+            <% if @pricing_view == true%>
+            <li><%= link_to "Pricing", pricings_path(id: current_user.id) %></li>
+            <% end %>
+            <% if @invoices_view == true%>
+            <li><%= link_to "Invoices", invoices_path(id: current_brand.id) %></li>
+            <% end %>
+          </div>
+          </ul>
+        </li>
+        <% end %>
+        <% if @gallery_visitors_view == true || @sales_view == true || @orders_view == true || @invoices_report_view == true || @items_view == true %>
+        <li class="dropdown">
+          <%= link_to "Reports","#", class: "dropdown-toggle", "data-toggle": "dropdown", role: "button","aria-haspopup": "true", "aria-expanded": false%>
+          <ul class="dropdown-menu">
+              <div class="sr-view">
+            <% if @gallery_visitors_view == true%>
+            <li><%= link_to "Gallery Visitors", reports_gallery_visitors_path %></li>
+            <% end %>
+            <% if @sales_view == true%>
+            <li><%= link_to "Sales", reports_sales_path %></li>
+            <% end %>
+            <% if @orders_view == true%>
+            <li><%= link_to "Orders", reports_orders_path %></li>
+            <li><%= link_to "Order Files", reports_ordered_files_path %></li>
+            <% end %>
+            <% if @invoices_report_view == true%>
+            <li><%= link_to "Items", reports_items_path %></li>
+            <% end %>
+            <% if @items_view == true%>
+            <li><%= link_to "Invoice Payments", reports_invoice_payments_path %></li>
+            <% end %>
+          </div>
+          </ul>
+        </li>
+        <% end %>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <% if current_user.brands.count > 1 %>
+        <li class="dropdown">
+          <%= link_to "#", class: "dropdown-toggle", "data-toggle": "dropdown", role: "button","aria-haspopup": "true", "aria-expanded": false do %>
+          <span class="fa fa-star"></span>
+          <% end %>
+          <ul class="dropdown-menu">
+              <div class="sr-view">
+            <% current_user.brands.order(:brand_name).each do |c| %>
+            <li>
+              <% if c.default == true %>
+              <%= link_to c.brand_name, "#", style: "cursor: no-drop;pointer-events: none;" %>
+              <% else %>
+              <%= link_to c.brand_name, brands_change_brand_path(brand: c.id, a: true), method: :post, class: "all-brands" %>
+              <% end %>
+            </li>
+            <% end %>
+          </div>
+          </ul>
+        </li>
+        <% end %>
+        <li class="dropdown">
+          <%= link_to "#", class: "dropdown-toggle", "data-toggle": "dropdown", role: "button","aria-haspopup": "true", "aria-expanded": false do %>
+            <span class="fa fa-bell"></span>
+          <% end %>
+          <div class="dropdown-menu dropdown-menu-right arrow-upper-right notification-div">
+            <div class="sr-view">
+            <div class="notifications-nav-overlay">
+              <div class="notifications-header">
+                <span>Notifications</span>
+                <%= link_to "View All", notifications_path,class: "pull-right" %>
+              </div>
+              <% notificaion.each do |notice| %>
+                <% if !notice.is_dismiss %>
+                  <div class="notification-item notification-item-style-container">
+                    <div class="notification-details">
+                      <% if notice.notification_from == "Order" %>
+                        <a href="/v2/111210/invoice/edit/52038">
+                      <% else %>
+                        <a href=<%=edit_invoice_path(id: notice.id_from)%>>
+                      <% end %>
+                          <div class="top-line-container">
+                            <div class="type-and-descriptor-container">
+                              <div class="notification-type notification-type-id-1">
+                                <%= notice.notification_from %>
+                              </div>
+                              <div class="notification-descriptor">
+                                $<%= notice.amount %>
+                              </div>
+                            </div>
+                            <div class="notification-created">
+                              <% if notice.created_at.to_date == Date.current %>
+                              <%= notice.created_at.strftime("%I:%M %P") %>
+                              <% else %>
+                              <%= notice.created_at.strftime("%d-%b-%Y") %>
+                              <% end %>
+                            </div>
+                          </div>
+                          <div class="notification-message">
+                            <% if notice.notification_from == "Order" %>
+                            <%= notice.first_name %> <%= notice.last_name %> placed a new order
+                            <% else %>
+                            <%= notice.first_name %> <%= notice.last_name %>'s order is waiting for approval
+                            <% end %>
+                          </div>
+                        </a>
+                    </div>
+                    <div class="notification-dismiss">
+
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+          </div>
+        </li>
+        <li class="dropdown">
+          <%= link_to "#", class: "dropdown-toggle", "data-toggle": "dropdown", role: "button","aria-haspopup": "true", "aria-expanded": false do %>
+          <span class="fa fa-user"></span>
+          <% end %>
+          <ul class="dropdown-menu">
+            <div class="sr-view">
+            <% if @account_view == true %>
+            <li><%= link_to "Contact Info", brands_path %></li>
+            <li><%= link_to "Users & Permissions", user_permissions_path %></li>
+            <li><%= link_to "Plan & Billing", plans_billings_planbilling_path %></li>
+            <li><%= link_to "Accept Credit Cards", new_gateway_setup_path %></li>
+            <li><%= link_to "Integrations", "#" %></li>
+            <% end %>
+            <li><%= link_to "Refer a Friend", refer_friends_refer_path %></li>
+            <li role="separator" class="divider"></li>
+            <li><%= link_to "Logout",destroy_user_session_path,method: :delete%></li>
+          </div>
+          </ul>
+        </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>

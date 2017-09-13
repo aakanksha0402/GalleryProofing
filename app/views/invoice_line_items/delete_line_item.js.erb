@@ -1,0 +1,10 @@
+$("#delete_line_item").modal('show');
+$("#DeleteItem").click(function(){
+  var id = "<%= @invoice_line_item.id %>";
+  $.ajax({
+    type: 'get',
+    url: 'invoice_line_items/delete_line_item',
+    data: {id: id}
+
+  }).success(location.reload());
+});

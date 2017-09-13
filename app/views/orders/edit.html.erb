@@ -1,0 +1,870 @@
+<% if @not_authorized == true %>
+
+<%= render partial: "/dashboards/no_authorization" %>
+
+<% else %>
+<!-- top -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12">
+			<!-- title -->
+			<div class="page-title">
+				<div class="row">
+					<div class="col-md-6 col-sm-5 col-xs-5">
+						<h2>
+							<div class="second-heading">
+						<div id="pageTitleHeaderText">Order <%= @order.id %></div>
+						<div id="TitleHeaderText-more">Placed <%= @order.created_at.strftime("%d-%b-%Y %H:%M %p") %>
+							<span class="img-title"><i class="fa fa-picture-o" aria-hidden="true"></i>&nbsp 1</span>
+							<span class="event"><%= link_to @order.gallery_visitor.gallery.name, galleries_galleryhome_path(id: @order.gallery_visitor.gallery.id) %></span>
+						</div>
+							</div>
+						</h2>
+
+						 <div class="form-group panel-in-set-1 in-side-set order-drop-down">
+							 <%= select_tag 'menu_select', options_from_collection_for_select(@checkout_status, :id, :status),class: "selectpicker" %>
+
+						 </div>
+					</div>
+					<div class="col-md-6 col-sm-7 col-xs-7">
+						<div class="right-buttons text-right">
+							<%= link_to "Email", "#", class: "btn btn-default",'data-toggle': "modal", 'data-target': "#OrderEmail" %>
+							<%= link_to "Print", "#", class: "btn btn-default" %>
+							<%= link_to "Mark as paid", "#", class: "btn btn-default", "data-toggle": "modal", "data-target": "#OrderPaid" %>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /title -->
+		</div>
+	</div>
+</div>
+
+<!-- email -->
+	<div id="OrderEmail" role="dialog" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" data-dismiss="modal" class="close">&times;</button>
+					<h4 class="modal-title">Email Order Receipt</h4>
+				</div>
+				<%= form_tag mail_sent_orders_path, method: :get do %>
+					<div class="modal-body">
+						<p>Please enter the email address below you would like to send this receipt to:</p>
+						<div class="form-group">
+							<%= text_field_tag 'email', (params[:email]),:required => true, class: "form-control" %>
+						</div>
+						<div class="form-group">
+							<p><%=label_tag 'Optional message to include'%></p>
+							<%= text_area_tag 'message', (params[:message]),:required => true, class: "form-control" %>
+						</div>
+						<%= hidden_field_tag "order", @order.id %>
+					</div>
+					<div class="modal-footer">
+						<button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+				    <%= submit_tag "Send Email",class: "btn btn-primary" %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+<!-- paid -->
+	<div id="OrderPaid" role="dialog" class="modal description-modal" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" data-dismiss="modal" class="close">&times;</button>
+					<h4 class="modal-title">Payment Details</h4>
+				</div>
+				<%= form_for @order,url: edit_order_path(@order) do |f| %>
+					<div class="modal-body">
+						<% if @order.errors.any? %>
+					    <div id="error_explanation">
+					      <h2><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h2>
+
+					      <ul>
+					      <% @order.errors.full_messages.each do |message| %>
+					        <li><%= message %></li>
+					      <% end %>
+					      </ul>
+					    </div>
+					  <% end %>
+					  <div class="field">
+					    <%= f.label "Received" %><br>
+					     <%= f.select :checkout_status_id, [['Yes', true],['No', false]], {},class: "selectpicker" %>
+					  </div>
+						<div class="table full-width">
+                <div class="table-body">
+									<div class="tr">
+										<div class="td"></div>
+										<div class="td"> <%= link_to "Enter Credit Card","#" %> </div>
+								</div>
+        </div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- set status -->
+	<div id="ChangeStatus" role="dialog" class="modal description-modal" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" data-dismiss="modal" class="close">&times;</button>
+					<h4 class="modal-title">Payment Details</h4>
+				</div>
+				<%= form_for @order,url: order_path(@order)  do |f| %>
+					<div class="modal-body">
+						<% if @order.errors.any? %>
+					    <div id="error_explanation">
+					      <h2><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h2>
+
+					      <ul>
+					      <% @order.errors.full_messages.each do |message| %>
+					        <li><%= message %></li>
+					      <% end %>
+					      </ul>
+					    </div>
+					  <% end %>
+					  <div class="field">
+					    <%= f.label "Received" %><br>
+					     <%= f.select :checkout_status_id, options_from_collection_for_select(@checkout_status, :id, :status),class: "selectpicker" %>
+
+
+					  </div>
+					</div>
+					<div class="modal-footer">
+						<%= f.submit "Update Status",class: "btn btn-primary" %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+<!-- /top -->
+<!-- main -->
+<div class="container-fluid">
+	<div class="row bottem-set">
+		<div class="col-sm-4 col-lg-2">
+			<div class="section-type">Client</div>
+			<h4 class="order-names"><%=@order.shipping_first_name%> <%=@order.shipping_last_name%></h4>
+			<div class="in-side-link-order">
+				<a data-target="#add-Edit" data-toggle="modal" href="#"><%=@order.shipping_addr1%><br/> <%=@order.shipping_city%> <br/><%@order.shipping_postal_code%> <%=@order.shipping_country_id%></a>
+			</div>
+			<div class="in-side-mail-link-order"><a href="#"><%=@order.email%></a></div>
+			<div class="call-no"><%=@order.phone_number%></div>
+			<a  data-target="#add-Edit" data-toggle="modal" href="#">Edit</a>
+		</div>
+		<div class="col-lg-2">
+			<div class="section-type">Lab</div>
+			<h4 class="order-names">Bay Photo</h4>
+			<ul class="lab-progress list-unstyled current-step-1">
+				<li class="step-1">
+					<span class="signal current"></span>Awaiting Studio Approval
+				</li>
+				<li class="step-2 waiting">
+					<span class="signal waiting"></span>Sent to Lab
+				</li>
+				<li class="step-3 waiting">
+					<span class="signal waiting"></span>Shipped
+				</li>
+			</ul>
+
+		</div>
+
+		<div class="col-sm-3 col-lg-3">
+			<div class="text-right">
+				<div class="section-type">Collected from Client</div>
+				<h1 class="set-inner-prise">$ 0.00</h1>
+				<a data-toggle="modal" data-target="#mark-modal" href="#">Mark as Paid</a>
+			</div>
+		</div>
+		<div class="col-sm-3 col-lg-3">
+			<div class="text-right">
+				<div class="section-type">Order Total</div>
+				<h1 class="set-inner-prise">$ <%= @order.amount %></h1>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<a  data-target="#add-Edit-message" data-toggle="modal" href="#">Add Internal Notes</a>
+		</div>
+	</div>
+
+	<div class="row set-bottom-filed">
+		<div class="col-lg-6">
+			<div class="tabing-style">
+				<ul class="nav nav-pills">
+					<li class="active"><a id="tab1"  href="#all-item" data-toggle="tab">All Items<span class="count"><%= @order.line_items.count %></span></a></li>
+					<li class="type "><a  id="tab2" href="#self-fulfilled" data-toggle="tab">Self Fulfilled<span class="count">
+						<% @count = 0 %>
+						 <% @order.line_items.each do |line_item| %>
+						 	<% if line_item.catalog.fix_group_id != 2 %>
+						 		<% @count = @count + 1 %>
+							<% end %>
+						 <% end %>
+						 <%= @count %>
+					  </span></a></li>
+					<li class="type "><a  id="tab3" href="#digital" data-toggle="tab">Digital<span class="count">
+						<% @count = 0 %>
+						 <% @order.line_items.each do |line_item| %>
+						 	<% if line_item.catalog.fix_group_id == 2 %>
+						 		<% @count = @count + 1 %>
+							<% end %>
+						 <% end %>
+						 <%= @count %>
+					</span></a></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="col-lg-6">
+			<div class="right-buttons text-right">
+				<span class="small-btn dropdown"><a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#"><span class="fa fa-ellipsis-h"><span></a>
+					<ul class="dropdown-menu">
+						<li> <%= link_to "View List of Filenames","#", 'data-toggle': "modal", 'data-target': "#order_file_names" %> </li>
+						<li> <%= link_to "View List of Items by Quantity","#" %> </li>
+						<li> <%= link_to "Create Mobile App", "#" %> </li>
+					</ul>
+				</span>
+				<!-- <span class="small-btn"><a class="btn btn-default" href="#"><span class="fa fa-ellipsis-h"><span></a></span> -->
+				<a data-toggle="modal" data-target="#download-modal" class="btn btn-default" href="#">Download Files</a>
+				<%= link_to "Order Summary", "#", class: "btn btn-default", 'data-toggle': "modal", 'data-target': "#order-modal" %>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="tab-content clearfix">
+					<div class="tab-pane active" id="all-item">
+						<div class="row filename-block">
+								<div class="col-lg-12">
+									<% @line_items.group_by(&:photo_id).each do |line_item| %>
+									<%#= line_item[2] %>
+									<div class="row">
+										<div class="col-lg-12">
+											<span class="file-name">
+												<% @photos.each do |photo| %>
+													<% if photo.id == line_item[0] %>
+														<%= photo.image_file_name %>
+														<% break %>
+													<% end %>
+												<% end %>
+											 </span>
+										</div>
+									</div>
+									<div class="row group-block">
+										<div class="col-lg-12">
+											<table class="full-width">
+												<tbody>
+													<tr>
+														<td class="big-preview-cell" valign="top">
+															<table class="full-width">
+																<thead>
+																	<tr>
+																		<th>Photo</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr>
+																		<td>
+																			<div class="big-preview">
+																				<% @photos.each do |photo| %>
+																					<% if photo.id == line_item[0] %>
+																						<%= image_tag photo.image.url%>
+																						<% break %>
+																					<% end %>
+																				<% end %>
+																			</div>
+
+																			<div class="replace-download">
+																				<a href="#">Download Originals</a>
+																			</div>
+
+																		</td>
+																	</tr>
+																</tbody>
+															</table>
+														</td>
+														<td valign="top">
+															<table class="full-width items">
+																<thead>
+																	<tr>
+																		<th>Item Detail</th>
+																		<th class="dpi-cell">&nbsp;</th>
+																		<th class="text-center crop-cell">Crop</th>
+																		<th class="text-center qty-cell">Quantity</th>
+																		<th class="text-center unit-cell">Unit Price</th>
+																		<th class="text-right subtotal-cell">Subtotal</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<%# @line_items.where(photo_id: line_item.photo_id)%>
+																	<tr class="dpi-warning-row">
+																		<td colspan="6" style= "display:none">
+																			<div class="alert alert-warning">
+																				<strong>Warning!</strong> An item below will be printed with a low DPI. Adjust the crop or <a href="#" class="js-replace-photo-simple">replace the original photo</a> with a higher resolution file.
+																			</div>
+																		</td>
+																	</tr>
+																	<% @line_items.each do |line_item1| %>
+																		<tr id='orderItem<%= "#{line_item1.id}" %>' class="order-item item-self " data-order-item-id="10925098">
+																			<td>
+																				<div class="item-name"><%= line_item1.catalog.print_size_one %> x <%= line_item1.catalog.print_size_two %> <%= line_item1.catalog.sub_item_name %> (<%= line_item1.catalog.group.name %>)</div>
+																				<div class="mounting-texture-row"></div>
+																			</td>
+																			<td class="text-left dpi-cell"></td>
+																			<td class="text-center crop-cell">
+																				<%= image_tag line_item1.photo.image.url %>
+																			</td>
+																			<td class="text-center qty-cell">
+																				<%= line_item1.quantity %>
+																			</td>
+																			<td class="text-center unit-cell">
+																				<%= number_with_precision(line_item1.catalog.price,precision: 2) %>
+																			</td>
+																			<td class="text-right subtotal-cell">
+																				<%= number_with_precision(line_item1.quantity * line_item1.catalog.price, precision: 2) %>
+																			</td>
+																		</tr>
+																		<tr class="spacer"><td colspan="6"></td></tr>
+																	<% end%>
+																</tbody>
+															</table>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								<% end %>
+
+											<div class="row">
+												<div class="col-lg-12">
+													<div class="totals pull-right">
+														<table>
+															<tbody>
+																<tr>
+																	<td class="pull-left">Subtotal</td>
+																	<td>&nbsp;&nbsp;</td>
+																	<td class= "pull-right">
+																			<% @sub_total = 0 %>
+																			<% @line_items.each do |line_item| %>
+																				<% @sub_total = @sub_total + (line_item.quantity * line_item.catalog.price) %>
+																			<% end %>
+																			<%= number_with_precision(@sub_total, precision: 2) %>
+																	</td>
+																</tr>
+																<tr>
+																	<td class="pull-left">sale tax</td>
+																	<td>&nbsp;&nbsp;</td>
+																	<td class= "pull-right"><%= @order.sales_tax %></td>
+																</tr>
+																<tr>
+																	<td class="pull-left">Shipping</td>
+																	<td>&nbsp;&nbsp;</td>
+																	<td class= "pull-right">
+																		<% if @order.shipping_option_id.present? %>
+																			<%= @order.shipping_option.price %>
+																		<% else %>
+																			0.00
+																		<% end %>
+																	</td>
+																</tr>
+																<tr class="total">
+																	<td class="pull-left">Total</td>
+																	<td>&nbsp;&nbsp;</td>
+																	<td class= "pull-right">
+																		<% @sub_total = 0 %>
+																		<% if @order.shipping_option_id.present? %>
+																			<%#= @sub_total + @order.shipping_option.price + @order.sales_tax %>
+																		<% else %>
+																			<%= @sub_total + @order.sales_tax %>
+																		<% end %>
+																	</td>
+																</tr>
+																<tr class="paid">
+																	<td class="pull-left">Paid</td>
+																	<td>&nbsp;&nbsp;</td>
+																	<td class= "pull-right">0.00</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+										</div>
+							</div>
+						</div>
+
+						<div class="tab-pane active" id="self-fulfilled" style="display:none">
+
+							<div class="row filename-block">
+								<div class="col-lg-12">
+									<% @line_items.each do |line_item| %>
+										<div class="row">
+											<div class="col-lg-12">
+												<span class="file-name"> <%= line_item.photo.image_file_name %> </span>
+											</div>
+										</div>
+										<div class="row group-block">
+											<div class="col-lg-12">
+												<table class="full-width">
+													<tbody>
+														<tr>
+															<td class="big-preview-cell" valign="top">
+																<table class="full-width">
+																	<thead>
+																		<tr>
+																			<th>Photo</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		<tr>
+																			<td>
+																				<div class="big-preview">
+																					<%- image_tag line_item.photo.image.url %>
+																				</div>
+
+																				<div class="replace-download">
+																				</div>
+
+																			</td>
+																		</tr>
+																	</tbody>
+																</table>
+															</td>
+															<td valign="top">
+																<table class="full-width items">
+																	<thead>
+																		<tr>
+																			<th>Item Detail</th>
+																			<th class="dpi-cell">&nbsp;</th>
+																			<th class="text-center crop-cell">Crop</th>
+																			<th class="text-center qty-cell">Quantity</th>
+																			<th class="text-center unit-cell">Unit Price</th>
+																			<th class="text-right subtotal-cell">Subtotal</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		<tr class="dpi-warning-row">
+																			<td colspan="6" style="display:none">
+																				<div class="alert alert-warning">
+																					<strong>Warning!</strong> An item below will be printed with a low DPI. Adjust the crop or <a href="#" class="js-replace-photo-simple">replace the original photo</a> with a higher resolution file.
+																				</div>
+																			</td>
+																		</tr>
+																		<tr id="orderItem10925098" class="order-item item-self " data-order-item-id="10925098">
+																			<td>
+																				<div class="item-name"><%= line_item.catalog.print_size_one %> x <%= line_item.catalog.print_size_two %> <%= line_item.catalog.sub_item_name %> (<%= line_item.catalog.group.name %>)</div>
+
+																				<div class="mounting-texture-row">
+
+																				</div>
+
+																			</td>
+																			<td class="text-left dpi-cell"><svg class="icon-warning"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/v2/content/201604281461875792/svg.svg#iconWarning"></use></svg></td>
+																			<td class="text-center crop-cell">
+																				<%= image_tag line_item.photo.image.url %>
+																			</td>
+																			<td class="text-center qty-cell">
+																				<%= line_item.quantity %> </td>
+																				<td class="text-center unit-cell">
+																					<%= line_item.catalog.price %></td>
+																					<td class="text-right subtotal-cell">
+																						<%= line_item.quantity * line_item.catalog.price %></td>
+																					</tr>
+																					<tr class="spacer"><td colspan="6"></td></tr>
+																				</tbody>
+																			</table>
+																		</td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+											</div>
+										<% end %>
+										<div class="row">
+											<div class="col-lg-12">
+												<div class="totals pull-right">
+													<table>
+														<tbody>
+															<tr>
+																<td>Subtotal</td>
+																<td>
+																	<% @sub_total = 0 %>
+																	<% @line_items.each do |line_item| %>
+																		<% @sub_total = @sub_total + (line_item.quantity * line_item.catalog.price) %>
+																	<% end %>
+																	<%= number_with_precision(@sub_total, precision: 2) %>
+																</td>
+															</tr>
+															<tr>
+																<td>sale tax</td>
+																<td> <%= @order.sales_tax %> </td>
+															</tr>
+															<tr>
+																<td>Shipping</td>
+																<td>
+																	<% if @order.shipping_option_id.present? %>
+																		<%= @order.shipping_option.price %>
+																	<% else %>
+																		0.00
+																	<% end %>
+																</td>
+															</tr>
+															<tr class="total">
+																<td>Total</td>
+																<td>
+																	<% if @order.shipping_option_id.present? %>
+																		<%#= @sub_total + @order.shipping_option.price + @order.sales_tax %>
+																	<% else %>
+																		<%= @sub_total + @order.sales_tax %>
+																	<% end %>
+																</td>
+															</tr>
+															<tr class="paid">
+																<td>Paid</td>
+																<td>0.00</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="tab-pane active" id="digital" style="display:none">
+								<div class="row filename-block">
+							<div class="col-lg-12">
+								<div class="totals pull-right">
+									<table>
+										<tbody>
+											<tr>
+												<td>Subtotal</td>
+												<td>200.00</td>
+											</tr>
+											<tr>
+												<td>sale tax</td>
+												<td>6.20</td>
+											</tr>
+											<tr>
+												<td>Shipping</td>
+												<td>110.00</td>
+											</tr>
+											<tr class="total">
+												<td>Total</td>
+												<td>316.20</td>
+											</tr>
+											<tr class="paid">
+												<td>Paid</td>
+												<td>0.00</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /main -->
+
+<!-- Modal -->
+<div class="modal" id="mark-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title" id="myModalLabel">Payment Details</h4>
+    </div>
+    <div class="modal-body">
+      <div class="form-group panel-in-set-1">
+        <label>Received</label>
+          <select class="selectpicker" data-live-search="true"> <!-- form-control input-lg -->
+            <option>Yes</option>
+            <option>no</option>
+          </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+
+  </div>
+</div>
+</div>
+<!-- /mMdal -->
+
+        <!-- Modal -->
+        <div class="modal" id="add-gallary" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add a Gallery</h4>
+              </div>
+              <div class="modal-body">
+                <form >
+
+                  <div class="form-group">
+                    <label>Gallary Name</label>
+                    <input type="text" class="form-control"></input>
+                  </div>
+                  <div class="form-group">
+                    <label>Shoot Date</label>
+                    <input type="text" class="form-control"></input>
+                  </div>
+                  <div class="form-group">
+                    <label>Gallery Default Settings</label>
+                    <input type="text" class="form-control"></input>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Create</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /mMdal -->
+
+        <!-- Modal -->
+        <div class="modal" id="add-Edit-message" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Studio Notes</h4>
+              </div>
+              <div class="modal-body">
+                <form >
+                  <div class="form-group">
+                    <p>You can enter some notes here about this order. These notes will <strong>NEVER</strong> be seen by your client.</p>
+                    <textarea class="form-control set-text-message"></textarea>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /mMdal -->
+
+         <!-- Modal -->
+        <div class="modal description-modal" id="add-Edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-bacdrop="static">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit Shipping Address</h4>
+              </div>
+              <%= form_for @order,url: update_checkout_path(@order.id) ,method: :post do |f| %>
+              <div class="modal-body">
+                  <% if @order.errors.any? %>
+                    <div id="error_explanation">
+                      <h2><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h2>
+
+                      <ul>
+                      <% @order.errors.full_messages.each do |message| %>
+                        <li><%= message %></li>
+                      <% end %>
+                      </ul>
+                    </div>
+                  <% end %>
+
+
+                  <div class="form-group">
+                    <%= f.label :shipping_first_name %>
+                    <%= f.text_field :shipping_first_name,class: "form-control" %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.label :shipping_last_name %>
+                    <%= f.text_field :shipping_last_name,class: "form-control" %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.label :shipping_addr1 %>
+                    <%= f.text_area :shipping_addr1,class: "form-control"  %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.label :shipping_city %>
+                    <%= f.text_field :shipping_city,class: "form-control"  %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.label :shipping_country_id %>
+                    <%= f.text_field :shipping_country_id,class: "form-control"  %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.label :shipping_postal_code %>
+                    <%= f.number_field :shipping_postal_code,class: "form-control"  %>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <%=f.submit "Save",class: "btn btn-primary"%>
+              </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <!-- /mMdal -->
+
+         <!-- Modal -->
+              <div class="modal" id="download-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="myModalLabel">Download Photos</h4>
+                    </div>
+                    <div class="modal-body">
+                      <p>When the photos are ready for download, an email will be sent to mtshkmr8@gmail.com. It should be just a few moments!</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Submit Request</button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+        <!-- /mMdal -->
+        <!-- Modal -->
+             <div class="modal description-modal" id="order-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+               <div class="modal-dialog" role="document">
+                 <div class="modal-content">
+                   <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                     <h4 class="modal-title" id="myModalLabel">Order Summary</h4>
+                   </div>
+                   <div class="modal-body">
+                     <h4 class="model-title">Customer Delivery Info</h4>
+                     <ul>
+                       <li>Shipping Method Chosen:
+												 <%if current_user.gateway_setup.present? %>
+												 	<% if @order.shipping_method == true %>
+														Pick up at Studio.
+													<% else %>
+														Ship to client.
+													<% end %>
+												 <% else %>
+												 	Pick up at Studio.
+												 <% end %>
+											 </li>
+                     </ul>
+                     <h4 class="model-title">Payment Breakdown</h4>
+                      <div class="table-responsive has-dropdown">
+                       <table class="table">
+                         <tbody>
+                           <tr class='clickable-row' data-href='contactEdit.html'>
+                             <td>Client Owes</td>
+                             <td>$ <%= @order.amount %></td>
+                           </tr>
+                           <tr class='clickable-row' data-href='contactEdit.html'>
+                             <td>Collected at Checkout</td>
+                             <td>$ 0.00</td>
+                           </tr>
+                           <tr class='clickable-row' data-href='contactEdit.html'>
+                             <td>Shipping Collected</td>
+                             <td>
+															 $
+															 <% if @order.shipping_option_id.present? %>
+															 	<%= @order.shipping_option.price %>
+															 <% else %>
+															 	0.00
+															 <% end %>
+														 </td>
+                           </tr>
+                           <tr class='clickable-row' data-href='contactEdit.html'>
+                             <td>Sales Tax</td>
+                             <td>$ <%= @order.sales_tax %> </td>
+                           </tr>
+                         </tbody>
+                       </table>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+       <!-- /mMdal -->
+
+			 <!-- Modal -->
+				<div id="order_file_names" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+				  <div class="modal-dialog">
+
+				    <!-- Modal content-->
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal">&times;</button>
+				        <h4 class="modal-title">Filenames in Order</h4>
+				      </div>
+				      <div class="modal-body">
+				        <p>Below is a list of all of the photos that are included in this order.</p>
+								<%= text_area_tag "filenames", @file_name_array.join(","),class: "form-control" %>
+				      </div>
+				      <div class="modal-footer text-center">
+				        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+				      </div>
+				    </div>
+
+				  </div>
+				</div>
+				<!-- /mModal -->
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".checkbox input").click(function(){
+      if($(this).is(':checked')){
+        $(this).parent('.checkbox').addClass('checked-box');
+      }
+      else{
+        $(this).parent('.checkbox').removeClass('checked-box');
+      }
+    });
+    $('#selAll').click(function(){
+      if($(this).is(':checked')){
+        $('.checkbox').addClass('checked-box');
+      }
+      else{
+        $('.checkbox').removeClass('checked-box');
+      }
+    });
+  });
+</script>
+<script>
+  $("#tab1").click(function(){
+    $("#all-item").css("display","block");
+    $("#self-fulfilled").css("display","none");
+    $("#digital").css("display","none");
+  });
+  $("#tab2").click(function(){
+    $("#all-item").css("display","none");
+    $("#self-fulfilled").css("display","block");
+    $("#digital").css("display","none");
+  });
+  $("#tab3").click(function(){
+    $("#all-item").css("display","none");
+    $("#self-fulfilled").css("display","none");
+    $("#digital").css("display","block");
+  });
+	$('#menu_select').bind('change', function(){
+		 $('#ChangeStatus').modal('show');
+	 });
+</script>
+<% end %>

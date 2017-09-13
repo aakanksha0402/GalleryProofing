@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Photos number:</strong>
+  <%= @data_plan.photos_number %>
+</p>
+
+<p>
+  <strong>Mobile apps number:</strong>
+  <%= @data_plan.mobile_apps_number %>
+</p>
+
+<p>
+  <strong>Invoices number:</strong>
+  <%= @data_plan.invoices_number %>
+</p>
+
+<p>
+  <strong>Data period:</strong>
+  <%= @data_plan.data_period %>
+</p>
+
+<p>
+  <strong>Plan price:</strong>
+  <%= @data_plan.plan_price %>
+</p>
+
+<%= link_to 'Edit', edit_data_plan_path(@data_plan) %> |
+<%= link_to 'Back', data_plans_path %>

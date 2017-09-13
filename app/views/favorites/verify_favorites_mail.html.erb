@@ -1,0 +1,30 @@
+<% content_for :head, "GalleryProofing | Download gallary"%>
+<% content_for :body_class, "gallery_default-style" %>
+<div class="wrapper"> 
+ <div class="logo-small-logo text-center"><%= @brand.brand_name %></div>
+<div class="title text-center col-md-12">
+<h1>SHARED FAVORITES</h1>
+ <%= form_tag check_favorites_mail_path(gallery_visitor_id: params[:gallery_visitor_id],brand_id: params[:brand_id] ),:id => 'myForm' do %>
+  <div class="form-group email-textbox">
+    <label for="exampleInputEmail1">EMAIL ADDRESS</label>
+    <%= text_field_tag :email, nil,id: 'exampleInputEmail1',placeholder: "Email", class: "form-control"%>
+    <p id="notice"><%= notice %></p>
+  </div>
+<div class="form-group">
+
+            <button class="btn theme-button next" id="myBtn">
+
+                <!-- spSvg: /content/201608221471863945/svg.svg#iconArrowRight -->
+				<svg class="sp-svg" version="1.1" viewBox="0 0 17 13"><path d="M8.14396297,10.7808536 C8.33220122,10.9696471 8.33220122,11.2740502 8.14396297,11.4628437 L6.82097777,12.7822772 C6.63167603,12.9700101 6.32539006,12.9700101 6.13715181,12.7822772 L0.141178686,6.80240096 C-0.0470595621,6.61466805 -0.0470595621,6.30920435 0.141178686,6.12147145 L6.13715181,0.141595155 C6.32539006,-0.0471983851 6.63167603,-0.0471983851 6.82097777,0.141595155 L8.14396297,1.46102866 C8.33220122,1.64876156 8.33220122,1.95422527 8.14396297,2.14301881 L5.432056,4.8709794 L16.4477158,4.8709794 C16.7146525,4.8709794 16.9305415,5.08628889 16.9305415,5.35250899 L16.9411765,7.57136341 C16.9411765,7.83758351 16.7252874,8.052893 16.4583507,8.052893 L5.40972265,8.05395364 L8.14396297,10.7808536 Z" transform="translate(8.470588, 6.461538) rotate(-180.000000) translate(-8.470588, -6.461538) "></path></svg>
+
+</button>
+<% end %>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+  $('#myBtn').on('click', function() { $('#myForm').submit(); });
+});
+
+</script>

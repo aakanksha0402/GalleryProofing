@@ -1,0 +1,13 @@
+'<% if @contact.present? %>'
+$("#contact_name_search").hide();
+$(".edit-invoice-none .client-contact").remove();
+$(".edit-invoice-none").append('<div class="client-contact">'+
+                                '<div class="form-group">'+
+                                  '<h5>Contact</h5>'+
+                                  '<%= hidden_field_tag "contact_id",@contact.id%>'+
+                                 '<div class="address-display"> <p> <%= @contact.firstname%> <%= @contact.lastname %> <br> <%= @contact.email %> <br> <%= @contact.phone_number %> <br> <%= @contact.address1 %> <% if @contact.address2.present? %> <br> <%= @contact.address2 %> <% end %> <br> <%= @contact.city %> <br> <%= @contact.pincode %> <br> <%= @contact.country.name %> </p> </div>'+
+                                 '<a class="show-addres" href="#">Edit Address</a>'+
+                                '</div>'+
+                              '</div>');
+$(".edit-invoice-none").show();
+'<% end %>'

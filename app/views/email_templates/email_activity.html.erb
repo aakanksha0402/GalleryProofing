@@ -1,0 +1,686 @@
+<% content_for :head, "GalleryProofing | New Template"%>
+<% content_for :body_class, "contact-index" %>
+<% content_for :studio_class, "active"%>
+
+<% if @not_authorized == true %>
+  <%= render '/dashboards/no_authorization' %>
+<% else %>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+              <div id="pageTitleHeaderText">Email</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><%= link_to "Browse Full Knowledge Base" ,"#", class: "bold", target: "_blank" %></li>
+                <li><%= link_to "#", target: "_blank" do %>
+                  <span class="email"><i class="fa fa-envelope"></i></span>Email-Us
+                  <% end %>
+                </li>
+              </ul>
+            </div>            
+            </div>
+          </div>
+        </div>
+        <!-- /title -->
+      </div>
+    </div>
+  </div>
+  <!-- /top -->
+
+  <!-- main -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <ul class="nav nav-pills in-pills">
+          <li class="active"><%= link_to "Activity", "#1a","data-toggle": "tab" %></li>
+          <li class="type"><%= link_to "Templates", email_templates_path %></li>
+          <li class="type "><%= link_to "Automations", automation_series_index_path %></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="tab-content clearfix">
+        <div class="tab-pane active" id="1a">
+  <% if @all_emails.present? %>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <%= link_to "Search and Filter", "#modal-filter", "data-toggle": "modal", class: "btn btn-sm btn-default margin-bottom" %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="table-responsive has-dropdown">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Sent To</th>
+                <th>Subject</th>
+                <th>Last Activity <span class="caret"></span></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @all_emails.each do |email| %>
+              <tr>
+                <td><%= email.email_address %></td>
+                <td><%= email.subject %></td>
+                <td><%= email.updated_at.strftime("%d %b %Y") %></td>
+                <td><a href="#" data-toggle="modal" data-target="#viewemail-filter">View Email</a></td>
+                <td><a href="#" data-toggle="modal" data-target="#showhistory-filter">Show History</a></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal" id="modal-filter" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Search Email Activities</h4>
+          </div>
+          <%= form_tag email_activity_email_templates_path, method: :get do %>
+          <div class="modal-body">
+              <div class="form-group">
+                <label>Gallery</label>
+                <%= collection_select :gallery, :id, @galleries, :id, :name, {prompt: "Filter By Gallery"}, {class: "form-control input-lg"} %>
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <%= text_field_tag :email,nil , class: "form-control", style: "padding: 12px 50px;" %>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <%= submit_tag "Search", class: "btn btn-primary" %>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <!-- /mMdal -->
+
+    <!-- Modal -->
+    <!-- activity email -->
+    <div class="modal" id="viewemail-filter" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Download Your Mobile App! test</h4>
+          </div>
+          <div class="modal-body">
+            <table cellpadding="0" cellspacing="0" border="0" id="backgroundTable" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; margin: 0; padding: 0; width: 100% !important; line-height: 28px; background-color: #EEEEEE; border: none; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; color: #414141; font-size: 18px;">
+              <tbody>
+                <tr>
+                  <td align="center" valign="top" class="bounds" style="border-collapse: collapse; color: #414141; margin: 0; padding: 14px 0px; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                    <table cellpadding="0" cellspacing="0" class="column" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; margin: 0; max-width: 600px; border: none;">
+                      <tbody>
+                        <!-- Above the white content area -->
+                        <tr>
+                          <td class="half-height-mobile" style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; line-height: 7px;">&nbsp;
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                            <table cellspacing="0" cellpadding="0" class="content" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; background-color: #FFF; border-radius: 5px; text-align: left; width: 90%; margin: 0 auto;">
+                              <tbody>
+                                <tr>
+                                  <td align="center" valign="top" style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                                    <p class="content-logo" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-top: 60px; margin-bottom: 30px;">
+                                      <a href="#" target="_blank" style="color: #4FBEE3; text-decoration: none;">
+                                        <span style="color: #414141; font-weight: 400; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; line-height: 15px; display: block; max-width: 240px;">techbit</span>
+                                      </a>
+                                    </p>
+                                    <p class="content-icon" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 30px; line-height: 0;"><img src="https://d1icb03h9nte03.cloudfront.net/201602291456774521/studio/images/email/icons/mobile-app.png" style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; width: auto; max-width: 600px; max-height: 60px;"></p>
+                                    <h1 class="content-headline" style="color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; font-weight: 300; font-size: 24px; line-height: 29px;">Your Mobile App is ready!</h1>
+                                    <p class="content-button" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-top: 48px; margin-bottom: 18px;"><a href="http://techbit.shootproof.com/app/171844" target="_blank" style="color: #FFF; text-decoration: none; border-radius: 5px; background-color: #414141; text-transform: uppercase; font-size: 12px; line-height: 14px; padding: 18px;">install app</a></p>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="width-container studio-to-client" style="border-collapse: collapse; color: #414141; margin: 0; padding: 30px 20px 0 20px; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                                    <div class="content">
+                                      <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 28px;">
+                                        Hi!
+                                      </p>
+                                      <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 28px;">
+                                        To download your test Mobile App, open this email on your phone or tablet and click the button above.
+                                      </p>
+                                      <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 28px;">
+                                        Enjoy your photos!
+                                      </p>
+                                      <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 28px;">
+                                        Thanks,<br>
+                                        ABC
+                                      </p>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style="line-height: 30px; border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">&nbsp;</td>
+                                </tr>
+                              </tbody></table>
+                              <table width="100%" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                <tbody><tr>
+                                  <td style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                  <td align="center" class="width-container footer" style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; text-align: center;">
+                                    <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+
+                                    </p>
+                                    <p class="copyright" style="margin: 0; color: #CCCCCC; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; padding-top: 18px; font-weight: 300; font-size: 12px; line-height: 18px;">Copyright © 2016 techbit<br><span class="address"><a href="#" style="color: #CCCCCC !important; text-decoration: none !important; cursor: text;"><br><br>India</a></span>
+                                    </p>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">&nbsp;</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer text-center">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- activity email -->
+    <!-- /mMdal -->
+
+    <!-- Modal -->
+    <!-- activity history -->
+    <div class="modal" id="showhistory-filter" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Download Your Mobile App! test</h4>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table">
+                <tr>
+                  <td>Processed</td>
+                  <td>01-Mar-2016 2:53:18 pm IST</td>
+                </tr>
+                <tr>
+                  <td>Delivered</td>
+                  <td>01-Mar-2016 2:53:19 pm IST</td>
+                </tr>
+                <tr>
+                  <td>Clicked a link</td>
+                  <td>01-Mar-2016 2:53:24 pm IST</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- activity history -->
+    <!-- /mMdal -->
+  <% else %>
+    <div class="container-fluid">
+         <div class="row">
+              <div class="col-lg-12 text-center">
+                  <div class="empty-state-icon"><!--?xml version="1.0" encoding="utf-8"?-->
+                    <!-- Generator: Adobe Illustrator 18.1.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+                    <svg xml:space="preserve" enable-background="new 0 0 500 500" viewBox="0 0 500 500" y="0px" x="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" id="Layer_1" version="1.1">
+                      <g opacity="5.000000e-02">
+                          <image transform="matrix(1 0 0 1 33.2904 126.2387)" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaYAAAElCAYAAACvVUZ1AAAACXBIWXMAAAsSAAALEgHS3X78AAAA
+                            GXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAEdJJREFUeNrs3Wtz3MaVBmDMcCjJ
+                            d8d2UtlLZS+1//8n7YdkK5vYiWPLsmWRIrlAuXvVgoZCg+aQfRrPU9VFW6IoESTxzkGfAwwDAAAA
+                            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABszs4hAGjqvHvj
+                            AAFw6vPq7sjv7W4JpPLtjQMIwH0Hzy6tfVq7Wz7GTbGux3WV3m4upA6+xwBOFjz51w9pnaWVf30e
+                            SlMQvR7XZbFep5AathJOKiZA+Nx/8Oxnv/dkXE/T2/MinEo5lF6N66dx/ZjWz+O6SL93vYWAUjEB
+                            W616Th08+/R2+v9n4/pgXB+m9znM/p6bVBVdpFB6Pq5vx/WPcX03rh9SQJXVk2ACCBY8NeFzyuDJ
+                            H+tJ+v2P0vs8TX/mWDBN1dKLFEpfj+t/0zqkgHo5vLnk123VJJiAnoNnqeo5O2HwlH/+aXqfZ+n9
+                            88cfbqmYpmD6y7g+TX/mrHi/aV0W/y+YAE4UPg+9z5Pf/5TBMw+//PfuZ59nDpzpUt10ye7LcX2W
+                            /s7z9D5Xw5tLeblrTzAB3HPV81j7PE+Lj/ck/fopgmc3e7/3tYxfp3WZ/o3PilC6TIGVV9kIIZgA
+                            VgRPTfg8xj7Ps+JjnBehc6rgKd/3tuOXq6bz4t+WQ2nqzpsaIr4ffmmEeFWEU3dVk2ACTh08S1XP
+                            Y+3zlH/+IYLntl8rf+9mePsy31WqkKZA+mZcfx3X34pw2gkmQPD0tc+zf8DgWfM1yZ/T9Ll+Mq7f
+                            jOuL4ZdmiA+Lz71Lggm2FT6PMUgaYZ/noYJnjX1xzKbj8vHsuJWXQruqmgQT9F/1PPYgaaR9nl1D
+                            X9ddEU7lcT/W1adiApoKnprwecxB0kj7PK197fPnWR6jpZvBCiagieBZqnoee5A00j5PqwG130Io
+                            CSZ4nPDZ4iBp1H2eFuyLr+158TXr9nKeYIKHqXo0GNSHj6cevHu88nF/Mvu6qZhA8PyqqkeDgfC5
+                            y/de+aLhw/R1nTdB6MoDwWOQVPA8aDCV1W5ZCXd5OU8wsdXwMUgqeCJ8z5bfU++7Q3lXVZNgYktV
+                            j30ewRNR+b1Rft3Pev2EBRM9BU9N+NjnETwRq6Zd8XU/O/I9LZig4eBZqnrs8xD152Mzs0yCiccM
+                            H/s8goc6m5plEkw8dNVjn0fwsP7nalOzTIKJ+w6emvCxzyN4WPdzt6lZJsHEKYJnqeqxzwPrg2kz
+                            s0yCSfjY5xE8tP3zurlZJsG0zarHPo/gIZb3zTJ1150nmPoMnprwsc8jeIhXNZ0VP7OHQfMDwYJn
+                            qeqxzwPxzg1l1dRty7hgaiN87PMIHlg6Z5Q/z2XLeHe3JhJMj1f12OcRPHCXaqn7lnHBdLrgqQkf
+                            +zyCB9YE0yZaxgXTaYNnqeqxzwPUnI821TJ+2PgX+9TBY58HuC+befxFz8Fkn8c+D/RWNW3i8ReH
+                            4F+opeCpCR/7PIIHIp33un/8xSHYF8Q+j8ttsGWbePxFhGDazaoX+zyCB7ZaLW3i8ReHxr8I+1lV
+                            cT4LH/s8wJaCaROzTIdGD34+eZ8XYfNBsZ4O9nmAbQZT97NMhwYPfFn9TAf943F9mtZn4/pk9sWw
+                            zwNsIZQ2M8t0aOzA74vqZQqk34zrq3H9Nr39MoXTR0XFY58H2IpNzDK1Ekzlpt6zFD5TEP3zuP41
+                            vf1dCqZPi4rJPg+wtaqp+1mmliqmfDnu41Qh/WFc/zGuf0vh9FVRLZWX6ezzAFsLqK5nmQ4NHeTp
+                            3zLtDX2RKqT/HNd/jevfx/X7cX0+vNvU4HIbsDXdzzIdGjrQuVr6MgXTH1K19C/p1z4a3t432gke
+                            YIPVUvezTC0EU778Nh3caf9oumT3TymQfp9C6ZPhzZ5Sd7ffAFgRTN3PMh0aOMj53/EsBdAURL9L
+                            AfX58GZP6SCQAMHU/yzTvqEDPR3Y6VLeZymQcvfdk6HDZ9oD3OFcuWaWSTD9igNd3uUhD8jO55T2
+                            vicB/v+83fUsUysn/LIv/zC8fT88lRLA21VT17NMLVUiN7csAI6/mO9ylumxgykHz/W4rsZ1Oa6L
+                            9PZ1+nXhBPDuubvbWaYWKqbrtKYwejWul2ldpHBSOQG8XS11PcvUwidxk6qlixRIP47rpxRSuWoC
+                            4E0w1cwyCaZfEUo3KXxepzD6Ob29SIHlch7Au8HU7SxTK2VfrpryHtOFagngaCh1P8vUUjDlyumq
+                            qJRUSwDHz923zTKF785rMZiuZ6GkdRzgeNU0n/3U/HCCcMp7TXldCSWAWwOqrJq6aRlvpStvKEJp
+                            2l96ldZlCicA3g6lvM80bxkPf2uiViqmcsB2CqSpXbycZbLXBHC8WuquZby1rjyzTAD1wdRly3gr
+                            l/LMMgHUh1LXLeOtNT+YZQKoP393+fiLFu8ubpYJoK5q6vLxF60Gk1kmgLqA6u7xF60NY5llAlh3
+                            Du/u8RctdeUNg1kmgDXVUpePv2jpH2+WCWBdMHU5y9RiV55ZJoD6YOpulqnFm7iaZQJYDqVuZ5la
+                            uw5ZXs4rZ5muhBLA0XN4d7NMLW6Q5XAqO/OuZ5UVgKqp01mmFtvFyztAXBYVk0t5AMcDqqtZptaa
+                            H3LFpGUcoP483tUsU8t7TFrGAZarpe5mmVq8lKdlHKA+mLqbZWr1XnlaxgHqg6mrWaYWSz2PvwCo
+                            C6UuZ5laDSaPvwCoP493NcvUejB5/AXActXU1SxTq10bHn8BsC6gupllarErbxjMMgGsPZd3M8vU
+                            8i2JzDIB1FVLXc0ytdyVZ5YJoC6YupplavVeeWaZANYFUzezTC03P5hlAlgOpe5mmVoOJrNMAPXn
+                            8m5mmSIEk1kmgOWqqZtZppY7NswyAawLqC5mmVrtyhsGs0wAa8/nXcwytVoxmWUCWFctdTPL1HpX
+                            nlkmgLpg6maWqfWbuJplAqgPpi5mmVpvfjDLBLAcSl3NMrUeTGaZAOrP57fNMoXqzosSTGaZAOqq
+                            prMUSHlpfjhBOJllAqgPqLJqCtky3nJX3jCYZQJYE0p5n2neMh7q1kQtV0xmmQDuVi2FbhmP0JVn
+                            lgmgPpjCt4xHuImrWSaA5VDqpmW89eaH8nJeOct0JZQAjp7Twz/+IkIbYQ6nsjPvelZZAaiaOnn8
+                            RYR28fIOEJdFxeRSHsDxgAr9+IvWmx9yxaRlHKD+vB768ReR9pi0jAMsV0vhH38R4VKelnGA+mAK
+                            P8sU5V55WsYB6oMp9CxThNLO4y8A6kKpi1mmKMHk8RcA9ef10LNM0YLJ4y8Alqum0LNMUbo0PP4C
+                            YF1AhZ1litCVNwxmmQDWntvDzjJFuiWRWSaAumop9CxTpK48s0wAdcEUepYpyr3yzDIBrAumsLNM
+                            kZofzDIBLIdS+FmmSMFklgmg/twedpYpYjCZZQJYrprCzjLtAx1ss0wA6wIq5CxTlK68YTDLBLD2
+                            /B5ylilKxWSWCWBdtRR2lilaV55ZJoC6YAo7yxTtJq5mmQDqgynkLFO05gezTADLoRR6lilaMJll
+                            Aqg/v982y9R0d17UYDLLBFBXNZ2lQMpL88MJwsksE0B9QJVVU4iW8UhdecNglglgTSjlfaZ5y3jT
+                            tyaKVDGZZQK4W7UUqmU8YleeWSaA+mAK1zIe8SauZpkAlkMpbMt4xOYHs0wA9ef4cI+/iBhMZpkA
+                            6qumcI+/iBxMZpkA6gIq1OMv9gEPslkmgHXn+VCPv4jWlTcMZpkA1lRL4R5/Ea1iMssEsC6Yws0y
+                            Re3KM8sEUB9MoWaZot7E1SwTwHIohZxlitj8UF7OK2eZroQSwNHzfKhZpn3QA53DqezMu55VVgCq
+                            poCzTFHbxcs7QFwWFZNLeQDHAyrMLFPE5odcMWkZB6g/14eZZYq+x6RlHGC5Wgo1yxT1Up6WcYD6
+                            YAo1yxT5XnlaxgHqgynMLFPUrjyPvwCoC6Vws0yRg8njLwDqz/VhZpl6CCaPvwBYrprCzDLtAx9s
+                            j78AWBdQIWaZonblDYNZJoC15/sQs0zRb0lklgmgrloKM8sUvSvPLBNAXTCFmWWKfK88s0wA64Ip
+                            xCxT9OYHs0wAy6EUapYpejCZZQKoP9/fNsvUVHdeL8Fklgmgrmo6S4GUl+aHE4STWSaA+oAqq6Ym
+                            W8Yjd+UNg1kmgDWhlPeZ5i3jTd2aKHLFZJYJ4G7VUtMt4z105ZllAqgPpuZbxnu4iatZJoDlUArT
+                            Mt5D84NZJoD6c37zj7/oIZjMMgHUV03NP/6ip2AyywRQF1BNP/5i38FBNssEsO683/TjL6J35Q2D
+                            WSaANdXSfMi27MpTMd0Ds0wA68/7eZbpWXr7pKWqqZeuPLNMAHUV07wzz4DtPYeSWSaAuwXUbmiw
+                            I6+HimkY3r6cV84yXQklgKMv6q/SefKyOF8280J+38mBvi4OdF7Xs8oKYOuBVDaLvSzWRUsv5ntp
+                            Fy/vANHkKwCABs6VOZSmvfgX4/pheLMv38yYzaGDAz0MWsYBaiulqUns+3H9I719MbzdMCaY7kFt
+                            y/jO9yewgRAq/7sMpak57Pm4vh3XN2n9vQimZi7lHTr5QmgZB7YaPMORX8vnxeviRfuLFET/M64/
+                            prdTOP0wNLbH1MOlPC3jwBaDZ35v0GF2Psydyq/SC/bp0t1fUyj997j+NK6/pcC6aOlceejoi+nx
+                            F8CWgic3eZUvwMu9pOlF+ssUPM9TtfSXVClN688prH5q7XzZUzB5/AXQevjcZ/DkK0OXxfvkF+g/
+                            pyopd95NTQ55b+nrVCl9l34///lmzpU9BtP7Hn+hAQJ4zKrnPoPnZap2LmYfK1dLL2br+1Q5PU//
+                            39z8Um/BdOyVhsdfAA8dPEtVz9U9Bs+P6X3yeMy8Q/nlkVXuweePOQim030TmWUCHjt43lf1vJ4F
+                            y68Nnp/TKhu9yve5LP7uy9m/t+mtjl4qJrNMQG34POQ+Tw6fV8XHK0db7ho8r2eBd33kc7qavb2Z
+                            hVGzV5J668ozywSCZyl8HnKfJ4fPz8Xfd1mEzn0Ez7GwuTmymg6j3oLJLBMInlb3ecrwKf/8fQfP
+                            bccv5Hmvt+YHs0wgeFrZ5zkWPteCZ3vBZJYJYoTP1vZ5rofly2ybCZ6tBpNZJmi76tniPo/g2WAw
+                            HXuVZZYJHid4lqoe+zx0H0xmmaCt4LHPg4ppMMsEa8PHPo/gEUwP8ANolgnBU1/12OcRPILpxD+c
+                            ZpkQPPZ5VD2CqdmqySwTgsc+D4KpucrJLBMRwsc+j+BhQ8FklokIVY99HsFD58F07BWmWSYeM3iW
+                            qh77PNBxMJllosXgsc8DG6+YzDJxl/CxzyN4EEwnPfmYZRI89nns8yCYmjkxmWUSPPZ5VD0IpuaU
+                            J4KL2QnAD+U2g8c+DwimZsKp7My7nv2A22dqK3zs8wge6DaY8g92PpmUr4pdymu36rHPI3igy2DS
+                            Mt5u8CxVPfZ5gG4rJi3jbQaPfR5gs8GkZfzu4WOfR/CAYDrBSXfrLeP2eezzgGBqUM8t4/Z5XG4D
+                            wRQ8nOYt463fZdw+j+ABwdShecv4sVfgrYaPfR7BA4Kp41DK+0wvj5xkT1kx2eexzwMIpndOblfp
+                            xD2dfJ+P6/txvUgn22fjOkvBtLvjx79r8CxVPfZ5AMHUcTBNJ90fxvXtuL4Z12/H9cm4noxrX7zN
+                            4bR7gOCxzwOwsWC6mVVMU7X09bj+PK7Px/Vh8XlP/31ehNPuxMFjnwdg4xVTDqapWvq4CKIhnaw/
+                            G9cH6TjsZ8Fkn0fwAILpXl2nk/YUCn8ffrlslz/f/OtfDW8u7R1SMOUTtX0eAMF0rxXTMLzZZ3qe
+                            KqJcKU1B8t3wy55TrprOi4rpVMFjnwdgwxVTecntZVFFTUEwdedNDRFfjOvTW4LpVMFjnwdgo8FU
+                            nsAvizAog2m6jPfRuJ4Ob9rHc4CdOniWqh7BA2zSbkOf4z6Fz3kKomk9S29z80MZCvZ5AATTyT/X
+                            XQqgfQqjs7TKdvHyYYOCB0AwPdjnW4bRbQO2ggdAMD3K537bcRA8AAAAAAAAAAAAAAAAAAAAAAAA
+                            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwKn9nwADAFBt4kzyT+Q9AAAAAElFTkSu
+                            QmCC" height="292" width="421" overflow="visible">
+                          </image>
+                      </g>
+                      <g>
+                        <path d="M401,159.5L421.9,321c0.6,5-2.9,9.5-7.8,10.1l-308.4,39.8c-5,0.6-9.5-2.9-10.1-7.8L74.6,201.5
+                          c-0.6-5,2.9-9.5,7.8-10.1l308.4-39.8C395.8,151,400.4,154.5,401,159.5z" fill="#FFFFFF"/>
+                        <path d="M403.8,159.1c0,0,0.1,1,0.4,2.9c0.3,1.9,0.6,4.7,1.1,8.3c0.9,7.3,2,18,3.5,31.7c1.5,13.7,3.4,30.2,5.5,49.2
+                          c0.3,2.4,0.5,4.8,0.8,7.2c0.4,2.4,0.9,4.9,1.3,7.4c0.9,5,1.9,10.1,2.9,15.4c2,10.6,3.4,21.8,4.9,33.4c0.2,1.5,0.4,2.9,0.5,4.4
+                          l0.1,1.1l0,0.3l0,0.4l0,0.6c0,0.1,0,0.5,0,0.8c0,0.3,0,0.6,0,0.8c-0.1,0.5-0.1,1-0.2,1.5c-0.8,3.9-3.7,7.4-7.5,8.7
+                          c-0.5,0.2-1,0.3-1.5,0.4c-0.5,0.1-1,0.2-1.4,0.2c-0.8,0.1-1.5,0.2-2.3,0.3c-1.5,0.2-3.1,0.3-4.6,0.5c-3.1,0.4-6.2,0.7-9.4,1.1
+                          c-12.6,1.4-25.7,2.8-39.1,4.4c-6.7,0.8-13.5,1.6-20.4,2.5c-6.9,0.9-13.8,1.8-20.8,2.7c-7,0.9-14.1,1.9-21.3,2.8
+                          c-7.2,1-14.4,2-21.7,2.9c-14.6,2-29.4,4-44.4,6c-15,1.9-30.2,4-45.5,5.9c-15.3,1.9-30.8,3.7-46.3,5.5c-7.8,0.9-15.5,1.8-23.3,2.7
+                          l-5.8,0.7l-2.9,0.3l-0.4,0c-0.1,0-0.4,0-0.4,0c-0.3,0-0.5,0-0.7,0c-0.6,0-1.2,0-1.8-0.1c-2.3-0.3-4.4-1.4-5.9-3.1
+                          c-1.6-1.6-2.6-3.8-2.8-6c-1.9-15.6-3.8-31.2-5.8-46.7c-2.1-15.5-5-30.8-7.2-46.1c-2.3-15.3-3.6-30.6-5.4-45.6
+                          c-1-7.5-1.9-15-2.9-22.4c-0.1-0.9-0.2-2-0.1-3.2c0.1-1.1,0.4-2.2,0.8-3.2c0.9-2.1,2.4-3.8,4.3-4.9c1-0.6,2-1,3.1-1.3
+                          c1.2-0.3,2-0.3,2.9-0.5c1.8-0.2,3.7-0.5,5.5-0.7c29.2-3.9,57.4-7.7,84.2-10.9c26.8-3.3,52.1-6.1,75.5-8.9c23.4-2.7,44.8-5.5,63.8-8
+                          c19-2.6,35.4-5.3,49-7.3c6.8-1.1,12.8-2,18.1-2.8c2.6-0.4,5.1-0.8,7.3-1.1c1.2-0.2,2.3-0.3,3.3-0.5c0.3,0,0.5,0,0.8-0.1
+                          c0.1,0,0.3,0,0.5,0l0.5,0c0.4,0,0.7,0,1,0.1c0.3,0,0.6,0.1,0.9,0.1c2.4,0.4,4.2,1.5,5.6,2.7c1.4,1.2,2.2,2.5,2.8,3.6
+                          c0.5,1.1,0.8,2,0.9,2.7C403.8,158.8,403.8,159.1,403.8,159.1z M398.2,159.8c0,0,0-0.2-0.1-0.5c-0.1-0.3-0.2-0.8-0.4-1.4
+                          c-0.3-0.6-0.7-1.3-1.4-2c-0.7-0.7-1.7-1.3-3-1.6c-0.2-0.1-0.3-0.1-0.5-0.1c-0.2,0-0.3-0.1-0.5,0l-0.2,0c-0.1,0-0.1,0-0.3,0
+                          c-0.2,0-0.5,0-0.8,0c-1,0.1-2,0.2-3.1,0.3c-2.2,0.2-4.7,0.5-7.4,0.8c-5.3,0.5-11.4,1.2-18.2,1.9c-13.7,1.4-30.3,3-49.3,5.3
+                          c-19,2.3-40.4,5.1-63.7,8.4c-23.3,3.2-48.6,6.9-75.3,10.5c-26.7,3.7-55,7.2-84.2,10.8c-1.8,0.2-3.7,0.5-5.5,0.7
+                          c-0.9,0.1-1.9,0.2-2.6,0.4c-0.7,0.2-1.4,0.5-2.1,0.8c-1.3,0.8-2.3,1.9-2.9,3.3c-0.3,0.7-0.5,1.4-0.6,2.2c-0.1,0.7,0,1.4,0.1,2.4
+                          c1,7.4,1.9,14.9,2.9,22.4c2.1,15,4.8,30.1,6.4,45.5c1.8,15.4,2.9,30.9,4.8,46.4c1.9,15.5,4,31.1,6.2,46.6c0.4,3.4,3.3,6.2,6.6,6.5
+                          c0.4,0.1,0.8,0.1,1.2,0.1c0.2,0,0.5,0,0.7-0.1c0.2,0,0.2,0,0.3,0l0.4-0.1l2.9-0.4l5.8-0.8c7.8-1.1,15.5-2.2,23.3-3.3
+                          c15.5-2.2,30.9-4.4,46.2-6.4c15.3-2,30.5-3.9,45.5-5.9c15-1.8,29.9-3.7,44.5-5.4c7.3-0.9,14.5-1.8,21.7-2.7
+                          c7.2-0.9,14.3-1.8,21.3-2.7c7-0.9,14-1.8,20.8-2.7c6.9-0.9,13.6-1.8,20.3-2.8c13.4-1.8,26.3-3.8,38.9-5.7c3.1-0.5,6.3-0.9,9.3-1.4
+                          c1.5-0.2,3.1-0.4,4.6-0.7c0.8-0.1,1.5-0.2,2.3-0.3c0.4-0.1,0.5-0.1,0.8-0.2c0.2-0.1,0.5-0.1,0.7-0.3c1.9-0.8,3.4-2.6,3.8-4.5
+                          c0.1-0.2,0.1-0.5,0.1-0.7l0-0.3c0-0.1,0-0.1,0-0.4l0-0.6c0-0.2,0,0,0-0.1l0-0.3l-0.2-1.1c-0.2-1.5-0.4-2.9-0.6-4.4
+                          c-1.5-11.7-3-22.9-3.8-33.6c-0.4-5.4-0.7-10.6-1.2-15.7c-0.2-2.5-0.4-5-0.6-7.5c-0.4-2.4-0.7-4.8-1.1-7.2
+                          c-2.8-18.9-5.2-35.4-7.2-49c-2-13.6-3.7-24.3-4.7-31.5c-0.5-3.6-0.8-6.4-1.1-8.3C398.4,160.8,398.2,159.8,398.2,159.8z" fill="#435054"/>
+                      </g>
+                      <path d="M121,350.5c6.2-0.4,12.4-0.9,18.6-1.5c6.2-0.5,12.4-1.2,18.5-1.8l18.5-2c6.2-0.7,12.3-1.5,18.5-2.4
+                        c6.1-1,12.3-1.9,18.3-3.3c6.1-1.4,12.1-3.1,18.2-4.5c6.1-1.4,12.2-2.6,18.4-3.1c6.2-0.5,12.5,0,18.8-0.1c6.2-0.1,12.4-1,18.5-2.1
+                        c6.1-1.1,12.2-2.6,18.3-3.8c6.1-1.3,12.2-2.2,18.4-2.9c6.2-0.7,12.4-1.2,18.6-1.6c6.2-0.4,12.4-0.8,18.6-1.4
+                        c6.2-0.6,12.3-1.4,18.5-2.2l9.2-1.3l9.2-1.4c6.1-1,12.3-2,18.3-3.3l-13.5,17.6l-2.7-18.7c-0.9-6.2-1.7-12.5-2.5-18.7
+                        c-0.4-3.1-0.8-6.2-1.3-9.4c-0.5-3.1-0.9-6.2-1.5-9.3c-0.6-3.1-1.4-6.2-2-9.3c-0.6-3.1-1.1-6.2-1.4-9.3c-0.3-3.1-0.3-6.3-0.3-9.5
+                        c0-3.2-0.1-6.3-0.5-9.5c-0.4-3.1-1.1-6.2-2.1-9.3c-0.9-3.1-2.1-6.1-3.1-9.1c-1-3.1-1.6-6.1-2-9.3c-0.4-3.1-0.7-6.3-0.9-9.4
+                        c-0.2-3.2-0.3-6.3-0.2-9.5c0.1-3.2,0.3-6.4,0.8-9.6c1.4-8.9,9.8-15,18.7-13.6c5.6,0.9,10.1,4.6,12.3,9.4c1.4,3,2.4,6,3.3,9.1
+                        c0.9,3.1,1.6,6.1,2.3,9.2c0.6,3.1,1.2,6.2,1.6,9.3c0.5,3.1,0.6,6.3,0.5,9.5c-0.1,3.2-0.5,6.4-0.6,9.6c-0.1,3.2,0,6.4,0.4,9.5
+                        c0.4,3.1,1.1,6.2,2,9.3c0.8,3.1,1.6,6.1,2.2,9.3c0.5,3.1,0.9,6.2,1,9.4c0.2,3.2,0.3,6.3,0.5,9.5c0.2,3.2,0.6,6.3,1,9.4
+                        c0.3,3.1,0.8,6.3,1.2,9.4c0.8,6.2,1.7,12.5,2.5,18.7l2.2,18.8l0.2,1.3c1,8-4.8,15.3-12.8,16.2c-0.3,0-0.6,0.1-0.9,0.1
+                        c-6.2,0.4-12.4,0.9-18.6,1.6l-9.3,1l-9.2,1.1c-6.2,0.8-12.3,1.6-18.4,2.6c-6.1,1-12.2,2.3-18.3,3.5c-6.1,1.2-12.2,2.3-18.3,3.3
+                        c-6.1,0.9-12.3,1.6-18.5,1.9c-6.2,0.4-12.5,0.5-18.6,1c-6.2,0.6-12.4,1.3-18.4,2.8c-6.1,1.5-12,3.6-18.2,4.7
+                        c-6.1,1.1-12.3,1.5-18.6,1.7c-6.2,0.2-12.5,0.1-18.7,0.3c-6.2,0.2-12.4,0.9-18.6,1.5c-6.2,0.7-12.3,1.5-18.5,2.5l-18.4,2.8
+                        c-6.1,1-12.3,1.9-18.4,3c-6.1,1.1-12.2,2.2-18.3,3.4c-8.5,1.7-16.8-3.7-18.5-12.2c-1.7-8.5,3.7-16.8,12.2-18.5
+                        C119.5,350.7,120.3,350.6,121,350.5z" opacity="4.000000e-02"/>
+                      <g>
+                        <g>
+                          <path d="M191.8,262.8c2.6-0.3,3.8,8.7,6.4,8.4c2.6-0.3,1.4-9.4,4-9.7c2.6-0.3,3.8,8.7,6.4,8.4
+                            c2.6-0.3,1.4-9.4,4-9.7c2.6-0.3,3.8,8.7,6.4,8.4c2.6-0.3,1.4-9.4,4-9.7c2.6-0.3,3.8,8.7,6.4,8.4c2.6-0.3,1.4-9.4,4-9.7
+                            c2.6-0.3,3.8,8.7,6.4,8.4c2.6-0.3,1.4-9.4,4-9.7c2.6-0.3,3.8,8.7,6.4,8.4c2.6-0.3,1.4-9.4,4-9.7c2.6-0.3,3.8,8.7,6.4,8.4
+                            c2.6-0.3,1.4-9.4,4-9.7c2.6-0.3,3.8,8.7,6.4,8.4c2.6-0.3,1.4-9.4,4-9.7c2.6-0.3,3.8,8.7,6.4,8.3s1.4-9.4,4-9.7" fill="#FFFFFF"/>
+                        </g>
+                        <path d="M191.8,262.2c0,0,0,0,0.1,0c0,0,0.4,0,0.6,0.1c0.5,0.2,1.1,0.7,1.5,1.3c0.5,0.6,0.9,1.5,1.4,2.4
+                          c0.5,0.9,1,2.1,1.6,3.1c0.2,0.3,0.4,0.5,0.5,0.7c0.2,0.2,0.4,0.3,0.4,0.2c0,0,0,0,0,0l0,0c-0.2,0,0,0-0.1,0l0,0l0.1,0
+                          c0,0-0.1,0-0.1,0c0,0,0,0,0-0.1c0.1-0.1,0.2-0.4,0.3-0.7c0.4-1.3,0.5-3.1,0.8-5.1c0.1-0.5,0.2-1,0.3-1.6c0.2-0.5,0.3-1.2,1-1.8
+                          c0.3-0.3,0.8-0.7,1.4-0.8l0.1,0l0.2,0l0.1,0l0.1,0c0.1,0,0.2,0,0.3,0c0.4,0.1,0.6,0.2,0.9,0.3c0.9,0.5,1.3,1.1,1.6,1.6
+                          c0.7,1.1,1.1,2.1,1.6,3.1c0.5,1,0.9,2.1,1.4,2.8c0.2,0.4,0.6,0.5,0.3,0.4c0,0-0.1,0-0.1,0l0,0c0,0-0.3,0.1-0.1,0l0.1,0
+                          c0,0,0.1,0,0.1,0c0,0-0.1,0-0.1,0c0,0-0.1,0-0.1,0.1c0,0,0,0,0,0c0,0,0,0,0.1-0.2c0.3-0.7,0.5-1.9,0.7-3.1c0.2-1.2,0.3-2.5,0.8-4.1
+                          c0.1-0.4,0.3-0.8,0.7-1.3c0.3-0.5,1-1,1.8-1.2c0.1,0-0.1,0,0.3,0l0.1,0l0.1,0c0,0,0.2,0,0.3,0c0.1,0,0.3,0,0.4,0.1
+                          c0.4,0.1,0.7,0.3,1,0.5c0.5,0.4,0.8,0.7,1.1,1.1c1,1.4,1.4,2.7,2,3.9c0.3,0.6,0.5,1.2,0.8,1.8c0.3,0.5,0.7,1,0.8,1.1c0,0,0,0-0.1,0
+                          c0,0-0.1,0-0.1,0l0,0c0.1,0-0.2,0-0.2,0l0.1,0c0.2,0-0.1,0-0.1,0c-0.1,0.1-0.1,0-0.1,0.1c0,0,0,0,0-0.1c0.2-0.3,0.4-0.9,0.5-1.5
+                          c0.3-1.3,0.4-2.7,0.7-4.3c0.2-0.8,0.3-1.6,0.9-2.6c0.2-0.3,0.4-0.5,0.7-0.8c0.3-0.3,0.7-0.5,1.2-0.6c0.1,0-0.1,0,0.3,0l0.1,0l0.1,0
+                          c0.2,0,0.6,0.1,0.8,0.1c0.4,0.1,0.7,0.3,1,0.5c1,0.8,1.3,1.6,1.7,2.3c0.4,0.7,0.7,1.4,1,2.1c0.3,0.7,0.6,1.4,0.9,2
+                          c0.3,0.6,0.7,1.2,0.9,1.3c0.1,0.1-0.1-0.1-0.3,0l0.1,0c0,0,0,0,0,0c-0.1,0-0.1,0-0.2,0.1c-0.1,0.1-0.1,0-0.1,0.1c0,0,0,0,0,0
+                          c0,0,0,0,0-0.1c0.2-0.3,0.4-1,0.5-1.7c0.3-1.4,0.4-2.9,0.8-4.6c0.1-0.4,0.2-0.9,0.4-1.4c0.2-0.5,0.5-1,1.2-1.6
+                          c0.2-0.1,0.4-0.2,0.6-0.3c0.1-0.1,0.2-0.1,0.3-0.1l0.2,0c0.1,0,0,0,0.3,0l0.1,0l0.1,0l0.2,0c0.3,0,0.6,0.1,0.8,0.2
+                          c0.8,0.3,1.2,0.8,1.5,1.2c0.6,0.8,1,1.6,1.3,2.3l1,2.2c0.3,0.7,0.6,1.4,1,1.9c0.2,0.3,0.3,0.5,0.4,0.6c0,0,0.1,0.1,0,0
+                          c0,0-0.1,0-0.1,0c0,0,0,0-0.1,0l0,0c-0.1,0,0.1,0-0.2,0l0.1,0l0.1,0c0,0,0,0-0.1,0c-0.1,0-0.1,0-0.2,0.1c0,0,0,0,0,0c0,0,0,0,0,0
+                          c0.1-0.1,0.2-0.4,0.3-0.7c0.2-0.6,0.3-1.3,0.4-2.1l0.4-2.3c0.2-0.8,0.3-1.6,0.7-2.6c0.2-0.5,0.5-1.1,1.2-1.6
+                          c0.2-0.1,0.4-0.2,0.6-0.3c0.1-0.1,0.2-0.1,0.3-0.1l0.2,0c0.1,0,0,0,0.3,0l0.1,0l0.1,0l0.2,0c0.2,0,0.3,0,0.5,0.1
+                          c0.2,0,0.2,0.1,0.3,0.1c0.8,0.3,1.2,0.8,1.5,1.2c0.3,0.4,0.6,0.8,0.8,1.2c0.8,1.5,1.3,3,2,4.3c0.3,0.6,0.7,1.2,0.9,1.5
+                          c0.1,0.1,0.1,0-0.1,0l0,0c0.1,0-0.2,0-0.1,0l0.1,0c0,0,0.1,0,0,0c0,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1,0.1c-0.1,0,0,0,0,0
+                          c0.2-0.2,0.4-0.9,0.5-1.5c0.1-0.7,0.3-1.4,0.4-2.1c0.1-0.7,0.2-1.5,0.4-2.3c0.2-0.8,0.3-1.6,1-2.7c0.4-0.5,1.1-1.1,2.1-1.1l0.1,0
+                          c0.1,0,0.3,0,0.4,0c0.1,0,0.3,0.1,0.4,0.1l0.3,0.1c0.4,0.2,0.6,0.4,0.8,0.6c0.8,0.8,1.2,1.5,1.6,2.2c0.7,1.4,1.2,2.8,1.8,4
+                          c0.3,0.6,0.6,1.1,0.9,1.4c0.1,0.1,0.1,0.1,0,0.1c0,0,0,0,0,0c-0.3,0.1-0.1,0-0.1,0l0.1,0c0,0,0.1,0,0.1,0c0,0-0.1,0-0.1,0
+                          c-0.1,0.1-0.1,0-0.1,0.1c0,0,0,0,0,0c0.1-0.1,0.4-0.7,0.5-1.3c0.1-0.6,0.2-1.3,0.4-1.9c0.2-1.4,0.3-2.7,0.9-4.3
+                          c0.2-0.4,0.3-0.8,0.7-1.3c0.4-0.4,1-0.9,1.9-1c0.1,0,0.1,0,0.4,0c0.2,0,0.5,0.1,0.6,0.2c0.3,0.1,0.6,0.3,0.8,0.5
+                          c0.4,0.3,0.7,0.7,0.9,1c0.9,1.3,1.3,2.5,1.8,3.7c0.5,1.1,1,2.3,1.5,2.9c0.1,0.2,0.2,0.2,0.2,0.2c0,0,0,0-0.1,0c0,0,0,0,0,0
+                          c0,0-0.3,0-0.1,0l0.1,0c0.1,0,0.2,0,0.1,0c-0.2,0.1-0.1,0.1-0.1,0c0,0,0.1-0.1,0.1-0.1c0.1-0.1,0.2-0.3,0.2-0.5
+                          c0.3-0.9,0.5-2,0.7-3.1c0.2-1.1,0.3-2.2,0.7-3.4c0.2-0.6,0.4-1.2,1.1-1.9c0.2-0.2,0.4-0.3,0.6-0.4c0.1-0.1,0.2-0.1,0.4-0.1l0.2,0
+                          c-0.1,0,0.2,0,0.2,0l0,0l0.2,0c0.2,0,0.3,0,0.5,0.1c0.3,0.1,0.5,0.2,0.7,0.3c0.7,0.5,1.1,1,1.4,1.5c0.3,0.5,0.5,0.9,0.8,1.4
+                          c0.8,1.8,1.4,3.5,2.2,4.6c0.2,0.3,0.4,0.5,0.5,0.5c0.1,0,0.1,0,0.1,0l0,0l0,0c-0.1,0,0.1,0-0.1,0l0.1,0l0.1,0c0,0,0,0,0,0
+                          c-0.1,0.1,0.1-0.1,0.2-0.3c0.1-0.2,0.2-0.5,0.3-0.8c0.3-1.2,0.5-2.4,0.7-3.4c0.2-1.1,0.4-2,0.6-2.8c0.3-0.8,0.6-1.5,1.2-1.9
+                          c0.6-0.4,1-0.4,1-0.4l0.3,1.9c0,0,0,0-0.1,0c-0.1,0-0.3,0.3-0.5,0.9c-0.2,0.6-0.3,1.4-0.5,2.5c-0.2,1-0.3,2.3-0.6,3.7
+                          c-0.1,0.4-0.2,0.8-0.4,1.2c-0.2,0.4-0.5,0.9-1.3,1.3c-0.1,0-0.2,0.1-0.3,0.1l-0.1,0l-0.1,0c-0.3,0-0.1,0-0.2,0l-0.1,0l-0.3,0
+                          c-0.4,0-0.8-0.2-1-0.3c-0.6-0.3-0.9-0.8-1.2-1.2c-1.1-1.6-1.7-3.3-2.5-4.9c-0.2-0.4-0.4-0.8-0.6-1.1c-0.2-0.3-0.5-0.6-0.6-0.7
+                          c0,0-0.1,0,0,0c0,0,0.1,0,0.1,0c0,0-0.1,0-0.2,0l0,0c-0.1,0,0.2,0,0.1,0l0,0c0,0,0,0,0,0c0,0,0,0,0,0c-0.1,0.1-0.3,0.4-0.4,0.8
+                          c-0.3,0.9-0.4,1.9-0.6,3c-0.2,1.1-0.3,2.3-0.7,3.6c-0.1,0.3-0.3,0.7-0.5,1.1c-0.1,0.2-0.3,0.4-0.5,0.6c-0.2,0.2-0.4,0.4-0.8,0.6
+                          c-0.2,0.1-0.3,0.1-0.3,0.1l-0.1,0c0.1,0-0.2,0-0.2,0l-0.2,0c-0.3,0-0.7-0.1-0.9-0.2c-0.6-0.2-0.9-0.6-1.2-0.9
+                          c-1.1-1.2-1.5-2.4-2-3.6c-0.5-1.1-1-2.3-1.6-3.2c-0.1-0.2-0.3-0.4-0.4-0.4c0,0-0.1,0-0.1,0c0,0,0.1,0,0.1,0c0.1,0-0.1,0-0.1,0
+                          c0.2,0,0.2-0.1,0.2,0c-0.1,0.1-0.2,0.3-0.2,0.5c-0.4,1-0.5,2.3-0.7,3.7c-0.1,0.7-0.2,1.4-0.4,2.2c-0.2,0.8-0.3,1.6-1.1,2.5
+                          c-0.1,0.1-0.2,0.2-0.4,0.4c-0.2,0.1-0.3,0.2-0.5,0.3c-0.1,0.1-0.2,0.1-0.4,0.1c-0.1,0-0.1,0-0.2,0l-0.1,0c-0.1,0,0.1,0-0.2,0
+                          l-0.3,0c-0.9,0-1.5-0.4-1.9-0.8c-0.8-0.8-1.1-1.5-1.5-2.2c-0.7-1.4-1.2-2.7-1.8-3.9c-0.3-0.6-0.7-1.2-0.9-1.4
+                          c-0.1,0-0.1-0.1-0.1-0.1c0,0,0,0,0,0c0,0,0.1,0,0.1,0c0,0,0.1,0,0.1,0l-0.1,0c0.3,0,0.3-0.1,0.2,0c-0.2,0.2-0.4,0.9-0.5,1.5
+                          c-0.1,0.7-0.2,1.4-0.3,2.1c-0.1,0.7-0.2,1.5-0.4,2.3c-0.2,0.8-0.3,1.7-1,2.7c-0.2,0.3-0.5,0.5-0.8,0.8c-0.1,0.1-0.3,0.1-0.4,0.2
+                          l-0.2,0.1l-0.1,0l-0.1,0c0,0-0.4,0.1-0.3,0l-0.2,0c-0.5,0-0.9-0.1-1.3-0.3c-0.4-0.2-0.6-0.4-0.9-0.6c-0.8-0.8-1.2-1.6-1.6-2.3
+                          c-0.7-1.5-1.3-2.9-1.9-4.1c-0.2-0.3-0.3-0.6-0.5-0.8c-0.1-0.2-0.3-0.3-0.2-0.3c0,0,0,0,0.1,0c0.1,0,0.1,0,0.2,0c0,0,0.1,0,0.1,0
+                          l-0.1,0l-0.1,0c0.3,0,0.1,0,0.2,0l0,0c0,0,0,0,0.1,0c0,0,0.1-0.1,0.1,0c0.1-0.1-0.1,0.1-0.1,0.3c-0.2,0.5-0.4,1.2-0.5,1.9l-0.4,2.3
+                          c-0.1,0.8-0.3,1.6-0.5,2.5c-0.1,0.5-0.3,0.9-0.7,1.5c-0.2,0.3-0.4,0.6-0.7,0.8c-0.1,0.1-0.1,0.1-0.3,0.2c-0.1,0.1-0.3,0.1-0.4,0.2
+                          l-0.2,0.1l-0.1,0l-0.1,0c-0.4,0.1-0.2,0-0.3,0l-0.2,0c-0.1,0-0.2,0-0.4,0c-0.2,0-0.5-0.1-0.7-0.2c-0.4-0.2-0.7-0.4-1-0.6
+                          c-0.5-0.4-0.8-0.8-1-1.2c-0.5-0.8-0.8-1.5-1.2-2.3l-0.9-2.1c-0.3-0.7-0.6-1.3-1-1.7c-0.1-0.2-0.3-0.3-0.2-0.3c0,0,0.1,0,0.2,0
+                          c0,0,0.1,0,0.1,0l-0.1,0l-0.1,0l0.2,0l0,0c0,0,0,0,0.1,0c0,0,0.1,0,0.1,0c0.1-0.1-0.1,0.1-0.1,0.3c-0.1,0.2-0.2,0.5-0.3,0.9
+                          c-0.3,1.3-0.4,2.9-0.8,4.5c-0.2,0.8-0.3,1.7-0.9,2.7c-0.1,0.1-0.2,0.3-0.3,0.4c-0.1,0.1-0.2,0.3-0.4,0.4l-0.2,0.2
+                          c-0.1,0.1-0.2,0.1-0.3,0.2c-0.1,0.1-0.3,0.1-0.4,0.2c-0.1,0-0.1,0-0.1,0l-0.1,0c-0.4,0.1-0.9,0.1-1.4,0c-0.2-0.1-0.4-0.1-0.6-0.2
+                          c-0.2-0.1-0.3-0.2-0.5-0.3c-0.5-0.4-0.8-0.8-1.1-1.2c-0.3-0.4-0.5-0.8-0.7-1.1c-0.4-0.7-0.7-1.5-1-2.1c-0.3-0.7-0.6-1.4-0.9-2
+                          c-0.3-0.6-0.7-1.2-0.9-1.3c0,0,0,0,0,0c0,0,0.3,0,0.3,0l-0.1,0l-0.1,0l0.2,0c0.2,0,0.3-0.2,0.2,0c-0.2,0.2-0.4,0.9-0.5,1.5
+                          c-0.3,1.3-0.4,2.8-0.7,4.3c-0.2,0.8-0.3,1.6-0.9,2.5c-0.2,0.2-0.4,0.5-0.6,0.8c-0.2,0.1-0.3,0.2-0.5,0.4c-0.1,0.1-0.3,0.1-0.4,0.2
+                          c-0.2,0.1-0.2,0.1-0.2,0.1l-0.1,0c0,0-0.4,0.1-0.3,0l-0.2,0c-0.2,0-0.4,0-0.6-0.1c-0.4-0.1-0.8-0.3-1-0.4c-1-0.8-1.4-1.5-1.8-2.2
+                          c-0.4-0.7-0.7-1.3-0.9-2c-0.6-1.3-1.1-2.5-1.7-3.3c-0.1-0.2-0.3-0.3-0.3-0.4c0,0,0,0,0.1,0c0,0,0.1,0,0.1,0c0,0,0.1,0,0,0l-0.1,0
+                          l-0.1,0c0.3,0,0.1,0,0.2,0c0.2,0,0.3-0.2,0.2-0.1c-0.1,0.1-0.1,0.2-0.2,0.5c-0.3,0.9-0.5,2.2-0.7,3.5c-0.2,1.3-0.3,2.5-1,4.1
+                          c-0.2,0.4-0.5,0.8-1,1.2l-0.2,0.1c-0.1,0.1-0.2,0.1-0.3,0.2c-0.1,0-0.2,0.1-0.3,0.1c-0.1,0-0.1,0-0.1,0l-0.1,0c0.1,0-0.2,0-0.3,0
+                          l-0.1,0c-0.2,0-0.4,0-0.5,0c-0.7-0.1-1.2-0.5-1.6-0.8c-0.3-0.3-0.6-0.6-0.8-0.9c-0.8-1.2-1.2-2.3-1.6-3.3c-0.4-1-0.8-2-1.3-2.8
+                          c-0.2-0.4-0.5-0.6-0.5-0.7c0,0,0,0,0.1,0c0.3,0-0.4,0,0,0c0.1,0,0.1-0.1,0.1,0c-0.1,0.1-0.3,0.4-0.4,0.8c-0.1,0.4-0.2,0.8-0.3,1.3
+                          c-0.4,1.8-0.5,3.6-1.2,5.4c-0.2,0.5-0.4,0.9-0.9,1.4c-0.1,0.1-0.3,0.2-0.4,0.3c-0.2,0.1-0.4,0.2-0.6,0.3l-0.1,0l-0.2,0l-0.1,0
+                          c-0.2,0-0.4,0-0.6,0c-0.7-0.2-1.1-0.6-1.4-0.9c-0.3-0.4-0.5-0.7-0.7-1c-0.7-1.3-1.1-2.5-1.5-3.5c-0.4-1-0.7-1.8-1.1-2.3
+                          c-0.3-0.6-0.6-0.9-0.8-1c0-0.1-0.3-0.1-0.3-0.1L191.8,262.2z" fill="#435054"/>
+                      </g>
+                      <g>
+                        <g>
+                          <path d="M193.5,281c2.9-0.4,4.2,8.7,7.1,8.3c2.9-0.4,1.7-9.4,4.7-9.8c2.9-0.4,4.2,8.7,7.1,8.3
+                            c2.9-0.4,1.7-9.4,4.7-9.8c2.9-0.4,4.2,8.7,7.1,8.3c2.9-0.4,1.7-9.4,4.7-9.8c2.9-0.4,4.2,8.7,7.1,8.3c2.9-0.4,1.7-9.4,4.7-9.8
+                            c2.9-0.4,4.2,8.7,7.1,8.3c2.9-0.4,1.7-9.4,4.7-9.8c2.9-0.4,4.2,8.7,7.1,8.3s1.7-9.4,4.7-9.8c2.9-0.4,4.2,8.7,7.1,8.3
+                            c2.9-0.4,1.7-9.4,4.7-9.8c2.9-0.4,4.2,8.7,7.1,8.3c2.9-0.4,1.7-9.4,4.7-9.8c3-0.4,4.2,8.7,7.1,8.3c3-0.4,1.7-9.4,4.7-9.8" fill="#FFFFFF"/>
+                        </g>
+                        <path d="M193.5,280.5c0,0,0.1-0.1,0.8,0c0.5,0.1,1.2,0.6,1.7,1.2c0.5,0.6,1,1.5,1.5,2.5c0.5,1,1.1,2.1,1.8,3.2
+                          c0.3,0.5,0.9,0.9,1,0.9c0,0,0,0,0.1,0l0,0c0,0,0.1,0-0.1,0l0.1,0l0.1,0c0.1,0,0,0,0,0c0,0,0,0,0.1-0.1c0.1-0.1,0.3-0.3,0.4-0.7
+                          c0.5-1.3,0.6-3.2,1-5.2c0.1-0.5,0.2-1,0.4-1.6c0.2-0.6,0.5-1.2,1.1-1.8c0.3-0.3,0.8-0.6,1.3-0.7l0.1,0l0.2,0l0.1,0
+                          c0.1,0,0.1,0,0.3,0c0.2,0,0.3,0,0.5,0.1l0.4,0.1c0.9,0.4,1.4,1,1.8,1.5c0.8,1.1,1.3,2.1,1.8,3.2c0.5,1,1,2.1,1.6,2.8
+                          c0.3,0.4,0.6,0.5,0.4,0.4c0,0,0,0,0,0l0,0c0,0-0.3,0.1-0.1,0l0.1,0l0.1,0c0,0-0.1,0-0.1,0c-0.1,0-0.1,0.1-0.1,0c0,0,0.1,0,0.1-0.2
+                          c0.2-0.3,0.4-0.8,0.5-1.4c0.1-0.6,0.3-1.2,0.4-1.8c0.3-1.3,0.4-2.6,1-4.2c0.2-0.4,0.4-0.8,0.8-1.3c0.4-0.4,1.1-0.9,1.8-1
+                          c0.1,0-0.1,0,0.3,0l0.1,0l0.1,0l0.1,0l0.2,0c0.1,0,0.2,0,0.4,0c0.4,0.1,0.7,0.2,1,0.4c0.5,0.3,0.9,0.7,1.2,1c1.1,1.4,1.6,2.7,2.3,4
+                          c0.3,0.6,0.6,1.2,0.9,1.8c0.3,0.5,0.7,1,0.8,1c0.1,0-0.1,0-0.1,0c0,0,0.1,0,0.1,0c0,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1,0
+                          c0,0,0,0,0.1-0.1c0.2-0.2,0.4-0.8,0.6-1.5c0.3-1.3,0.5-2.8,0.9-4.4c0.2-0.8,0.4-1.7,1.2-2.7c0.4-0.5,1.1-1,1.9-1.2c0.1,0,0,0,0.3,0
+                          l0.1,0l0.1,0c0,0,0.2,0,0.3,0c0.1,0,0.3,0,0.4,0.1c0.4,0.1,0.7,0.3,1,0.4c1.1,0.8,1.5,1.6,2,2.3c0.4,0.8,0.8,1.5,1.1,2.2
+                          c0.3,0.7,0.7,1.4,1,2c0.3,0.6,0.8,1.1,1,1.2c0.1,0,0,0-0.1,0l0.1,0c0,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1,0c0,0,0,0,0.1-0.1
+                          c0.2-0.3,0.4-0.9,0.6-1.6c0.3-1.4,0.5-3,1-4.8c0.1-0.4,0.3-0.9,0.5-1.4c0.3-0.5,0.6-1.1,1.3-1.5c0.2-0.1,0.4-0.2,0.6-0.3
+                          c0.1,0,0.2-0.1,0.3-0.1l0.2,0c0.1,0,0,0,0.3,0l0.2,0l0.1,0c0,0,0.1,0,0.1,0c0.3,0,0.6,0.1,0.8,0.1c0.8,0.3,1.3,0.7,1.7,1.1
+                          c0.7,0.8,1.1,1.6,1.5,2.4c0.4,0.8,0.7,1.5,1.1,2.2c0.3,0.7,0.7,1.4,1.1,1.9c0.2,0.2,0.4,0.4,0.5,0.5c0.1,0,0.1,0,0.1,0c0,0,0,0,0,0
+                          c0,0,0,0,0,0l0,0c-0.1,0,0.1,0-0.2,0l0.1,0c0,0,0.2,0,0.1,0c-0.1,0-0.2,0.1-0.2,0.1c0,0,0,0,0.1-0.1c0.1-0.1,0.2-0.3,0.3-0.6
+                          c0.2-0.6,0.4-1.3,0.5-2.1c0.1-0.8,0.3-1.6,0.5-2.4c0.2-0.8,0.4-1.7,0.9-2.7c0.3-0.5,0.6-1.1,1.3-1.5c0.2-0.1,0.4-0.2,0.6-0.3
+                          c0.1,0,0.2-0.1,0.3-0.1l0.2,0c0.1,0,0,0,0.3,0l0.2,0c0.1,0,0,0,0.2,0c0.3,0,0.6,0.1,0.8,0.1c0.8,0.3,1.3,0.7,1.7,1.1
+                          c0.4,0.4,0.6,0.8,0.9,1.2c0.9,1.6,1.5,3.1,2.2,4.3c0.3,0.6,0.7,1.2,1,1.4c0.1,0.1,0.1,0.1,0.1,0.1l0,0c0.1,0-0.2,0-0.1,0l0.1,0
+                          c0.2,0,0,0-0.1,0c-0.1,0,0,0,0,0c0.2-0.2,0.5-0.8,0.6-1.5c0.2-0.7,0.3-1.4,0.5-2.2c0.1-0.8,0.3-1.6,0.5-2.4
+                          c0.2-0.8,0.5-1.7,1.3-2.7c0.4-0.5,1.1-1,2.1-1c0.1,0,0.1,0,0.4,0c0.3,0,0.5,0.1,0.7,0.1c0.4,0.1,0.7,0.3,0.9,0.5
+                          c1,0.8,1.4,1.5,1.8,2.3c0.8,1.4,1.4,2.8,2,4c0.3,0.6,0.7,1.1,1,1.3c0.1,0.1,0.1,0.1,0.1,0.1l0,0c-0.3,0.1,0,0-0.1,0l0.1,0l0.1,0
+                          c0,0,0,0-0.1,0c0,0,0,0-0.1,0c0,0,0,0,0,0c0,0,0,0,0,0c0.2-0.1,0.4-0.7,0.6-1.3c0.2-0.6,0.3-1.3,0.4-2c0.3-1.4,0.4-2.8,1.1-4.4
+                          c0.2-0.4,0.4-0.8,0.9-1.3c0.4-0.4,1-0.8,1.8-0.8l0.1,0c0,0,0.1,0,0.2,0c0.2,0,0.5,0.1,0.6,0.1c0.3,0.1,0.6,0.2,0.8,0.4
+                          c0.5,0.3,0.8,0.7,1,1c1,1.3,1.5,2.6,2.1,3.8c0.5,1.1,1.1,2.3,1.7,2.9c0.1,0.1,0.2,0.2,0.3,0.2c0,0,0,0,0,0l0,0c0,0-0.2,0-0.1,0
+                          l0.1,0l0.1,0l0.1,0l0,0c0,0-0.1,0-0.1,0c0,0,0,0,0,0c0,0,0.1-0.1,0.1-0.1c0.1-0.1,0.2-0.3,0.3-0.5c0.4-0.9,0.6-2,0.8-3.2
+                          c0.2-1.1,0.4-2.3,0.9-3.5c0.3-0.6,0.5-1.3,1.3-1.9c0.2-0.1,0.4-0.3,0.6-0.4c0.1-0.1,0.2-0.1,0.4-0.1l0.2,0c-0.1,0,0.2,0,0.2,0l0,0
+                          l0.2,0c0.1,0,0.3,0,0.4,0c0.3,0.1,0.5,0.1,0.7,0.2c0.8,0.4,1.2,1,1.6,1.4c0.3,0.5,0.6,1,0.9,1.4c0.9,1.8,1.6,3.6,2.5,4.7
+                          c0.2,0.3,0.4,0.4,0.5,0.5c0.1,0,0.1,0,0.1,0c0,0,0,0,0,0l0,0c0,0,0.1,0-0.1,0l0.1,0c0.1,0,0.2-0.1,0.2,0c-0.1,0,0.2-0.1,0.3-0.3
+                          c0.1-0.2,0.3-0.5,0.4-0.8c0.4-1.2,0.6-2.4,0.8-3.5c0.2-1.1,0.4-2.1,0.8-2.9c0.3-0.8,0.8-1.5,1.4-1.9c0.6-0.3,1-0.3,0.9-0.3l0.3,1.9
+                          c0,0-0.1,0-0.2,0.1c-0.1,0.1-0.3,0.3-0.6,0.9c-0.2,0.6-0.4,1.5-0.6,2.5c-0.2,1.1-0.3,2.3-0.8,3.8c-0.1,0.4-0.3,0.8-0.5,1.2
+                          c-0.3,0.4-0.6,0.9-1.4,1.2c-0.2,0.1-0.3,0.1-0.4,0.1l-0.1,0c-0.2,0-0.1,0-0.2,0l-0.1,0l-0.3,0c-0.4,0-0.7-0.1-1-0.2
+                          c-0.6-0.3-1-0.7-1.4-1.1c-1.3-1.6-1.9-3.4-2.8-5c-0.2-0.4-0.5-0.8-0.7-1.1c-0.2-0.3-0.5-0.6-0.7-0.7c0,0-0.1,0-0.1,0
+                          c0,0,0.1,0,0.1,0l-0.2,0l0,0c0,0,0.2,0,0.1,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0-0.1,0c-0.1,0.1-0.3,0.4-0.5,0.8
+                          c-0.3,0.9-0.5,2-0.7,3.1c-0.2,1.2-0.4,2.4-0.9,3.7c-0.1,0.3-0.3,0.7-0.6,1.1c-0.1,0.2-0.3,0.4-0.5,0.5c-0.1,0.1-0.2,0.2-0.3,0.2
+                          c-0.1,0.1-0.3,0.2-0.5,0.2l-0.1,0l-0.1,0l-0.1,0l-0.1,0c0.1,0-0.2,0-0.2,0l-0.2,0c-0.3,0-0.6,0-0.9-0.1c-0.6-0.2-1-0.5-1.3-0.8
+                          c-0.7-0.6-1-1.2-1.4-1.8c-0.4-0.6-0.7-1.2-0.9-1.8c-0.6-1.2-1.1-2.4-1.8-3.2c-0.2-0.2-0.3-0.3-0.4-0.4c0,0-0.1,0-0.1,0
+                          c0,0,0.1,0,0.1,0c0,0,0,0,0,0l-0.1,0l-0.1,0c0.3,0,0.1,0,0.1,0l0,0c0,0,0,0,0,0s0,0,0,0c-0.1,0.1-0.2,0.2-0.3,0.5
+                          c-0.4,1-0.6,2.4-0.9,3.8c-0.1,0.7-0.3,1.5-0.5,2.2c-0.2,0.8-0.4,1.6-1.3,2.6c-0.1,0.1-0.2,0.2-0.4,0.3l-0.2,0.1
+                          c-0.1,0.1-0.2,0.1-0.3,0.1c-0.1,0-0.2,0.1-0.3,0.1l-0.1,0l-0.1,0c-0.1,0,0.1,0-0.2,0l-0.3,0c-0.8,0-1.5-0.3-1.9-0.6
+                          c-0.9-0.7-1.3-1.5-1.8-2.2c-0.8-1.4-1.4-2.8-2.1-4c-0.3-0.6-0.7-1.1-1-1.3c-0.1,0-0.1-0.1-0.1-0.1c0,0,0,0,0.1,0c0.1,0,0,0-0.1,0
+                          c0.1,0,0.1-0.1,0.1,0c-0.2,0.2-0.4,0.8-0.6,1.5c-0.2,0.7-0.3,1.4-0.4,2.2c-0.1,0.8-0.3,1.6-0.5,2.4c-0.2,0.8-0.4,1.7-1.3,2.8
+                          c-0.2,0.3-0.5,0.5-0.9,0.7c-0.2,0.1-0.6,0.2-0.6,0.2l-0.1,0c0,0-0.3,0.1-0.3,0l-0.2,0c-0.9,0.1-1.7-0.3-2.1-0.7
+                          c-1-0.8-1.4-1.6-1.8-2.4c-0.8-1.5-1.4-3-2.2-4.2c-0.3-0.6-0.8-1-0.8-1c0,0,0.1,0,0.2,0c0.1,0,0,0-0.1,0l-0.2,0c0.3,0,0.1,0,0.2,0
+                          l0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0-0.1,0.1-0.2,0.3c-0.2,0.4-0.4,1.2-0.6,1.9c-0.2,0.7-0.3,1.5-0.4,2.3c-0.2,0.8-0.3,1.7-0.7,2.6
+                          c-0.2,0.5-0.4,1-0.8,1.5c-0.2,0.3-0.5,0.5-0.8,0.8c-0.1,0.1-0.5,0.2-0.7,0.3c-0.2,0.1-0.1,0-0.2,0.1l-0.1,0c-0.3,0.1-0.2,0-0.3,0
+                          l-0.2,0c-0.1,0-0.2,0-0.3,0c-0.2,0-0.4-0.1-0.6-0.1c-0.4-0.1-0.7-0.3-1-0.5c-0.5-0.4-0.9-0.8-1.2-1.2c-0.6-0.8-1-1.6-1.3-2.3
+                          c-0.4-0.7-0.7-1.5-1.1-2.1c-0.3-0.7-0.7-1.3-1.1-1.7c-0.2-0.2-0.3-0.3-0.3-0.2c0,0,0.1,0,0.2,0c0,0,0,0,0,0l-0.1,0l-0.2,0
+                          c0.3,0,0.1,0,0.2,0l0,0c0,0,0,0,0,0c0,0,0,0,0,0c0-0.1-0.4,0.5-0.5,1.1c-0.4,1.3-0.6,2.9-1,4.6c-0.2,0.8-0.4,1.7-1.1,2.8
+                          c-0.2,0.3-0.4,0.5-0.7,0.8c-0.2,0.1-0.3,0.2-0.6,0.3c-0.1,0.1-0.3,0.1-0.4,0.1l-0.2,0c-0.8,0.2-1.8,0-2.3-0.4
+                          c-0.6-0.4-0.9-0.8-1.3-1.2c-0.3-0.4-0.6-0.8-0.8-1.2c-0.4-0.8-0.8-1.5-1.1-2.2c-0.3-0.7-0.7-1.4-1-2c-0.3-0.6-0.7-1.1-0.9-1.2
+                          c0,0-0.1,0,0,0c0,0,0.1,0,0.1,0c0,0,0.1,0,0,0l-0.1,0l-0.1,0c0.3,0,0.1,0,0.2,0c0.1,0,0.1-0.1,0,0c-0.2,0.2-0.4,0.8-0.6,1.5
+                          c-0.3,1.3-0.5,2.8-0.9,4.4c-0.2,0.8-0.4,1.6-1.1,2.6c-0.2,0.2-0.4,0.5-0.7,0.7c-0.2,0.1-0.3,0.2-0.5,0.3c-0.1,0.1-0.2,0.1-0.4,0.1
+                          c-0.1,0-0.1,0-0.2,0.1c-0.7,0.2-1.6,0-2.2-0.3c-1.2-0.7-1.6-1.5-2-2.2c-0.4-0.7-0.8-1.4-1.1-2c-0.6-1.3-1.2-2.6-1.8-3.4
+                          c-0.1-0.2-0.3-0.3-0.3-0.3c0,0-0.1,0,0,0c0,0,0.1,0,0.1,0c0,0,0,0,0,0l-0.1,0l-0.1,0l-0.1,0c0.3,0,0.1,0,0.2,0c0.1,0,0.1-0.1,0,0
+                          c-0.1,0.1-0.2,0.2-0.3,0.4c-0.4,0.9-0.6,2.2-0.9,3.5c-0.1,0.7-0.3,1.3-0.4,2c-0.2,0.7-0.4,1.4-0.9,2.2c-0.2,0.4-0.6,0.8-1.1,1.2
+                          c-0.1,0.1-0.3,0.2-0.5,0.3c-0.1,0-0.2,0.1-0.3,0.1l-0.1,0l-0.1,0c0.1,0-0.2,0-0.2,0l-0.1,0c-0.2,0-0.3,0-0.5,0
+                          c-0.7-0.1-1.2-0.4-1.6-0.7c-0.4-0.3-0.7-0.6-0.9-0.9c-0.9-1.2-1.4-2.3-1.9-3.4c-0.5-1-1-2-1.5-2.8c-0.2-0.4-0.5-0.6-0.6-0.6
+                          c0,0,0,0,0,0c0,0,0.1,0,0.1,0c0.1,0,0,0-0.1,0l-0.1,0c0,0-0.2,0,0.1,0l0,0c0,0,0,0-0.1,0c-0.1,0.1-0.3,0.4-0.5,0.8
+                          c-0.2,0.4-0.3,0.8-0.4,1.3c-0.5,1.8-0.7,3.7-1.5,5.5c-0.2,0.5-0.5,1-1,1.4c-0.1,0.1-0.3,0.2-0.4,0.3c-0.2,0.1-0.5,0.2-0.6,0.2
+                          l-0.1,0l-0.1,0c-0.2,0-0.1,0-0.2,0l-0.1,0c-0.2,0-0.3,0-0.5,0c-0.7-0.1-1.2-0.5-1.5-0.8c-0.4-0.3-0.6-0.7-0.8-1
+                          c-0.8-1.3-1.2-2.5-1.7-3.5c-0.4-1-0.8-1.8-1.2-2.4c-0.4-0.6-0.7-0.8-0.9-0.9c-0.1-0.1-0.4-0.1-0.4-0.1L193.5,280.5z" fill="#435054"/>
+                      </g>
+                      <g>
+                        <g>
+                          <path d="M196.3,298.7c2.5-0.4,3.9,8.6,6.4,8.3c2.5-0.4,1.2-9.4,3.7-9.8c2.5-0.4,3.9,8.6,6.4,8.3
+                            c2.5-0.4,1.2-9.4,3.7-9.8c2.5-0.4,3.9,8.6,6.4,8.3c2.5-0.4,1.2-9.4,3.7-9.8c2.5-0.4,3.9,8.6,6.4,8.3c2.5-0.4,1.2-9.4,3.7-9.8
+                            c2.5-0.4,3.9,8.6,6.4,8.3c2.5-0.4,1.2-9.4,3.7-9.8c2.5-0.4,3.9,8.6,6.4,8.3c2.5-0.4,1.2-9.4,3.7-9.8c2.5-0.4,3.9,8.6,6.4,8.3
+                            c2.5-0.4,1.2-9.4,3.7-9.8c2.5-0.4,3.9,8.6,6.4,8.3c2.5-0.4,1.2-9.4,3.7-9.8c2.5-0.4,3.9,8.6,6.4,8.3s1.2-9.4,3.7-9.8" fill="#FFFFFF"/>
+                        </g>
+                        <path d="M196.3,298.2c0,0,0,0,0.1,0c0,0,0.4,0,0.7,0.1c0.5,0.2,1.1,0.7,1.5,1.3c0.5,0.6,0.9,1.5,1.4,2.4
+                          c0.5,0.9,1,2.1,1.7,3.1c0.2,0.3,0.4,0.5,0.5,0.7c0.2,0.2,0.4,0.3,0.4,0.2c0,0,0,0,0,0l0,0c-0.2,0,0,0-0.1,0l0,0l0.1,0
+                          c0,0-0.1,0-0.1,0c0,0,0,0,0-0.1c0.1-0.1,0.2-0.4,0.3-0.7c0.4-1.3,0.4-3.1,0.7-5.1c0.1-0.5,0.2-1,0.3-1.6c0.2-0.6,0.3-1.2,0.9-1.9
+                          c0.3-0.3,0.8-0.7,1.4-0.8l0.1,0l0.2,0l0.1,0l0.1,0c0.1,0,0.2,0,0.3,0c0.4,0.1,0.6,0.2,0.9,0.3c0.9,0.5,1.2,1.1,1.6,1.6
+                          c0.7,1,1.1,2.1,1.6,3.1c0.5,1,0.9,2,1.5,2.8c0.1,0.2,0.3,0.3,0.3,0.4c0.1,0.1,0.1,0,0,0c-0.2,0-0.1,0-0.4,0.1c0,0,0,0,0.1-0.2
+                          c0.3-0.7,0.5-1.9,0.6-3.1c0.2-1.2,0.2-2.5,0.7-4.1c0.1-0.4,0.3-0.8,0.6-1.3c0.3-0.5,0.9-1.1,1.8-1.2c0.1,0-0.1,0,0.3,0l0.1,0l0.1,0
+                          c0,0,0.2,0,0.3,0c0.1,0,0.3,0,0.4,0.1c0.4,0.1,0.7,0.3,1,0.5c0.5,0.4,0.8,0.7,1,1.1c1,1.4,1.4,2.6,2,3.9c0.3,0.6,0.6,1.2,0.8,1.7
+                          c0.3,0.5,0.7,1,0.8,1.1c0,0,0,0-0.1,0c0,0-0.1,0-0.1,0l0,0c0.1,0-0.2,0.1-0.2,0l0.1,0l0.1,0c0,0,0,0-0.1,0c-0.1,0-0.1,0-0.2,0.1
+                          c-0.1,0.1-0.1,0-0.1,0.1c0,0,0,0,0,0c0,0,0,0,0-0.1c0.2-0.3,0.3-0.9,0.4-1.5c0.2-1.3,0.3-2.7,0.6-4.3c0.2-0.8,0.3-1.6,0.9-2.6
+                          c0.2-0.3,0.4-0.5,0.7-0.8c0.3-0.3,0.7-0.5,1.2-0.6c0.1,0-0.1,0,0.3-0.1l0.1,0l0.1,0c0.2,0,0.6,0,0.8,0.1c0.4,0.1,0.7,0.3,1,0.5
+                          c1,0.8,1.3,1.6,1.7,2.3c0.4,0.7,0.7,1.4,1,2.1c0.3,0.7,0.6,1.3,0.9,1.9c0.3,0.6,0.7,1.2,0.9,1.3c0,0,0,0-0.1,0c-0.1,0-0.2,0-0.3,0
+                          l0.1,0c0,0,0,0,0,0c-0.1,0-0.1,0-0.2,0.1c-0.1,0.1-0.1,0-0.1,0.1c0,0,0,0,0.1-0.1c0.2-0.3,0.4-1,0.5-1.7c0.2-1.4,0.3-2.9,0.7-4.6
+                          c0.1-0.4,0.2-0.9,0.4-1.4c0.2-0.5,0.4-1,1.1-1.6c2.1-1.5,3.7,0.2,4.2,0.8c0.6,0.8,1,1.6,1.3,2.3l1,2.1c0.3,0.7,0.6,1.3,1,1.9
+                          c0.2,0.3,0.3,0.5,0.4,0.6c0,0,0.1,0.1,0,0c0,0-0.1,0-0.1,0c0,0,0,0-0.1,0l0,0l-0.2,0l0.1,0l0.1,0c0,0-0.1,0-0.1,0
+                          c-0.1,0-0.1,0-0.2,0.1c0,0,0,0,0,0c0,0,0,0,0,0c0.1-0.1,0.2-0.4,0.3-0.7c0.2-0.6,0.3-1.3,0.4-2.1l0.3-2.3c0.1-0.8,0.3-1.6,0.6-2.6
+                          c0.2-0.5,0.4-1.1,1.1-1.6c0.2-0.1,0.4-0.3,0.6-0.4c0.1-0.1,0.2-0.1,0.3-0.1l0.2,0c0.1,0,0,0,0.3,0l0.1,0l0.1,0l0.2,0
+                          c0.2,0,0.3,0,0.5,0.1c0.1,0,0.2,0.1,0.3,0.1c0.8,0.4,1.2,0.8,1.5,1.2c0.3,0.4,0.6,0.8,0.8,1.2c0.8,1.5,1.3,2.9,2,4.2
+                          c0.3,0.6,0.7,1.2,0.9,1.5c0.1,0.1,0.1,0-0.1,0l0,0c0.1,0-0.2,0-0.2,0l0.1,0c0,0,0.1,0,0,0c0,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1,0.1
+                          c-0.1,0,0,0,0,0c0.2-0.2,0.4-0.9,0.5-1.5c0.1-0.7,0.2-1.4,0.3-2.1c0.1-0.7,0.2-1.5,0.3-2.3c0.2-0.8,0.3-1.6,1-2.7
+                          c0.3-0.5,1-1.2,2.1-1.2l0.1,0c0.1,0,0.3,0,0.4,0c0.3,0,0.5,0.1,0.7,0.2c0.4,0.2,0.6,0.4,0.8,0.6c0.8,0.8,1.2,1.5,1.6,2.2
+                          c0.7,1.4,1.2,2.7,1.8,3.9c0.3,0.6,0.6,1.1,0.9,1.4c0.1,0.1,0.1,0.1-0.1,0c0,0,0,0-0.1,0c-0.3,0.1-0.1,0-0.1,0l0.1,0
+                          c0,0,0.1,0,0.1,0c0,0-0.1,0-0.1,0c-0.2,0.1-0.1,0.1-0.1,0c0.1-0.1,0.4-0.8,0.5-1.3c0.1-0.6,0.2-1.3,0.3-1.9
+                          c0.2-1.4,0.3-2.7,0.8-4.3c0.1-0.4,0.3-0.8,0.7-1.3c0.4-0.5,1-1,1.9-1c0.1,0,0.1,0,0.4,0c0.2,0,0.5,0.1,0.6,0.2
+                          c0.3,0.1,0.6,0.3,0.8,0.5c0.4,0.3,0.7,0.7,0.9,1c0.9,1.3,1.3,2.5,1.8,3.6c0.5,1.1,1,2.3,1.5,2.9c0.1,0.2,0.2,0.2,0.2,0.2
+                          c0,0,0,0-0.1,0c0,0,0,0,0,0c0,0-0.3,0.1-0.1,0l0.1,0c0.1,0,0.2-0.1,0.1,0c-0.2,0.1-0.1,0.1-0.1,0.1c0,0,0-0.1,0.1-0.1
+                          c0.1-0.1,0.2-0.3,0.2-0.5c0.3-0.9,0.4-2,0.6-3.1c0.2-1.1,0.3-2.2,0.6-3.4c0.2-0.6,0.4-1.2,1-1.9c0.2-0.2,0.4-0.3,0.6-0.4
+                          c0.1-0.1,0.2-0.1,0.4-0.1l0.2,0c-0.1,0,0.2,0,0.2,0l0,0c0.1,0,0.1,0,0.2,0c0.2,0,0.3,0,0.5,0.1c0.3,0.1,0.5,0.2,0.7,0.3
+                          c0.7,0.5,1,1,1.4,1.5c0.3,0.5,0.5,0.9,0.8,1.4c0.8,1.8,1.5,3.5,2.2,4.6c0.2,0.3,0.4,0.5,0.5,0.5c0.1,0,0.1,0,0,0c0,0,0,0,0,0l0,0
+                          c-0.1,0,0.1,0-0.1,0l0.1,0l0.1,0c0,0,0,0-0.1,0c-0.1,0.1,0.1-0.1,0.2-0.3c0.1-0.2,0.2-0.5,0.3-0.8c0.3-1.2,0.4-2.4,0.6-3.4
+                          c0.1-1.1,0.3-2,0.5-2.8c0.2-0.8,0.6-1.5,1.1-1.9c0.6-0.4,1-0.4,1-0.4l0.3,1.9c0,0,0,0,0,0c-0.1,0-0.3,0.3-0.4,0.9
+                          c-0.2,0.6-0.3,1.4-0.4,2.5c-0.1,1-0.2,2.2-0.5,3.7c-0.1,0.4-0.2,0.8-0.4,1.2c-0.2,0.4-0.4,0.9-1.2,1.4c-0.1,0-0.2,0.1-0.3,0.1
+                          l-0.1,0l-0.1,0c-0.3,0.1-0.1,0-0.2,0l-0.1,0l-0.3,0c-0.4,0-0.8-0.2-1.1-0.3c-0.6-0.3-0.9-0.8-1.2-1.1c-1.1-1.6-1.7-3.2-2.5-4.9
+                          c-0.2-0.4-0.4-0.8-0.6-1.1c-0.2-0.3-0.5-0.6-0.6-0.7c0,0,0,0,0,0c0,0,0.1,0,0.1,0c0,0-0.1,0-0.2,0l0,0c-0.1,0,0.2,0,0.1,0
+                          c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c-0.1,0.1-0.3,0.4-0.4,0.9c-0.2,0.9-0.4,1.9-0.5,3c-0.1,1.1-0.2,2.3-0.6,3.6
+                          c-0.1,0.3-0.2,0.7-0.5,1.1c-0.1,0.2-0.2,0.4-0.4,0.6c-0.2,0.2-0.4,0.4-0.8,0.6c-0.2,0.1-0.3,0.1-0.3,0.1l-0.1,0c0.1,0-0.2,0-0.2,0
+                          l-0.3,0c-0.3,0-0.7-0.1-1-0.2c-0.6-0.2-0.9-0.6-1.2-0.9c-1-1.2-1.5-2.4-2.1-3.5c-0.5-1.1-1-2.3-1.6-3.2c-0.1-0.2-0.3-0.4-0.4-0.4
+                          c0,0-0.1,0-0.1,0c0,0,0.1,0,0.2,0c0.2,0,0,0-0.1,0c0.2,0,0.3-0.1,0.2,0c-0.1,0.1-0.1,0.3-0.2,0.5c-0.3,1-0.5,2.3-0.6,3.7
+                          c-0.1,0.7-0.2,1.4-0.3,2.1c-0.2,0.8-0.3,1.5-1,2.5c-0.2,0.3-0.4,0.5-0.9,0.7c-0.1,0.1-0.2,0.1-0.4,0.2c-0.1,0-0.1,0-0.2,0l-0.1,0
+                          c-0.1,0,0.1,0-0.2,0c-0.1,0-0.2,0-0.3,0c-0.9,0-1.5-0.4-1.9-0.8c-0.8-0.8-1.1-1.5-1.5-2.1c-0.7-1.4-1.2-2.7-1.9-3.9
+                          c-0.3-0.6-0.7-1.2-0.9-1.4c-0.1,0-0.1-0.1-0.1-0.1c0,0,0,0,0.1,0c0,0,0.1,0,0.1,0l-0.1,0c0.3,0,0.3-0.2,0.3-0.1
+                          c-0.1,0.2-0.4,0.9-0.5,1.5c-0.1,0.7-0.2,1.4-0.3,2.1c-0.1,0.7-0.2,1.5-0.3,2.3c-0.2,0.8-0.3,1.6-1,2.7c-0.2,0.3-0.4,0.6-0.8,0.8
+                          c-0.1,0.1-0.3,0.1-0.4,0.2l-0.2,0.1c-0.1,0-0.1,0-0.1,0l-0.1,0c0,0-0.4,0.1-0.3,0.1l-0.2,0c-0.5,0-0.9-0.1-1.3-0.3
+                          c-0.2-0.1-0.3-0.2-0.5-0.3c-0.1-0.1-0.2-0.2-0.4-0.3c-0.8-0.8-1.2-1.6-1.6-2.3c-0.7-1.5-1.3-2.9-2-4.1c-0.2-0.3-0.3-0.6-0.5-0.8
+                          c-0.1-0.2-0.3-0.3-0.2-0.3c0,0,0,0,0.1,0c0.1,0,0.1,0,0.2,0c0,0,0.1,0,0.1,0l-0.1,0l-0.1,0c0.3,0,0.1,0,0.2,0l0,0c0,0,0,0,0.1,0
+                          c0,0,0.1-0.1,0.1-0.1c0.1-0.1-0.1,0.1-0.1,0.3c-0.2,0.5-0.3,1.2-0.4,1.9l-0.3,2.3c-0.1,0.8-0.2,1.6-0.5,2.5
+                          c-0.1,0.5-0.3,0.9-0.6,1.5c-0.2,0.3-0.4,0.6-0.7,0.8c-0.1,0.1-0.2,0.1-0.3,0.2c-0.1,0.1-0.3,0.2-0.4,0.2l-0.2,0.1l-0.1,0l-0.1,0
+                          c-0.4,0.1-0.2,0-0.3,0.1l-0.2,0c-0.1,0-0.2,0-0.4,0c-0.2,0-0.5-0.1-0.7-0.2c-0.4-0.2-0.7-0.4-1-0.6c-0.5-0.4-0.8-0.8-1-1.2
+                          c-0.5-0.8-0.8-1.5-1.2-2.3l-1-2.1c-0.3-0.7-0.7-1.3-1-1.7c-0.1-0.2-0.3-0.3-0.2-0.3c0,0,0,0,0.1,0c0.1,0,0.1,0,0.2,0
+                          c0,0,0.1,0,0.1,0l-0.1,0l-0.1,0l0.2,0l0,0c0,0,0,0,0.1,0c0,0,0.1-0.1,0.1-0.1c0.1-0.1-0.1,0.1-0.1,0.3c-0.1,0.2-0.2,0.5-0.2,0.9
+                          c-0.3,1.3-0.4,2.9-0.7,4.5c-0.2,0.8-0.3,1.6-0.8,2.7c-0.1,0.3-0.3,0.5-0.6,0.8c-0.2,0.2-0.3,0.3-0.6,0.4c-0.1,0.1-0.3,0.1-0.4,0.2
+                          c-0.1,0-0.1,0-0.1,0l-0.1,0c-0.4,0.1-1,0.1-1.4,0c-0.4-0.1-0.8-0.3-1-0.5c-1-0.8-1.3-1.6-1.8-2.3c-0.4-0.7-0.7-1.4-1-2.1
+                          c-0.3-0.7-0.6-1.3-0.9-1.9c-0.3-0.6-0.7-1.2-0.9-1.3c0,0,0,0,0,0c0,0,0.3,0,0.3,0l-0.1,0l-0.1,0l0.2,0c0.2,0,0.3-0.2,0.2-0.1
+                          c-0.2,0.2-0.3,0.9-0.5,1.5c-0.2,1.3-0.3,2.8-0.6,4.3c-0.2,0.8-0.3,1.6-0.8,2.5c-0.1,0.1-0.2,0.3-0.2,0.4c-0.1,0.1-0.2,0.3-0.3,0.4
+                          c-0.2,0.1-0.3,0.2-0.5,0.4c-0.1,0.1-0.3,0.1-0.4,0.2l-0.2,0.1l-0.1,0l-0.1,0c0,0-0.4,0.1-0.3,0.1l-0.2,0c-0.2,0-0.4,0-0.7-0.1
+                          c-0.4-0.1-0.8-0.3-1.1-0.5c-1-0.8-1.4-1.5-1.8-2.2c-0.4-0.7-0.7-1.3-1-2c-0.6-1.2-1.1-2.5-1.7-3.3c-0.1-0.2-0.3-0.3-0.3-0.4
+                          c0,0,0,0,0.1,0c0,0,0.1,0,0.2,0c0,0,0.1,0,0.1,0l-0.1,0l-0.1,0l0.2,0c0.2,0,0.3-0.2,0.2-0.1c0,0.1-0.1,0.3-0.2,0.5
+                          c-0.3,0.9-0.4,2.2-0.6,3.5c-0.2,1.3-0.3,2.5-0.9,4.1c-0.2,0.4-0.4,0.8-0.9,1.3c-0.7,0.5-1.2,0.7-2,0.6c-0.7-0.1-1.3-0.5-1.6-0.8
+                          c-0.3-0.3-0.6-0.6-0.8-0.9c-0.8-1.2-1.2-2.3-1.7-3.3c-0.4-1-0.9-2-1.3-2.7c-0.2-0.4-0.5-0.6-0.5-0.7c0,0,0,0,0.1,0c0.3,0-0.4,0,0,0
+                          c0.1,0,0.1-0.1,0.1,0c-0.1,0.1-0.3,0.4-0.4,0.8c-0.1,0.4-0.2,0.8-0.3,1.3c-0.3,1.8-0.5,3.6-1.1,5.4c-0.2,0.5-0.4,0.9-0.8,1.4
+                          c-0.1,0.1-0.3,0.2-0.4,0.3c-0.1,0.1-0.4,0.2-0.6,0.3l-0.1,0l-0.2,0l-0.1,0c-0.2,0-0.4,0-0.6,0c-0.7-0.2-1.1-0.6-1.4-0.9
+                          c-0.3-0.4-0.5-0.7-0.7-1c-0.7-1.3-1.1-2.4-1.5-3.4c-0.4-1-0.7-1.8-1.1-2.3c-0.3-0.6-0.6-0.9-0.8-1c0-0.1-0.3-0.1-0.3-0.1
+                          L196.3,298.2z" fill="#435054"/>
+                      </g>
+                      <g>
+                        <line y2="202.3" x2="131.9" y1="208" x1="92.6" fill="#FFFFFF"/>
+                        <path d="M92.5,207.4c0,0,0.1-0.1,0.4-0.3c0.3-0.2,0.7-0.4,1.2-0.7c1-0.5,2.5-1.1,4.4-1.4c1.8-0.3,4-0.6,6.3-0.9
+                          c2.3-0.3,4.8-0.6,7.3-0.9c1.2-0.2,2.5-0.3,3.7-0.4c1.2-0.1,2.4-0.3,3.6-0.4c2.3-0.2,4.5-0.4,6.4-0.5c3.7-0.3,6.2-0.3,6.2-0.3
+                          l0.2,1.1c0,0-2.4,0.7-6.1,1.5c-1.8,0.4-4,0.9-6.2,1.3c-1.1,0.2-2.3,0.4-3.5,0.7c-1.2,0.2-2.4,0.5-3.7,0.7c-2.5,0.4-4.9,0.9-7.2,1.2
+                          c-2.3,0.4-4.5,0.7-6.3,1c-1.8,0.2-3.4,0.1-4.6-0.1c-0.6-0.1-1-0.2-1.3-0.3c-0.3-0.1-0.5-0.2-0.5-0.2L92.5,207.4z" fill="#435054"/>
+                      </g>
+                      <g>
+                        <line y2="213.7" x2="141.6" y1="219.9" x1="94.3" fill="#FFFFFF"/>
+                        <path d="M94.2,219.4c0,0,0.7-0.2,2-0.6c1.3-0.3,3.1-0.8,5.3-1.3c2.2-0.5,4.8-1,7.5-1.5c1.4-0.3,2.8-0.5,4.3-0.7
+                          c1.5-0.2,2.9-0.5,4.4-0.7c1.5-0.2,3-0.4,4.4-0.6c1.5-0.2,2.9-0.4,4.3-0.5c2.8-0.3,5.4-0.5,7.6-0.5c2.3,0,4.1,0,5.5,0
+                          c1.3,0.1,2.1,0.2,2.1,0.2l0.1,1.1c0,0-0.7,0.3-2,0.7c-1.3,0.4-3.1,0.9-5.3,1.5c-2.2,0.5-4.8,1-7.5,1.5c-1.4,0.2-2.8,0.4-4.3,0.6
+                          c-1.5,0.2-2.9,0.4-4.4,0.5c-1.5,0.2-3,0.3-4.4,0.5c-1.5,0.1-2.9,0.3-4.3,0.4c-2.8,0.2-5.4,0.4-7.7,0.5c-2.2,0.1-4.1,0.1-5.4,0.2
+                          c-1.3,0-2.1,0-2.1,0L94.2,219.4z" fill="#435054"/>
+                      </g>
+                      <g>
+                        <g>
+                          <path d="M384.5,205c-2.3,3.2-5-1.3-8.8-0.9c-3.9,0.5-3.6,2.7-7.5,3.2c-3.9,0.5-4.2-1.8-8.1-1.3
+                            c-3.9,0.5-5.4,5.5-8.4,2.9c-3.2-2.7,1.4-5.2,0.9-9.4c-0.5-4.2-2.8-3.9-3.3-8.1c-0.5-4.2,1.8-4.5,1.3-8.6c-0.5-4.2-5.5-5.5-3.1-8.9
+                            c2.3-3.2,5,1.3,8.8,0.9c3.9-0.5,3.6-2.7,7.5-3.2c3.9-0.5,4.2,1.8,8.1,1.3c3.9-0.5,5.4-5.5,8.4-2.9c3.2,2.7-1.4,5.2-0.9,9.4
+                            c0.5,4.2,2.8,3.9,3.3,8.1c0.5,4.2-2.7,5-1.2,8.9C383.2,200.9,386.9,201.6,384.5,205z" fill="#FFFFFF"/>
+                        </g>
+                        <path d="M353.3,211.9c-1.1,0-2.1-0.4-3.1-1.2c-3.2-2.7-1.7-5.7-0.9-7.5c0.6-1.2,1.1-2.2,0.9-3.3
+                          c-0.2-1.5-0.6-2.1-1.2-3c-0.8-1.1-1.7-2.4-2-5.1c-0.3-2.7,0.3-4.2,0.8-5.4c0.4-1,0.7-1.7,0.5-3.2c-0.1-1.1-0.9-2-1.7-3
+                          c-1.3-1.5-3.4-4.1-1-7.5c1.3-1.7,2.7-2.1,3.8-2.1c1.3,0,2.5,0.6,3.6,1.1c1.1,0.5,2.1,1,3.1,0.9c1.3-0.2,1.9-0.6,2.7-1.2
+                          c1-0.8,2.3-1.7,4.9-2c0.4-0.1,0.9-0.1,1.3-0.1c1.8,0,3,0.5,3.9,0.9c1,0.4,1.6,0.6,2.9,0.5c1-0.1,1.9-0.8,2.8-1.6c1.1-1,2.4-2,4.2-2
+                          c1.1,0,2.1,0.4,3.1,1.2c3.2,2.7,1.7,5.7,0.9,7.5c-0.6,1.2-1.1,2.2-0.9,3.3c0.2,1.5,0.6,2.1,1.2,3c0.8,1.1,1.7,2.4,2,5.1
+                          c0.3,2.6-0.5,4.3-1,5.5c-0.5,1.2-0.8,1.6-0.3,2.9c0.5,1.4,1.3,2.3,2,3.3c1.3,1.6,3.2,4,0.7,7.5c-1.3,1.7-2.7,2.1-3.8,2.1
+                          c-1.3,0-2.5-0.6-3.6-1.1c-1.1-0.5-2.1-1-3.1-0.9c-1.3,0.2-1.9,0.6-2.7,1.2c-1,0.8-2.3,1.7-4.9,2c-0.4,0.1-0.9,0.1-1.3,0.1
+                          c-1.8,0-3-0.5-3.9-0.9c-1-0.4-1.6-0.7-2.9-0.5c-1,0.1-1.9,0.8-2.8,1.6C356.4,210.8,355.1,211.9,353.3,211.9z M352.8,206.8
+                          c0,0,0.1,0.1,0.3,0.4c0.1,0.1,0.2,0.1,0.2,0.1c0.3-0.1,0.9-0.6,1.3-1c1.2-1,2.8-2.4,5.2-2.7c0.4-0.1,0.9-0.1,1.3-0.1
+                          c1.8,0,3,0.5,3.9,0.9c1,0.4,1.6,0.6,2.9,0.5c1.3-0.2,1.9-0.6,2.7-1.2c1-0.8,2.3-1.7,4.9-2c2.3-0.3,4.2,0.6,5.7,1.4
+                          c0.5,0.2,1.1,0.6,1.5,0.6c0,0,0.1-0.1,0.2-0.2c0.4-0.5,0.4-0.7,0.4-0.7c0-0.2-0.5-0.8-0.9-1.3c-0.8-1-2-2.4-2.8-4.5
+                          c-1.2-3-0.3-5,0.4-6.4c0.5-1,0.8-1.7,0.7-3c-0.2-1.5-0.6-2.1-1.2-3c-0.8-1.1-1.7-2.4-2-5.1c-0.3-2.5,0.7-4.4,1.4-5.8
+                          c0.3-0.5,0.7-1.4,0.7-1.7l0,0c0,0-0.1-0.1-0.3-0.4c-0.1-0.1-0.2-0.1-0.2-0.1c-0.3,0.1-0.9,0.6-1.3,1c-1.2,1-2.8,2.4-5.2,2.7
+                          c-0.4,0.1-0.9,0.1-1.3,0.1c-1.8,0-3-0.5-3.9-0.9c-1-0.4-1.6-0.7-2.9-0.5c-1.3,0.2-1.9,0.6-2.7,1.2c-1,0.8-2.3,1.7-4.9,2
+                          c-2.3,0.3-4.2-0.6-5.7-1.4c-0.5-0.2-1.1-0.6-1.5-0.6c0,0-0.1,0.1-0.2,0.2c-0.2,0.3-0.2,0.4-0.2,0.5c0,0.3,0.7,1,1,1.5
+                          c1,1.2,2.4,2.9,2.7,5.4c0.3,2.7-0.3,4.2-0.8,5.4c-0.4,1-0.7,1.7-0.5,3.2s0.6,2.1,1.2,3c0.8,1.1,1.7,2.4,2,5.1
+                          c0.3,2.5-0.7,4.4-1.4,5.8C353.2,205.6,352.7,206.5,352.8,206.8L352.8,206.8z" fill="#435054"/>
+                      </g>
+                      <g opacity="0.59">
+                        <path d="M311.8,185.6c0,0,0.2,0,0.6-0.1c0.4-0.1,1,0,1.6-0.2c0.6-0.1,1.4-0.2,2.2-0.3c0.4-0.1,0.9-0.1,1.3-0.2
+                          c0.5-0.1,1-0.2,1.5-0.2c1-0.2,2.1-0.4,3.3-0.6c1.2-0.2,2.4-0.5,3.7-0.8c2.6-0.7,5.4-1.6,8.3-2.5c2.9-0.9,5.9-1.8,8.8-2.4
+                          c1.5-0.3,2.9-0.5,4.3-0.6c1.4-0.1,2.7-0.2,3.9-0.1c0.6,0,1.2,0.1,1.7,0.1c0.6,0.1,1.1,0.2,1.6,0.2c1,0.2,1.8,0.4,2.5,0.6
+                          c0.7,0.2,1.2,0.4,1.5,0.6c0.3,0.1,0.5,0.2,0.5,0.2l-0.4,1.4c0,0-0.2,0-0.5-0.1c-0.3,0-0.8-0.1-1.5-0.1c-0.6,0-1.4-0.1-2.3,0
+                          c-0.4,0-0.9,0.1-1.4,0.1c-0.5,0.1-1,0.1-1.5,0.2c-1.1,0.2-2.2,0.4-3.4,0.7c-1.2,0.3-2.5,0.7-3.8,1.1c-2.6,0.9-5.4,2-8.2,3.1
+                          c-2.8,1.1-5.8,2.2-8.7,3c-1.4,0.4-2.9,0.7-4.3,0.9c-1.4,0.2-2.8,0.2-4,0.2c-0.6,0-1.2-0.1-1.8-0.2c-0.6-0.1-1.1-0.2-1.6-0.4
+                          c-0.5-0.1-1-0.3-1.4-0.5c-0.4-0.2-0.8-0.3-1.1-0.5c-0.7-0.3-1.1-0.7-1.4-0.9c-0.3-0.2-0.5-0.4-0.5-0.4L311.8,185.6z" fill="#F97E7E"/>
+                        <path d="M313,197c0,0,0.2,0,0.6-0.1c0.4-0.1,1,0,1.6-0.2c0.6-0.1,1.4-0.2,2.2-0.3c0.4-0.1,0.9-0.1,1.3-0.2
+                          c0.5-0.1,1-0.2,1.5-0.2c1-0.2,2.1-0.4,3.3-0.6c1.2-0.2,2.4-0.5,3.7-0.8c2.6-0.7,5.4-1.6,8.3-2.5c2.9-0.9,5.9-1.8,8.8-2.4
+                          c1.5-0.3,2.9-0.5,4.3-0.6c1.4-0.1,2.7-0.2,3.9-0.1c0.6,0,1.2,0.1,1.7,0.1c0.6,0.1,1.1,0.2,1.6,0.2c1,0.2,1.8,0.4,2.5,0.6
+                          c0.7,0.2,1.2,0.4,1.5,0.6c0.3,0.1,0.5,0.2,0.5,0.2l-0.4,1.4c0,0-0.2,0-0.5-0.1c-0.3,0-0.8-0.1-1.5-0.1c-0.6,0-1.4-0.1-2.3,0
+                          c-0.4,0-0.9,0.1-1.4,0.1c-0.5,0.1-1,0.1-1.5,0.2c-1.1,0.2-2.2,0.4-3.4,0.7c-1.2,0.3-2.5,0.7-3.8,1.1c-2.6,0.9-5.4,2-8.2,3.1
+                          c-2.8,1.1-5.8,2.2-8.7,3c-1.4,0.4-2.9,0.7-4.3,0.9c-1.4,0.2-2.8,0.2-4,0.2c-0.6,0-1.2-0.1-1.8-0.2c-0.6-0.1-1.1-0.2-1.6-0.4
+                          c-0.5-0.1-1-0.3-1.4-0.5c-0.4-0.2-0.8-0.3-1.1-0.5c-0.7-0.3-1.1-0.7-1.4-0.9c-0.3-0.2-0.5-0.4-0.5-0.4L313,197z" fill="#F97E7E"/>
+                        <path d="M316.4,207.8c0,0,0.2,0,0.6-0.1c0.4-0.1,1,0,1.6-0.2c0.6-0.1,1.4-0.2,2.2-0.3c0.4-0.1,0.9-0.1,1.3-0.2
+                          c0.5-0.1,1-0.2,1.5-0.2c1-0.2,2.1-0.4,3.3-0.6c1.2-0.2,2.4-0.5,3.7-0.8c2.6-0.7,5.4-1.6,8.3-2.5c2.9-0.9,5.9-1.8,8.8-2.4
+                          c1.5-0.3,2.9-0.5,4.3-0.6c1.4-0.1,2.7-0.2,3.9-0.1c0.6,0,1.2,0.1,1.7,0.1c0.6,0.1,1.1,0.2,1.6,0.2c1,0.2,1.8,0.4,2.5,0.6
+                          c0.7,0.2,1.2,0.4,1.5,0.6c0.3,0.1,0.5,0.2,0.5,0.2l-0.4,1.4c0,0-0.2,0-0.5-0.1c-0.3,0-0.8-0.1-1.5-0.1c-0.6,0-1.4-0.1-2.3,0
+                          c-0.4,0-0.9,0.1-1.4,0.1c-0.5,0.1-1,0.1-1.5,0.2c-1.1,0.2-2.2,0.4-3.4,0.7c-1.2,0.3-2.5,0.7-3.8,1.1c-2.6,0.9-5.4,2-8.2,3.1
+                          c-2.8,1.1-5.8,2.2-8.7,3c-1.4,0.4-2.9,0.7-4.3,0.9c-1.4,0.2-2.8,0.2-4,0.2c-0.6,0-1.2-0.1-1.8-0.2c-0.6-0.1-1.1-0.2-1.6-0.4
+                          c-0.5-0.1-1-0.3-1.4-0.5c-0.4-0.2-0.8-0.3-1.1-0.5c-0.7-0.3-1.1-0.7-1.4-0.9c-0.3-0.2-0.5-0.4-0.5-0.4L316.4,207.8z" fill="#F97E7E"/>
+                      </g>
+                      <rect height="18.8" width="14.8" fill="#A5E7F9" transform="matrix(0.9918 -0.1279 0.1279 0.9918 -21.2192 48.3545)" y="180" x="358.4"/>
+                    </svg>
+
+                  </div>
+
+                </div>
+          </div>
+          <div class="row">
+           <div class="col-lg-12 text-center">
+                <p class="empty-state lead">Your Email Activity page lists all of the emails sent to your clients from your ShootProof account.</p>
+                <p class="empty-state trail before-cta">You’ll start seeing activity here when your client receives Order Receipts, notices that Invoices are ready, and more!</p>
+            </div>
+          </div>
+    </div>
+
+    <% end %>
+  </div>
+  <!-- /in-side -->
+</div>
+</div>
+</div>
+</div>
+</div>
+<% end %>

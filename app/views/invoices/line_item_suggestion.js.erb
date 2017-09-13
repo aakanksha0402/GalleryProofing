@@ -1,0 +1,21 @@
+// alert("jcvb");
+// '<% if @line_item_suggestion.present? %>'
+// '<%= puts "PRESENT!!!" %>'
+// $("#line_item_auto_fill").show();
+// $("#line_item_auto_fill").html('<ul class="list-unstyled list">'+
+//                       '<% @line_item_suggestion.each do |line_item_suggestion| %>'+
+//                         '<li id=\'li_<%="#{line_item_suggestion.id}"%>\' name=\'<%= "#{line_item_suggestion.id} "%>\'><%= line_item_suggestion.name%> - quantity: <%= line_item_suggestion.quantity%> - item price: <%= line_item_suggestion.price %> - total price: <%= line_item_suggestion.total_price %></li>'+
+//                       '<% end %>'+
+//                         '</ul>');
+// '<% end %>'
+// $('li[id^="li_"]').each(function(){
+//   $(this).click(function(){
+//     $(this).parent().parent().parent().find('input[id$="_name"]').val("<%= @line_item_suggestion.name %>")
+//     // $("#contact_id").val($(this).attr('name'));
+//     // $.ajax({
+//     //   type: "get",
+//     //   url: "/invoices/existing_contact",
+//     //   data: {id: $("#contact_id").val()}
+//     // })
+//   });
+// });

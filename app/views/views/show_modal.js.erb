@@ -1,0 +1,397 @@
+
+$("#items").hide();
+$('#back-button').remove();
+$('#edit_crop').hide();
+$("#items-header").append('<div class="left-bar-btn" id = "back-button">' +
+'<button class="modal-back"> ' +
+'<svg class="sp-svg" version="1.1" viewBox="0 0 7.969 12.798"><path d="M0.854,0.125l6.939,5.898c0.234,0.199,0.234,0.553,0,0.753l-6.939,5.898C0.521,12.956,0,12.727,0,12.297V0.501C0,0.071,0.521-0.158,0.854,0.125z"></path></svg> ' +
+'<span class="font-text" id = "item-back-span"><%= @group.name %></span> ' +
+'</button> ' +
+'</div>');
+<% if params[:crop_image] == 'true' %>
+if ('<%= params[:crop_x].present? %>' === "true" || '<%= params[:crop_y].present? %>' === "true" || '<%= params[:crop_w].present? %>' === "true" || '<%= params[:crop_h].present? %>' === "true" ) {
+      var x_1 = '<%= params[:crop_x] %>';
+      var y_1 = '<%= params[:crop_y] %>';
+      var w_1 = '<%= params[:crop_w] %>';
+      var h_1 = '<%= params[:crop_h] %>';
+    } else {
+      var x_1 = 50;
+      var y_1 = 0;
+      var w_1 = 500;
+      var h_1 = 500;
+    }
+  $('#cropbox').Jcrop({
+        onChange: update_crop,
+        onSelect: update_crop,
+        allowResize: true,
+        allowSelect: false,
+        setSelect: [50,0, 500, 500],
+        allowMove: true
+  });
+  function update_crop(coords) {
+  $('#crop_x').val(coords.x);
+  $('#crop_y').val(coords.y);
+  $('#crop_w').val(coords.w);
+  $('#crop_h').val(coords.h);
+}
+  $('#back-button').remove();
+  $("#items-header").append('<div class="left-bar-btn" id = "back-button">' +
+  '<button class="modal-back"> ' +
+  '<svg class="sp-svg" version="1.1" viewBox="0 0 7.969 12.798"><path d="M0.854,0.125l6.939,5.898c0.234,0.199,0.234,0.553,0,0.753l-6.939,5.898C0.521,12.956,0,12.727,0,12.297V0.501C0,0.071,0.521-0.158,0.854,0.125z"></path></svg> ' +
+  '<span class="font-text" ><%= link_to "Set crop","#", :onclick => 'set_crop()' %></span> ' +
+  '</button> ' +
+  '</div>');
+  $("#options").hide();
+  $('.item-choose').addClass('second-item-style');
+  $('#do_not_delete').append(
+  '<div class="add-cart-btn">' +
+  '<%= link_to "Set crop","#", :onclick => 'set_crop()', class: "btn btn-primary" %>' +
+  '</div>');
+<% elsif params[:digital_catalog_id].present? %>
+  JcropAPI = $('#cropbox').data('Jcrop');
+  if (JcropAPI != null) {
+    JcropAPI.destroy();
+  }
+  $("#options").hide();
+  $('.item-choose').addClass('second-item-style');
+  <% if params[:is_photo] == 'true' %>
+    $('#choose-item-text').html("<%= @catalogs.sub_item_name %> <br/> $ <%= @price %>");
+  <% else %>
+  $('#choose-item-text').html("<%= @catalogs.sub_item_name %> <br/> $ <%= @price %>");
+  <% end %>
+  $('#do_not_delete').append('<div class="main-side-calc">' +
+  '<div class="sub-total-calc">' +
+  '<div class="inside-tag-title">QUANTITY<div>' +
+  '<div class="quantity-selector bound-item-quantity-selector secon-side-calc">' +
+  '<button class="btn quantity-reduce" disabled= "disabled" id = "quantity-reduce" remote = "true"> ' +
+  '<svg viewBox="0 0 12 2" version="1.1" class="sp-svg">' +
+  '<path d="M11.5,2h-11C0.224,2,0,1.776,0,1.5v-1C0,0.224,0.224,0,0.5,0h11C11.776,0,12,0.224,12,0.5v1C12,1.776,11.776,2,11.5,2z"/>' +
+  '</svg> ' +
+  '</button>' +
+  '<input type="text" value="1" class="form-control theme-font-primary text-center" id = "quantity" remote = "true" name="quantity" >'+
+  '<button class="btn quantity-increase", remote = "true", id = "quantity-increase"> ' +
+  '<svg viewBox="0 0 12 12" version="1.1" class="sp-svg">' +
+  '<path d="M11.5,5H7V0.5C7,0.224,6.776,0,6.5,0h-1C5.224,0,5,0.224,5,0.5V5H0.5C0.224,5,0,5.224,0,5.5v1C0,6.776,0.224,7,0.5,7H5v4.5C5,11.776,5.224,12,5.5,12h1C6.776,12,7,11.776,7,11.5V7h4.5C11.776,7,12,6.776,12,6.5v-1C12,5.224,11.776,5,11.5,5z"/>' +
+  '</svg> ' +
+  '</button>' +
+  '</div>' +
+  '</div>' +
+  '</div>' +
+  '</div>' +
+  '<div class="item-subtotal">' +
+  '<span class="inside-tag-title">Subtotal</span>' +
+  '<% if @price.present? %> ' +
+  '<span class="inside-tag-title set-name-type" id = "price" data-price = "<%= @price %>">$ <%= @price %></span>' +
+  '<% else %> ' +
+  '<span class="inside-tag-title set-name-type" id = "price" data-price = "0">$ 0.00</span>' +
+  '<% end %>' +
+  '</div>' +
+  '</div>' +
+  '<div class="add-cart-btn">' +
+  '<% if @item_found %> ' +
+  '<%= button_to "Update Item", "#", id: "update_cart_item", class: "btn btn-primary", remote: true, "data-event": params[:gallery], "data-catalog": @catalogs.id,"from": params[:from], "data-lineitem": @lineitem_id %>' +
+  '<% else %> ' +
+  '<%= button_to "Add to Cart", "#", id: "add_to_cart", class: "btn btn-primary", remote: true, "data-event": params[:gallery], "data-catalog": @catalogs.id,"from": params[:from] %>' +
+  '<% end %>' +
+  '</div>');
+<% elsif @catalogs.count > 1 %>
+  JcropAPI = $('#cropbox').data('Jcrop');
+  if (JcropAPI != null) {
+    JcropAPI.destroy();
+  }
+  $('#choose-item-text').html(<%= params[:print_size_one] %> + " X " + <%= params[:print_size_two] %> + " OPTIONS")
+  $('#options').remove();
+  $("#do_not_delete").append('<div class="container-fluid" id = "options">' +
+    '<div class="row">' +
+      '<div class="col-lg-12">' +
+        '<div class="tab-content clearfix">' +
+          '<div class="tab-pane active">' +
+            '<ul>' +
+              '<% @catalogs.each do |catalog| %> ' +
+                '<li onclick="options(<%= catalog.id %>, <%= catalog.group_id %>)" remote = true><svg class="sp-svg" version="1.1" viewBox="0 0 7.969 12.798"><path d="M0.854,0.125l6.939,5.898c0.234,0.199,0.234,0.553,0,0.753l-6.939,5.898C0.521,12.956,0,12.727,0,12.297V0.501C0,0.071,0.521-0.158,0.854,0.125z"></path></svg>' +
+                  '<div class="bound-pricing">' +
+                    '<span class="font-text">' +
+                      '<span class="ng-binding">$ <%= catalog.price == nil ? 0.0 : catalog.price %></span>' +
+                      '<span class="bound-pricing-min-indicator ng-binding"></span>' +
+                    '</span>' +
+                  '</div>' +
+                    '<h4 class="item-name">' +
+                      '<span class="font-text">' +
+                        '<span class="ng-binding"><%= catalog.sub_item_name %> </span>' +
+                      '</span>' +
+                    '</h4>' +
+                '</li>'+
+              '<% end %>' +
+            '</ul>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+  '</div>');
+<% else %>
+  $(function() {
+    if ('<%= params[:crop_x].present? %>' === "true" || '<%= params[:crop_y].present? %>' === "true" || '<%= params[:crop_w].present? %>' === "true" || '<%= params[:crop_h].present? %>' === "true" ) {
+      var x = '<%= params[:crop_x] %>';
+      var y = '<%= params[:crop_y] %>';
+      var w = '<%= params[:crop_w] %>';
+      var h = '<%= params[:crop_h] %>';
+    } else {
+      var x = 50;
+      var y = 0;
+      var w = 500;
+      var h = 500;
+    }
+    $('#cropbox').Jcrop({
+      boxWidth: 800,
+        boxHeight: 600,
+        bgColor: 'pink',
+        allowResize: false,
+        allowSelect: false,
+        bgOpacity: .2,
+        allowMove: false,
+        setSelect: [x,y, w, h],
+        aspectRatio: 1
+  });
+  });
+
+  $("#options").hide();
+  $('.item-choose').addClass('second-item-style');
+  <% if params[:is_photo] == 'true' %>
+  $('#choose-item-text').html("<%= @gallery.photos.count %>/<br/><%= @catalogs.first.print_size_one %> x <%= @catalogs.first.print_size_two %> - <%= @catalogs.first.sub_item_name %>");
+  <% else %>
+  $('#choose-item-text').html("<%= @catalogs.first.print_size_one %> x <%= @catalogs.first.print_size_two %> - <%= @catalogs.first.sub_item_name %>");
+  <% end %>
+  $('#edit_crop').show();
+  $('#do_not_delete').append('<div class="main-side-calc">' +
+  '<div class="sub-total-calc">' +
+  '<div class="inside-tag-title">QUANTITY<div>' +
+  '<div class="quantity-selector bound-item-quantity-selector secon-side-calc">' +
+  '<button class="btn quantity-reduce" disabled= "disabled" id = "quantity-reduce" remote = "true"> ' +
+  '<svg viewBox="0 0 12 2" version="1.1" class="sp-svg">' +
+  '<path d="M11.5,2h-11C0.224,2,0,1.776,0,1.5v-1C0,0.224,0.224,0,0.5,0h11C11.776,0,12,0.224,12,0.5v1C12,1.776,11.776,2,11.5,2z"/>' +
+  '</svg> ' +
+  '</button>' +
+  '<input type="text" value=<%= @lineitem_qwantity %> class="form-control theme-font-primary text-center" id = "quantity" remote = "true" name="quantity" >'+
+  '<button class="btn quantity-increase", remote = "true", id = "quantity-increase"> ' +
+  '<svg viewBox="0 0 12 12" version="1.1" class="sp-svg">' +
+  '<path d="M11.5,5H7V0.5C7,0.224,6.776,0,6.5,0h-1C5.224,0,5,0.224,5,0.5V5H0.5C0.224,5,0,5.224,0,5.5v1C0,6.776,0.224,7,0.5,7H5v4.5C5,11.776,5.224,12,5.5,12h1C6.776,12,7,11.776,7,11.5V7h4.5C11.776,7,12,6.776,12,6.5v-1C12,5.224,11.776,5,11.5,5z"/>' +
+  '</svg> ' +
+  '</button>' +
+  '</div>' +
+  '</div>' +
+  '</div>' +
+  '</div>' +
+  '<div class="item-subtotal">' +
+  '<span class="inside-tag-title">Subtotal</span>' +
+  '<% if @catalogs.first.price.present? %> ' +
+  '<span class="inside-tag-title set-name-type" id = "price" data-price = "<%= @price %>">$ <%= @price %></span>' +
+  '<% else %> ' +
+  '<span class="inside-tag-title set-name-type" id = "price" data-price = "0">$ 0.00</span>' +
+  '<% end %>' +
+  '</div>' +
+  '</div>' +
+  '<div class="add-cart-btn">' +
+  '<% if @item_found %> ' +
+  '<%= button_to "Update Item", "#", id: "update_cart_item", class: "btn btn-primary", remote: true, "data-event": params[:gallery], "data-catalog": @catalogs.first.id, "data-lineitem": @lineitem_id %>' +
+  '<% else %> ' +
+  '<%= button_to "Add to Cart", "#", id: "add_to_cart", class: "btn btn-primary", remote: true, "data-event": params[:gallery], "data-catalog": @catalogs.first.id %>' +
+  '<% end %>' +
+  '</div>');
+  function link_crop() {
+    photo = $('.item-choose').find('img').attr('data-value');
+    var crop_x = parseInt($('#crop_x').val());
+    var crop_y = parseInt($('#crop_y').val());
+    var crop_w = parseInt($('#crop_w').val());
+    var crop_h = parseInt($('#crop_h').val());
+    $("#options").hide();
+    $('#edit_crop').hide();
+    $("#items").hide();
+    $('#choose-item-text').html("CROP PHOTO");
+    $('#back-button').hide();
+    $('.main-side-calc').remove();
+    $('.item-subtotal').remove();
+    $('.add-cart-btn').remove();
+    $.ajax({
+      headers: {
+        'X-CSRF-Token':'<%= form_authenticity_token.to_s %>'
+      },
+      type: 'post',
+      url: '/views/show_modal',
+      data: {group_id: '<%= params[:group_id] %>', catalog_id: '<%= params[:catalog_id] %>' ,print_size_one: '<%= @catalogs.first.print_size_one %>',photo: photo, print_size_two: '<%= @catalogs.first.print_size_two %>', brand: '<%= params[:brand] %>', gallery: '<%= params[:gallery] %>',is_photo: '<%= @is_photo %>',crop_image: true,crop_x: crop_x,crop_y: crop_y,crop_w: crop_w,crop_h: crop_h}
+    });
+  }
+  function set_crop() {
+    photo = $('.item-choose').find('img').attr('data-value');
+    var crop_x = parseInt($('#crop_x').val());
+    var crop_y = parseInt($('#crop_y').val());
+    var crop_w = parseInt($('#crop_w').val());
+    var crop_h = parseInt($('#crop_h').val());
+    $("#options").hide();
+    $('#edit_crop').hide();
+    $("#items").hide();
+    $('#choose-item-text').html("CROP PHOTO");
+    $('#back-button').hide();
+    $('.main-side-calc').remove();
+    $('.item-subtotal').remove();
+    $('.add-cart-btn').remove();
+    $.ajax({
+      headers: {
+        'X-CSRF-Token':'<%= form_authenticity_token.to_s %>'
+      },
+      type: 'post',
+      url: '/views/show_modal',
+      data: {group_id: '<%= params[:group_id] %>', catalog_id: '<%= params[:catalog_id] %>' ,print_size_one: '<%= @catalogs.first.print_size_one %>',photo: photo, print_size_two: '<%= @catalogs.first.print_size_two %>', brand: '<%= params[:brand] %>', gallery: '<%= params[:gallery] %>',is_photo: '<%= @is_photo %>',crop_image: false,crop_x: crop_x,crop_y: crop_y,crop_w: crop_w,crop_h: crop_h}
+    });
+  }
+<% end %>
+$('#item-back-span2').click(function(){
+  photo = $('.item-choose').find('img').attr('data-value');
+
+    $.ajax({
+      headers: {
+        'X-CSRF-Token':'<%= form_authenticity_token.to_s %>'
+      },
+      type: 'post',
+      url: '/views/show_modal',
+      data: {group_id: '<%= params[:group_id] %>', catalog_id: '<%= params[:catalog_id] %>' ,print_size_one: '<%= @catalogs.first.print_size_one %>',photo: photo, print_size_two: '<%= @catalogs.first.print_size_two %>', brand: '<%= params[:brand] %>', gallery: '<%= params[:gallery] %>',is_photo: '<%= @is_photo %>',crop_image: false}    });
+});
+$('#item-back-span').click(function(){
+  JcropAPI = $('#cropbox').data('Jcrop');
+  if (JcropAPI != null) {
+    JcropAPI.destroy();
+  }
+  $("#options").hide();
+  $('#edit_crop').hide();
+  $("#items").show();
+  $('#choose-item-text').html("Choose Item");
+  $('#back-button').hide();
+  $('.main-side-calc').remove();
+  $('.item-subtotal').remove();
+  $('.add-cart-btn').remove();
+});
+
+$('#quantity-increase').click(function(){
+  var quantity = $('#quantity').val();
+  var data_price = $('#price').data('price');
+  if(quantity == "9998")
+  {
+    $("#quantity-increase").prop('disabled', true);
+    $('#quantity').val(parseInt(quantity)+1);
+  }
+  else
+  {
+    $('#quantity').val(parseInt(quantity)+1);
+    $("#quantity-reduce").prop('disabled', false);
+    $("#quantity-increase").prop('disabled', false);
+  }
+  var price = data_price * (parseInt(quantity)+1);
+  $("#price").html('$ ' + price);
+});
+
+$('#quantity-reduce').click(function(){
+  var quantity = $('#quantity').val();
+  var data_price = $('#price').data('price');
+  if(quantity == "2")
+  {
+    $("#quantity-reduce").prop('disabled', true);
+    $('#quantity').val(parseInt(quantity)-1);
+  }
+  else
+  {
+    $('#quantity').val(parseInt(quantity)-1);
+    $("#quantity-reduce").prop('disabled', false);
+    $("#quantity-increase").prop('disabled', false);
+  }
+  var price = data_price * (parseInt(quantity)-1);
+  $("#price").html('$ ' + price);
+});
+
+
+
+$('#quantity').keyup(function(){
+  var quantity = $('#quantity').val();
+  var data_price = $('#price').data('price');
+  if (quantity == ""){
+    $('#quantity-increase').prop('disabled', true);
+    $('#quantity-reduce').prop('disabled', true);
+    $('#add_to_cart').prop('disabled', true);
+    $('#price').html('$ 0.00');
+  }
+  else{
+    $('#add_to_cart').prop('disabled', false);
+    $('#price').html("$ " + $('#quantity').val() * data_price);
+    if (quantity <= "1"){
+      $("#quantity-reduce").prop('disabled', true);
+      if (quantity <= "0"){
+        $('#quantity').val('1');
+      }
+      else{
+        $('#quantity').val(parseInt(quantity));
+      }
+      $("#quantity-increase").prop('disabled', false);
+    }
+    else if (quantity >= "9999"){
+      $("#quantity-increase").prop('disabled', true);
+      if (quantity >= "9999"){
+        $('#quantity').val('9999');
+      }
+      else{
+        $('#quantity').val(parseInt(quantity));
+      }
+      $("#quantity-reduce").prop('disabled', false);
+    }
+    else{
+      $('#quantity-increase').prop('disabled', false);
+      $('#quantity-reduce').prop('disabled', false);
+    }
+  }
+});
+
+function options(id, group_id) {
+  photo = $('.item-choose').find('img').attr('data-value');
+  $.ajax({
+    headers: {
+      'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+    },
+    type: 'post',
+    url: '/views/show_modal',
+    data: {catalog_id: id, group_id: group_id, gallery: '<%= params[:gallery] %>', photo: photo, brand: '<%= params[:brand] %>',is_photo: '<%= params[:is_photo] %>'}
+  });
+}
+
+$('#add_to_cart').click(function(){
+  $('#add_to_cart').prop('disabled', true);
+  photo = $('.item-choose').find('img').attr('data-value');
+  quantity = $('#quantity').val();
+  catalog = $('#add_to_cart').attr('data-catalog');
+  from = $('#add_to_cart').attr('from');
+  $.ajax({
+    headers: {
+      'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+    },
+    type: 'post',
+    url: '/carts/add_to_cart',
+    data: {from: from,photo: photo, gallery: '<%= params[:gallery] %>', quantity: quantity, catalog: catalog, brand: '<%= params[:brand] %>',is_photo: '<%= params[:is_photo] %>'}
+  });
+});
+
+$('#update_cart_item').click(function(){
+  $('#update_cart_item').prop('disabled', true);
+  photo = $('.item-choose').find('img').attr('data-value');
+  quantity = $('#quantity').val();
+  lineitem = $('#update_cart_item').attr('data-lineitem');
+  catalog = $('#update_cart_item').attr('data-catalog');
+  from = $('#update_cart_item').attr('from');
+  $.ajax({
+    headers: {
+      'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+    },
+    type: 'post',
+    url: '/carts/update_cart_item',
+    data: {lineitem: lineitem ,from: from,photo: photo, gallery: '<%= params[:gallery] %>', quantity: quantity, catalog: catalog, brand: '<%= params[:brand] %>',is_photo: '<%= params[:is_photo] %>'}
+    });
+});
+
+if (<%= session.key?(params[:photo]) %>) {
+  $('.item-choose').find($('img')).css({'filter': 'grayscale(100%)'});
+}

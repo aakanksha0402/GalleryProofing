@@ -1,0 +1,45 @@
+<%= content_for :body_class, "place-order-index" %>
+<% if @checkout.success == 'f' %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12 text-center">
+      <div id="bd">
+        <div class="ng-scope"></div>
+        <div class="client-page ng-scope" id="pageCheckoutComplete">
+          <h1 class="theme-color-primary ng-scope">
+            <span class="font-text ng-binding">Unable to Place <br/>Order</span>
+          </h1>
+          <%= link_to "Back To Gallery", view_gallery_path, class: "back-btn-in btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<% else %>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12 text-center">
+      <div id="bd">
+        <div class="ng-scope"></div>
+        <div class="client-page ng-scope" id="pageCheckoutComplete">
+          <h1 class="theme-color-primary ng-scope">
+            <span class="font-text ng-binding">Your order has been placed</span>
+          </h1>
+          <p class="ng-scope">
+            <span class="font-text ng-binding">Order <%= @checkout.id %></span>
+          </p>
+          <p class="ng-scope">
+            <span class="font-text ng-binding" >A confirmation email has been sent to <%= @checkout.email %></span>
+          </p>
+          <%= link_to "Back To Gallery", view_gallery_path, class: "back-btn-in btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<% end %>

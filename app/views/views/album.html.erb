@@ -1,0 +1,674 @@
+<% content_for :body_class, "gallery_default-style contact-index" %>
+<% content_for :gallery, "active" %>
+<!--nav-->
+
+<%= render "navbar" %>
+
+      <% if @all_photos.nil? && @current_album.password.present? %>
+          <% if session["album_#{@current_album.id}"] == nil %>
+            <script>
+              $(document).ready(function(){
+                $('#full-cons').modal({
+                  backdrop: 'static',
+                  keyboard: false
+                });
+                $('#password').keyup(function(){
+                  length = $('#password').val().length;
+                  length == 0 ? $('#check_password').prop('disabled', true) : $('#check_password').prop('disabled', false)
+                });
+              });
+            </script>
+          <% end %>
+        <div class="modal" id="full-cons" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+              </div>
+              <%= form_tag views_album_password_path, remote: true do %>
+              <%= hidden_field_tag :gallery, params[:gallery] %>
+              <%= hidden_field_tag :album, params[:album] %>
+              <%= hidden_field_tag :brand, params[:brand] %>
+              <div class="modal-body text-center">
+                <div class="row">
+                  <div class="col-xs-3 col-xs-offset-5">
+                    <div class="form-group">
+                      <%= label_tag :password, "PASSWORD" %>
+                      <%= password_field_tag :password, nil, class: "form-control", style: "padding: 12px 50px"%>
+                      <p id="error_for_password" style= "color:red;"></p>
+                    </div>
+                    <div class="btn-style text-center">
+                      <%= submit_tag "Open Gallery", class: "btn btn-primary gallary-btn", disabled: true, id: "check_password" %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <% end %>
+      <% else %>
+        <% if @album.present? %>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-12">
+                  <!-- title -->
+                <div class="page-title">
+                    <div class="back-btn"><%= link_to view_home_path(gallery: @gallery.id) do %><span class="fa fa-arrow-left"></span>BACK TO GALLERY<% end %></div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                  <span class="text-wrap"><%= @gallery.name %></span>
+              </div>
+               <div class="col-lg-12">
+                <div class="text-right-side">
+                    <span class="text-wrap-name"><%= @current_album.title %></span>
+                    <span class="text-wrap"><%= @count %> Album</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <% @album.each do |album| %>
+            <div class="item-set-inside text-center">
+              <div class="item-styel">
+                <%= link_to view_album_path(album: album), "data-toggle": "modal" do %>
+                  <div class="gride-img-set">
+                    <% if album.cover_url.present? %>
+                      <%= image_tag album.cover_url.url %>
+                    <% else %>
+                      <span class="empty-state-icon fa fa-picture-o"></span>
+                    <% end %>
+                    <% if album.password.present? %>
+                      <span class="requiresPassword"><span class="empty-state-icon-up fa fa-lock"></span></span>
+                    <% end %>
+                  </div>
+                  <div class="side-count-img">
+                    <h1 class="count-img-style"><%= album.title %></h1>
+                    <span class="count-style-img"><%= album.photos.count %> Photos</span>
+                  </div>
+                <% end %>
+             </div>
+           </div>
+        <% end %>
+        <% elsif @all_album_photos.present? %>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-12">
+                  <!-- title -->
+                <div class="page-title">
+                    <div class="back-btn"><%= link_to view_home_path(gallery: @gallery.id) do %><span class="fa fa-arrow-left"></span>BACK TO GALLERY<% end %></div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                  <span class="text-wrap"><%= @gallery.name %></span>
+              </div>
+               <div class="col-lg-12">
+                <div class="text-right-side">
+                    <span class="text-wrap-name"><%= @current_album.title %></span>
+                    <span class="text-wrap"><%= @all_album_photos.count %> Photos</span>
+                </div>
+                <div class="text-left-side">
+                  <div class="back-btn">
+                    <a data-toggle="modal" data-target="#slide-show" href="#"><span class="fa fa-caret-right"></span>Slideshow</a>
+                    <% if @custom_gallery_layout.entire_gallery_download == true %>
+                      <a data-toggle="modal" data-target="#" href="#"><span class="fa fa-cloud-download"></span>Download</a>
+                    <% end %>
+                    <% if @custom_gallery_layout.social_sharing_link == true %>
+                      <a data-toggle="modal" data-target="#" href="#"><span class="fa fa-share"></span>Share</a>
+                    <% end %>
+                    <% if @custom_gallery_layout.add_photo_to_cart == true %>
+                      <a data-toggle="modal" data-target="#" href="#"><span class="fa fa-shopping-cart"></span>Cart</a>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container-fluid">
+            <% if @custom_gallery_layout.photo_page_layout == "Subway"%>
+              <% @all_album_photos.each do |f| %>
+                  <div class="images-tag-style">
+                    <div class="img-style-mid">
+                      <% if @favorite_photos.present? &&  @favorite_photos.include?(f.id) %>
+                        <div class="side-menu-social" id= "fav_<%= f.id %>">
+                            <span class="icon-social star-icon" id = "span_<%= f.id %>">
+                                <svg class="sp-svg" version="1.1" viewBox="0 0 14.619 13.967"><path d="M5.236,4.797l1.542-4.414c0.178-0.511,0.901-0.51,1.078,0.002l1.529,4.419l4.675,0.102c0.541,0.012,0.763,0.7,0.332,1.026l-3.73,2.819l1.347,4.478c0.156,0.518-0.43,0.942-0.873,0.633l-3.834-2.677L3.459,13.85c-0.445,0.308-1.029-0.117-0.871-0.635l1.361-4.474L0.226,5.91C-0.204,5.583,0.02,4.895,0.561,4.885L5.236,4.797z"></path></svg>
+                            </span>
+                        </div>
+                      <% end %>
+                      <%= link_to gallery_slider_path(photo: f.id) do %>
+                        <%= image_tag f.image.url %>
+                    <% end %>
+                        <div class="photo-actions-tray style-gallary" id = 'div_<%= f.id %>'>
+                          <% if @custom_gallery_layout.pricing_id.present? %>
+                            <%= link_to view_items_path(brand: params[:brand], gallery: params[:gallery], photo: f.id), class: "btn photo-action", remote: true do%>
+                              <%= render partial: "cart" %>
+                            <% end %>
+                          <% end %>
+                          <% if @favorite_photos.present? &&  @favorite_photos.include?(f.id) %>
+                            <%= link_to "#", onclick: "remove_favorite(#{f.id})", id: "remove_span_#{f.id}", class: "btn photo-action active-span" do %>
+                              <%= render partial: "favorite" %>
+                            <% end %>
+                          <% elsif session["email_visitor_#{@gallery.id}"] %>
+                            <%= link_to "#", onclick: "add_to_favorite(#{f.id})", id: "add_fav_#{f.id}", class: "btn photo-action" do %>
+                              <%= render partial: "favorite" %>
+                            <% end %>
+                          <% else%>
+                            <%= link_to "#modal-empltycart", "data-toggle": "modal" , class: "btn photo-action" do %>
+                              <%= render partial: "favorite" %>
+                            <% end %>
+                          <% end %>
+                          <% if @custom_gallery_layout.social_sharing_link == true %>
+                            <%= link_to social_sharing_path(gallery: params[:gallery],brand: params[:brand], photo: f.id), class: "btn photo-action", remote: true do%>
+                              <%= render partial: "share_social" %>
+                            <% end %>
+                          <% end %>
+                          <% if @custom_gallery_layout.digital_download == true %>
+                            <% if @custom_gallery_layout.require_PIN? %>
+                              <%= link_to  "#full-cons", "data-toggle": "modal","data-photo-id": f.id ,class: "btn photo-action pin-value" do%>
+                                <%= render partial: "digital_download" %>
+                              <% end %>
+                            <% else %>
+                              <%= link_to views_download_digital_path(brand: params[:brand], gallery: params[:gallery], photo: f.id), "data-photo": f.id, class: "btn photo-action digital-download" do%>
+                                <%= render partial: "digital_download" %>
+                              <% end %>
+                            <% end %>
+                          <% end %>
+                        </div>
+                    </div>
+                  </div>
+              <% end %>
+            <% else %>
+              <% content_for :body_class, " Cascade-index" %>
+                <section id="photos">
+                  <% @all_album_photos.each do |f| %>
+                    <div class="img-style-mid mid-cascade">
+                     <% if @favorite_photos.present? &&  @favorite_photos.include?(f.id) %>
+                        <div class="side-menu-social" id= "fav_<%= f.id %>">
+                          <span class="icon-social star-icon" id = "span_<%= f.id %>">
+                            <svg class="sp-svg" version="1.1" viewBox="0 0 14.619 13.967"><path d="M5.236,4.797l1.542-4.414c0.178-0.511,0.901-0.51,1.078,0.002l1.529,4.419l4.675,0.102c0.541,0.012,0.763,0.7,0.332,1.026l-3.73,2.819l1.347,4.478c0.156,0.518-0.43,0.942-0.873,0.633l-3.834-2.677L3.459,13.85c-0.445,0.308-1.029-0.117-0.871-0.635l1.361-4.474L0.226,5.91C-0.204,5.583,0.02,4.895,0.561,4.885L5.236,4.797z"></path></svg>
+                          </span>
+                        </div>
+                      <% end %>
+                      <%= link_to gallery_slider_path(photo: f.id) do %>
+                        <%= image_tag f.image.url %>
+                    <% end %>
+                      <div class="photo-actions-tray style-gallary" id = 'div_<%= f.id %>'>
+                        <% if @custom_gallery_layout.pricing_id.present? %>
+                          <%= link_to view_items_path(brand: params[:brand], gallery: params[:gallery], photo: f.id), class: "btn photo-action", remote: true do%>
+                            <%= render partial: "cart" %>
+                          <% end %>
+                        <% end %>
+                        <% if @favorite_photos.present? &&  @favorite_photos.include?(f.id) %>
+                          <%= link_to "#", onclick: "remove_favorite(#{f.id})", id: "remove_span_#{f.id}", class: "btn photo-action active-span" do %>
+                            <%= render partial: "favorite" %>
+                          <% end %>
+                        <% elsif session["email_visitor_#{@gallery.id}"] %>
+                          <%= link_to "#", onclick: "add_to_favorite(#{f.id})", id: "add_fav_#{f.id}", class: "btn photo-action" do %>
+                            <%= render partial: "favorite" %>
+                          <% end %>
+                        <% else%>
+                          <%= link_to "#modal-empltycart", "data-toggle": "modal" , class: "btn photo-action" do %>
+                            <%= render partial: "favorite" %>
+                          <% end %>
+                        <% end %>
+                        <% if @custom_gallery_layout.social_sharing_link == true %>
+                          <%= link_to social_sharing_path(gallery: params[:gallery],brand: params[:brand], photo: f.id), class: "btn photo-action", remote: true do%>
+                            <%= render partial: "share_social" %>
+                          <% end %>
+                        <% end %>
+                        <% if @custom_gallery_layout.digital_download == true %>
+                          <% if @custom_gallery_layout.require_PIN? %>
+                              <%= link_to  "#full-cons", "data-toggle": "modal","data-pin": f.id ,class: "btn photo-action pin-value" do%>
+                                <%= render partial: "digital_download" %>
+                              <% end %>
+                            <% else %>
+                              <%= link_to views_download_digital_path(brand: params[:brand], gallery: params[:gallery], photo: f.id), "data-photo": f.id, class: "btn photo-action digital-download" do%>
+                                <%= render partial: "digital_download" %>
+                              <% end %>
+                          <% end %>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% end %>
+                </section>
+                <script type="text/javascript">
+                   $(document).ready(function() {
+                      function getRandomSize(min, max) {
+                        return Math.round(Math.random() * (max - min) + min);
+                      }
+                      for (var i = 0; i < 25; i++) {
+                        var width = getRandomSize(200, 400);
+                        var height =  getRandomSize(200, 400);
+                      }
+                   });
+                </script>
+            <% end %>
+            <%= render "/carts/view_items" %>
+          </div>
+
+          <!-- session_no_set -->
+          <div class="modal" id="modal-empltycart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body text-center">
+                  <h2 class="font-text1">FAVORITE A PHOTO</h2>
+                  <p>Enter your email address to save your favorite photos. You can share these favorites with family and friends!</p>
+                  <%= form_tag favorites_verify_email_path, remote: true do%>
+                  <%= hidden_field_tag :gallery, params[:gallery] %>
+                  <div class="form-group">
+                    <%= label_tag :email, "EMAIL ADDRESS" %>
+                    <%= email_field_tag :email, nil, class: "form-control", required: true%>
+                  </div>
+                  <div class="form-group">
+                    <%= label_tag :email, "CONFIRM EMAIL ADDRESS" %>
+                    <%= email_field_tag :confirm_email, nil, class: "form-control", required: true%>
+                  </div>
+                  <div id = "email_error">
+
+                  </div>
+                  <div class="btn-style text-center">
+                    <%= submit_tag "Save", class: "btn btn-primary", disabled: true, id: "verify_email" %>
+                  </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Modal -->
+          <div class="modal" id="slide-show" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                  <div id="carousel" class="carousel slide carousel-fade" data-ride="carousel">
+                    <!-- Carousel items -->
+                    <div class="carousel-inner">
+                      <% @all_album_photos.each do |all| %>
+                        <% if all.id == @all_album_photos.first.id %>
+                          <div class="active item">
+                            <%= image_tag all.image.url %>
+                          </div>
+                        <% else %>
+                          <div class="item">
+                            <%= image_tag all.image.url %>
+                          </div>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /mMdal -->
+
+          <!-- cart creattion -->
+
+
+          <!-- cart creattion -->
+          <script>
+            $(document).ready(function(){
+              var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+              $('#email, #confirm_email').keyup(function(){
+                $('#email').val().length == 0 || $('#confirm_email').val().length == 0 ? $('#verify_email').attr('disabled', true) : $('#verify_email').attr('disabled', false)
+                $('#confirm_email').val() == $('#email').val() ?  $('#verify_email').attr('disabled', false) : $('#verify_email').attr('disabled', true)
+                email_test = pattern.test($('#email').val());
+                email_test1 = pattern.test($('#confirm_email').val());
+                email_test && email_test1 ?  $('#verify_email').attr('disabled', false) : $('#verify_email').attr('disabled', true)
+              });
+            });
+          </script>
+
+        <% elsif @all_photos.present? %>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-12">
+                  <!-- title -->
+                <div class="page-title">
+                    <div class="back-btn"><%= link_to view_home_path(gallery: @gallery.id) do %><span class="fa fa-arrow-left"></span>BACK TO GALLERY<% end %></div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                  <span class="text-wrap"><%= @gallery.name %></span>
+              </div>
+               <div class="col-lg-12">
+                <div class="text-right-side">
+                    <span class="text-wrap-name"><%= "All Photos" %></span>
+                    <span class="text-wrap"><%= @gallery.photos.count %> Photos</span>
+                </div>
+                <div class="text-left-side">
+                    <% if @custom_gallery_layout.digital_download == true %>
+                      <% if session["email_visitor_#{@gallery.id}"] %>
+                        <% if @custom_gallery_layout.require_PIN? %>
+                          <%= link_to  "#full-cons", "data-toggle": "modal","data-pin": "all" ,class: "btn photo-action pin-value" do%>
+                             <span class="fa">DOWNLOAD</span>
+                          <% end %>
+                        <% else %>
+                          <%= link_to without_pin_path(photo_id: "all", gallery: params[:gallery]), class: "btn photo-action digital-download", remote: true do%>
+                             <span class="fa">DOWNLOAD</span>
+                          <% end %>
+                        <% end %>
+                      <% else %>
+                        <%= link_to "#modal-empltycart", "data-toggle": "modal" , class: "btn photo-action" do %>
+                              <span class="fa">DOWNLOAD</span>
+                            <% end %>
+                      <% end %>
+                    <% end %>
+                     <div class="back-btn"><a data-toggle="modal" data-target="#slide-show" href="#"><span class="fa fa-caret-right"></span>SLIDESHOW</a></div>
+                     <% if @custom_gallery_layout.add_photo_to_cart? %>
+                     <%= link_to view_items_path(brand: params[:brand], gallery: params[:gallery], photo: true), class: "btn photo-action", remote: true do%>
+                           <span class="fa fa-shopping-cart"></span>Buy all
+                           <% end %>
+                      <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="container-fluid">
+            <% link_to views_download_digital_path %>
+            <% if @custom_gallery_layout.photo_page_layout == "Subway"%>
+              <% @all_photos.each do |f| %>
+                  <div class="images-tag-style">
+                    <div class="img-style-mid">
+                      <div class="side-menu-social" id= "fav_<%= f.id %>">
+                        <% if @favorite_photos.present? &&  @favorite_photos.include?(f.id) %>
+                              <span class="icon-social star-icon" id = "span_<%= f.id %>">
+                                  <svg class="sp-svg" version="1.1" viewBox="0 0 14.619 13.967"><path d="M5.236,4.797l1.542-4.414c0.178-0.511,0.901-0.51,1.078,0.002l1.529,4.419l4.675,0.102c0.541,0.012,0.763,0.7,0.332,1.026l-3.73,2.819l1.347,4.478c0.156,0.518-0.43,0.942-0.873,0.633l-3.834-2.677L3.459,13.85c-0.445,0.308-1.029-0.117-0.871-0.635l1.361-4.474L0.226,5.91C-0.204,5.583,0.02,4.895,0.561,4.885L5.236,4.797z"></path></svg>
+                              </span>
+                        <% end %>
+                      </div>
+                      <%= link_to gallery_slider_path(photo: f.id) do %>
+                        <%= image_tag f.image.url %>
+                    <% end %>
+                        <div class="photo-actions-tray style-gallary" id = 'div_<%= f.id %>'>
+                          <% if @custom_gallery_layout.pricing_id.present? %>
+                            <%= link_to view_items_path(brand: params[:brand], gallery: params[:gallery], photo: f.id), class: "btn photo-action", remote: true do%>
+                              <%= render partial: "cart" %>
+                            <% end %>
+                          <% end %>
+                          <% if @favorite_photos.present? &&  @favorite_photos.include?(f.id) %>
+                            <%= link_to "#", onclick: "remove_favorite(#{f.id})", id: "remove_span_#{f.id}", class: "btn photo-action active-span" do %>
+                              <%= render partial: "favorite" %>
+                            <% end %>
+                          <% elsif session["email_visitor_#{@gallery.id}"] %>
+                            <%= link_to "#", onclick: "add_to_favorite(#{f.id})", id: "add_fav_#{f.id}", class: "btn photo-action" do %>
+                              <%= render partial: "favorite" %>
+                            <% end %>
+                          <% else%>
+                            <%= link_to "#modal-empltycart", "data-toggle": "modal" , class: "btn photo-action" do %>
+                              <%= render partial: "favorite" %>
+                            <% end %>
+                          <% end %>
+                          <% if @custom_gallery_layout.social_sharing_link == true %>
+                            <%= link_to social_sharing_path(gallery: params[:gallery],brand: params[:brand], photo: f.id), class: "btn photo-action", remote: true do%>
+                              <%= render partial: "share_social" %>
+                            <% end %>
+                          <% end %>
+                          <% if @custom_gallery_layout.digital_download == true %>
+                            <% if @custom_gallery_layout.require_PIN? %>
+                              <%= link_to  "#full-cons", "data-toggle": "modal","data-pin": f.id ,class: "btn photo-action pin-value" do%>
+                                <%= render partial: "digital_download" %>
+                              <% end %>
+                            <% else %>
+                              <%= link_to views_download_digital_path(brand: params[:brand], gallery: params[:gallery], photo: f.id), "data-photo": f.id, class: "btn photo-action digital-download" do%>
+                                <%= render partial: "digital_download" %>
+                              <% end %>
+                            <% end %>
+                          <% end %>
+                        </div>
+                    </div>
+                  </div>
+              <% end %>
+            <% else %>
+              <% content_for :body_class, " Cascade-index" %>
+              <section id="photos">
+                <% @all_photos.each do |f| %>
+                <div class="img-style-mid mid-cascade">
+                  <div class="side-menu-social" id= "fav_<%= f.id %>">
+                   <% if @favorite_photos.present? &&  @favorite_photos.include?(f.id) %>
+                        <span class="icon-social star-icon" id = "span_<%= f.id %>">
+                          <svg class="sp-svg" version="1.1" viewBox="0 0 14.619 13.967"><path d="M5.236,4.797l1.542-4.414c0.178-0.511,0.901-0.51,1.078,0.002l1.529,4.419l4.675,0.102c0.541,0.012,0.763,0.7,0.332,1.026l-3.73,2.819l1.347,4.478c0.156,0.518-0.43,0.942-0.873,0.633l-3.834-2.677L3.459,13.85c-0.445,0.308-1.029-0.117-0.871-0.635l1.361-4.474L0.226,5.91C-0.204,5.583,0.02,4.895,0.561,4.885L5.236,4.797z"></path></svg>
+                        </span>
+                    <% end %>
+                  </div>
+                  <%= link_to gallery_slider_path(photo: f.id) do %>
+                    <%= image_tag f.image.url %>
+                <% end %>
+                    <div class="photo-actions-tray style-gallary" id = 'div_<%= f.id %>'>
+                      <% if @custom_gallery_layout.pricing_id.present? %>
+                        <%= link_to view_items_path(brand: params[:brand], gallery: params[:gallery], photo: f.id), class: "btn photo-action", remote: true do%>
+                          <%= render partial: "cart" %>
+                        <% end %>
+                      <% end %>
+                      <% if @favorite_photos.present? &&  @favorite_photos.include?(f.id) %>
+                        <%= link_to "#", onclick: "remove_favorite(#{f.id})", id: "remove_span_#{f.id}", class: "btn photo-action active-span" do %>
+                          <%= render partial: "favorite" %>
+                        <% end %>
+                      <% elsif session["email_visitor_#{@gallery.id}"] %>
+                        <%= link_to "#", onclick: "add_to_favorite(#{f.id})", id: "add_fav_#{f.id}", class: "btn photo-action" do %>
+                          <%= render partial: "favorite" %>
+                        <% end %>
+                      <% else%>
+                        <%= link_to "#modal-empltycart", "data-toggle": "modal" , class: "btn photo-action" do %>
+                          <%= render partial: "favorite" %>
+                        <% end %>
+                      <% end %>
+                      <% if @custom_gallery_layout.social_sharing_link == true %>
+                        <%= link_to social_sharing_path(gallery: params[:gallery],brand: params[:brand], photo: f.id), class: "btn photo-action", remote: true do%>
+                          <%= render partial: "share_social" %>
+                        <% end %>
+                      <% end %>
+                      <% if @custom_gallery_layout.digital_download == true %>
+                        <% if @custom_gallery_layout.require_PIN? %>
+                              <%= link_to  "#full-cons", "data-toggle": "modal","data-pin": f.id ,class: "btn photo-action pin-value" do%>
+                                <%= render partial: "digital_download" %>
+                              <% end %>
+                            <% else %>
+                              <%= link_to views_download_digital_path(brand: params[:brand], gallery: params[:gallery], photo: f.id), "data-photo": f.id, class: "btn photo-action digital-download" do%>
+                                <%= render partial: "digital_download" %>
+                              <% end %>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </section>
+              <script type="text/javascript">
+                 $(document).ready(function() {
+                    function getRandomSize(min, max) {
+                      return Math.round(Math.random() * (max - min) + min);
+                    }
+                    for (var i = 0; i < 25; i++) {
+                      var width = getRandomSize(200, 400);
+                      var height =  getRandomSize(200, 400);
+                    }
+                 });
+              </script>
+            <% end %>
+            <%= render "/carts/view_items" %>
+          </div>
+
+          <!-- session_not_set -->
+            <div class="modal fade" id="modal-empltycart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  </div>
+                  <div class="modal-body text-center">
+                    <h2 class="font-text1">RECOVER FAVORITES</h2>
+                    <p>Enter your email address to recover your favorites from another device, web browser, or a previous session.</p>
+                    <p>This will also recover any items you have in your cart.</p>
+                    <%= form_tag favorites_verify_email_path, remote: true do%>
+                    <%= hidden_field_tag :gallery, params[:gallery] %>
+                    <div class="form-group">
+                      <%= label_tag :email, "EMAIL ADDRESS" %>
+                      <%= email_field_tag :email, nil, class: "form-control", required: true%>
+                    </div>
+                    <div class="form-group">
+                      <%= label_tag :email, "CONFIRM EMAIL ADDRESS" %>
+                      <%= email_field_tag :confirm_email, nil, class: "form-control", required: true%>
+                    </div>
+                    <div id = "email_error">
+
+                    </div>
+                    <div class="btn-style text-center">
+                      <%= submit_tag "OK", class: "btn btn-primary", disabled: true, id: "verify_email" %>
+                    </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <!-- session_not_set -->
+
+          <!-- Modal -->
+            <div class="modal" id="slide-show" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  </div>
+                  <div class="modal-body">
+                    <div id="carousel" class="carousel slide carousel-fade" data-ride="carousel">
+                      <!-- Carousel items -->
+                      <div class="carousel-inner">
+                        <% @all_photos.each do |all| %>
+                          <div class="item <%= all.id == @all_photos.first.id ? 'active' : ''%>">
+                            <%= image_tag all.image.url %>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <!-- /mMdal -->
+
+          <script>
+            $(document).ready(function(){
+              var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+              $('#email, #confirm_email').keyup(function(){
+                $('#email').val().length == 0 || $('#confirm_email').val().length == 0 ? $('#verify_email').attr('disabled', true) : $('#verify_email').attr('disabled', false)
+                $('#confirm_email').val() == $('#email').val() ?  $('#verify_email').attr('disabled', false) : $('#verify_email').attr('disabled', true)
+                email_test = pattern.test($('#email').val());
+                email_test1 = pattern.test($('#confirm_email').val());
+                email_test && email_test1 ?  $('#verify_email').attr('disabled', false) : $('#verify_email').attr('disabled', true)
+              });
+            });
+          </script>
+        <% else %>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-12">
+                  <!-- title -->
+                <div class="page-title">
+                    <div class="back-btn"><%= link_to view_home_path(gallery: @gallery.id) do %><span class="fa fa-arrow-left"></span>BACK TO GALLERY<% end %></div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                  <span class="text-wrap"><%= @gallery.name %></span>
+              </div>
+               <div class="col-lg-12">
+                <div class="text-right-side">
+                    <span class="text-wrap-name"><%= @current_album.title %></span>
+                    <span class="text-wrap">No Photos</span>
+                </div>
+                <div class="text-left-side">
+                     <div class="back-btn"><a data-toggle="modal" data-target="#slide-show" href="#"><span class="fa fa-caret-right"></span>SLIDESHOW</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mange-block">
+            <h2 class="no-photo-value">THERE ARE NO PHOTOS IN THIS ALBUM</h2>
+          </div>
+      <% end %>
+
+    <!-- Mdal for pin request -->
+     <div class="modal" id="full-cons" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <%#= form_tag gallery_password_path, remote: true do %>
+        <%= form_tag required_pin_path(gallery: params[:gallery], brand: params[:brand] ), remote: true do %>
+        <%#= hidden_field_tag :gallery, params[:gallery] %>
+        <div class="modal-body text-center">
+          <div class="row">
+            <div class="col-xs-3 col-xs-offset-5">
+              <div class="sp-modal-content">
+                  <h1 class="theme-color-primary no-description">
+                    <span class="font-text ng-binding">DOWNLOAD PHOTO</span>
+                  </h1>
+                    <span class="font-text">PIN</span><br/>
+                    <span class="font-text">Enter the PIN provided to you by <%= @gallery.name %></span>
+                <div>
+              <div class="form-group">
+                <%= hidden_field_tag :photo_id, nil, class: "photo-find"%>
+                <%= text_field_tag :pin, nil, class: "form-control"%>
+                <p id="error_for_password" style= "color:red;"></p>
+              </div>
+              <div class="btn-style text-center">
+                <%= submit_tag "Open Gallery", class: "btn btn-primary",  id: "check_password" %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+    <!-- /mMdal -->
+<script type="text/javascript">
+$(document).on("click", ".pin-value", function () {
+    var dataid = $(this).data('pin');
+    $(".photo-find").val( dataid );
+    });
+</script>
+
+    <div class="modal" id="download-link" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  </div>
+
+    <!-- /mMdal -->
+<div class="modal" id="full-cons-share" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+      </div>
+<script type="text/javascript">
+    // $('.carousel').carousel();
+</script>
+
+<script>
+  function add_to_favorite(id) {
+    id = id;
+    $.ajax({
+      headers: {
+        'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+      },
+      type: 'post',
+      url: '/favorites/add_favorite',
+      data: {photo_id: id, gallery: '<%= params[:gallery] %>'}
+    });
+  }
+  function remove_favorite(id) {
+    id = id;
+    $('#remove_'+id).prop('disabled', true);
+    $.ajax({
+      headers: {
+        'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+      },
+      type: 'post',
+      url: '/favorites/remove_favorite',
+      data: {photo_id: id, gallery: '<%= params[:gallery] %>'}
+    });
+  }
+</script>

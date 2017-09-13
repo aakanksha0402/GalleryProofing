@@ -1,0 +1,8 @@
+'<% if params[:gallery][:name] == "" %>'
+$("#gallery_name").addClass("has_error");
+$("#nameError").show();
+'<% else %>'
+window.location = "galleries/galleryhome?id=" + '<%= @gallery.id %>';
+
+location.reload();
+'<% end %>'

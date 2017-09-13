@@ -1,0 +1,42 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @mobileapp.name %>
+</p>
+
+<p>
+  <strong>Contact info:</strong>
+  <%= @mobileapp.contact_info %>
+</p>
+
+<p>
+  <strong>Social sharing:</strong>
+  <%= @mobileapp.social_sharing %>
+</p>
+
+<p>
+  <strong>Layout:</strong>
+  <%= @mobileapp.layout %>
+</p>
+
+<p>
+  <strong>Language:</strong>
+  <%= @mobileapp.language %>
+</p>
+
+
+<p>
+  <strong>Color logo:</strong>
+  <%= @mobileapp.color_logo %>
+</p>
+
+
+
+<p>
+  <strong>Gallery:</strong>
+  <%= @mobileapp.gallery %>
+</p>
+
+<%= link_to 'Edit', edit_mobileapp_path(@mobileapp) %> |
+<%= link_to 'Back', mobileapps_path %>

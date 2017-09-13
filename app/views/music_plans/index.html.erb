@@ -1,0 +1,35 @@
+<h1>Listing Music Plans</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>No. of Songs</th>
+      <th>Songs per Playlist</th>
+      <th>Data Period</th>
+      <th>Price</th>
+      <th>Stripe Id</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @music_plans.each do |music_plan| %>
+      <tr>
+        <td><%= music_plan.name %></td>
+        <td><%= music_plan.no_of_songs %></td>
+        <td><%= music_plan.songs_per_playlist %></td>
+        <td><%= music_plan.data_period %></td>
+        <td><%= music_plan.price %></td>
+        <td><%= music_plan.stripe_id %></td>
+        <td><%= link_to 'Show', music_plan %></td>
+        <td><%= link_to 'Edit', edit_music_plan_path(music_plan) %></td>
+        <td><%= link_to 'Destroy', music_plan, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Music Plan', new_music_plan_path %>

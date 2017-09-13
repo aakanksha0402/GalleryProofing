@@ -1,0 +1,11 @@
+<%= link_to "Add Photos",new_album_photo_path(gallery_id: params[:gallery_id],album_id: params[:album_id])%>
+<%= @level_restrict.level%>
+<%=link_to_if(@level_restrict.level < 3,"Add Sub Album",new_album_path(gallery_id: params[:gallery_id],album_id: params[:album_id]))%>
+<!-- <script>
+   function album_function()
+   {
+       alert('safrrds');
+       var x = document.getElementById("sub_album_title");
+       x.value = x.value.toUpperCase();
+   }
+</script> -->

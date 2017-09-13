@@ -1,0 +1,49 @@
+<div class="col-lg-3">
+  <div class="filter">
+    <h4>Search</h4>
+    <div class="form-group">
+      <div class="form-group">
+        <%= label_tag :theme ,"Theme" %>
+        <%= select_tag(:theme, options_for_select(Music::THEME), { prompt: "Any", class: "form-control input-lg selectpicker"}) %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <%= label_tag :style ,"Style" %>
+      <%= select_tag(:style, options_for_select(Music::STYLE), { prompt: "Any", class: "form-control input-lg selectpicker"}) %>
+    </div>
+
+    <div class="form-group">
+      <%= label_tag :mood ,"Mood" %>
+      <%= select_tag(:mood, options_for_select(Music::MOOD), { prompt: "Any", class: "form-control input-lg selectpicker"}) %>
+    </div>
+
+    <div class="form-group">
+      <%= label_tag :song_type ,"Vocal / Instrumental" %>
+      <%= select_tag(:song_type, options_for_select(Music::SONG_TYPE), { prompt: "Any", class: "form-control input-lg selectpicker"}) %>
+    </div>
+
+    <div class="form-group">
+      <%= label_tag :tempo ,"Tempo" %>
+      <%= select_tag(:tempo, options_for_select(Music::TEMPO), { prompt: "Any", class: "form-control input-lg selectpicker"}) %>
+    </div>
+
+    <div class="form-group">
+      <%= label_tag :instrument ,"Featured Instrument" %>
+      <%= select_tag(:instrument, options_for_select(Music::INSTRUMENT), { prompt: "Any", class: "form-control input-lg selectpicker"}) %>
+    </div>
+
+    <div class="form-group">
+      <%= label_tag :artist ,"Featured Instrument" %>
+      <%= select_tag(:artist, options_for_select(Music::ARTIST), { prompt: "Any", class: "form-control input-lg selectpicker"}) %>
+    </div>
+
+    <div class="form-group">
+      <%= label_tag :title ,"Phrase in Song Title" %>
+      <%= text_field_tag "title",nil, class: "form-control" %>
+    </div>
+    <div class="submit-btn">
+      <%= submit_tag "Find Song", class: "btn btn-default" %>
+    </div>
+  </div>
+</div>

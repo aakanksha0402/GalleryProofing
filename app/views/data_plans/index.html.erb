@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Data Plans</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Photos number</th>
+      <th>Mobile apps number</th>
+      <th>Invoices number</th>
+      <th>Monthly</th>
+      <th>Yearly</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @data_plans.zip(@dp).each do |data_plan, dp| %>
+      <tr>
+        <td><%= data_plan.photos_number %></td>
+        <td><%= data_plan.mobile_apps_number %></td>
+        <td><%= data_plan.invoices_number %></td>
+        <td><%= data_plan.plan_price %></td>
+        <% if dp.nil? %>
+        <td> </td>
+        <% else %>
+        <td><%= dp.plan_price %></td>
+        <% end %>
+        <td><%= link_to 'Edit', edit_data_plan_path(data_plan) %></td>
+        <% unless dp.nil? %>
+        <td><%= link_to 'Edit', edit_data_plan_path(dp) %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Data plan', new_data_plan_path %>

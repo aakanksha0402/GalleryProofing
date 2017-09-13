@@ -1,0 +1,41 @@
+<%= form_for(@gateway_setup) do |f| %>
+  <% if @gateway_setup.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@gateway_setup.errors.count, "error") %> prohibited this gateway_setup from being saved:</h2>
+
+      <ul>
+      <% @gateway_setup.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :public_key %><br>
+    <%= f.text_field :public_key %>
+  </div>
+  <div class="field">
+    <%= f.label :private_key %><br>
+    <%= f.text_field :private_key %>
+  </div>
+  <div class="field">
+    <%= f.label :environment %><br>
+    <%= f.text_field :environment %>
+  </div>
+  <div class="field">
+    <%= f.label :merchant_id %><br>
+    <%= f.text_field :merchant_id %>
+  </div>
+  <div class="field">
+    <%= f.label :user_id %><br>
+    <%= f.text_field :user_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

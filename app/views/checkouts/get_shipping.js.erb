@@ -1,0 +1,3 @@
+$('#shipping_option').html('$<%= @shipping_price.to_d %>');
+$('#total_price').html("$<%= @total_price %>");
+$('#checkout_amount').val('<%= @total_price %>');

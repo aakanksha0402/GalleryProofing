@@ -1,0 +1,229 @@
+<% content_for :body_class, "music-index" %>
+<% content_for :head, "Songs | GalleryProofing" %>
+<% content_for :photo_class, "active"%>
+
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+              <div id="pageTitleHeaderText">Music</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><a href="#" >Email Us</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+
+<!-- main -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <ul class="nav nav-pills in-pills">
+        <li class="active"><a id="tab1"  href="#song" data-toggle="tab">Songs</a></li>
+        <li class="type "><%= link_to "Playlists", playlists_path %></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="tab-content clearfix">
+        <div class="tab-pane active" id="song">
+          <!-- in-side -->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xs-12">
+                <h2>Plans</h2>
+              </div>
+            </div>
+            <div class="row plans">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="pull-left">
+                    <p>Over <%= @musics.count %> songs, Unlimited Songs and Unlimited songs per playlist</p>
+                  </div>
+                  <% if flash[:error].present? %>
+                  <div class="alert-warning alert">
+                    <%= flash[:error] %>
+                  </div>
+                  <% end %>
+                </div>
+              </div>
+              <div class="row">
+                <%= form_tag(song_libraries_path, method: :get) do %>
+                  <%= render "search" %>
+                <% end %>
+                <div class="col-lg-9">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <h4 class="sub-title-music">Preview Songs</h4>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="table music-playable-songs">
+                        <div class="table-body">
+                          <% @musics.each do |music| %>
+                          <div class="tr song-row">
+                            <div class="td cover-image jp-player">
+                              <%= image_tag music.photo.url %>
+                            </div>
+                            <div class="td player-controls jp-player">
+                              <div class="controls">
+                                <ul class="jp-controls list-unstyled">
+                                  <li>
+                                    <%= link_to "#", class: "audioplay au-#{music.id} player-control jp-play", "data-audiofile": "#{music.music.url}", onclick: "playing(#{music.id})", remote: true, id: "play_#{music.id}" do %>
+                                      <span class="icon-song fa fa-play"></span>
+                                    <% end %>
+                                  </li>
+                                  <li>
+                                    <%= link_to "#", class: "player-control jp-play", "data-audiofile": "", style: "display:none;", id: "pause_#{music.id}", onclick: "pausing(#{music.id})", remote: true do %>
+                                      <span class="icon-song fa fa-pause"></span>
+                                    <% end %>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                            <div class="td song-details">
+                              <div class="song-info-and-playlist-container">
+                                <div class="song-info pull-left">
+                                  <span class="title"><%= music.title %></span>
+                                  <div class="artist"><%= music.singer %></div>
+                                </div>
+                                <div class="playlist-controls pull-right">
+                                  <div class="btn-group">
+                                    <button type="button" class="btn btn-xs btn-default dropdown-toggle add-to-playlist" data-toggle="dropdown">Add to Playlist</button>
+                                    <ul class="dropdown-menu dropdown-menu-right arrow-upper-right playlists" role="menu">
+                                      <li>
+                                        <%= link_to "- Create New Playlist -", "#create-playlist", "data-toggle": "modal" %>
+                                        <% @playlists.each do |playlist| %>
+                                          <%= link_to playlist.name, add_song_to_playlist_playlists_path(music: music, playlist: playlist), method: :post %>
+                                        <% end %>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                              <table class="progress-numbers">
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <span class="time played-amount" id ="player">
+                                        <audio class="audioplayer" src="<%= music.music.url %>" id='<%= "playing_#{music.id}"%>' controls onplay="playing(<%= music.id %>)" onpause="pausing(<%= music.id %>)"></audio>
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <div class="jp-progress">
+                                        <div class="jp-seek-bar" style="width: 0%;">
+                                          <div class="jp-play-bar" style="width: 0%;">
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /in-side -->
+          </div>
+        </div>
+      </div>
+        <!-- /main -->
+
+    <!-- /mMdal -->
+    <div class="modal" id="create-playlist" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+        <%= render partial: "/playlists/new_playlist" %>
+    </div>
+    <!-- Modal -->
+
+    <div class="modal" id="cannot_add_songs" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Songs Limit Reached</h4>
+          </div>
+          <div class="modal-body">
+            <p>You cannot add any more songs, Please delete some to use this song </p>
+            </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<script>
+  function playing(id){
+    $("audio[id^='playing_']").each(function(){
+      if($(this)[0] != $('#playing_' + id)[0]){
+        $(this)[0].pause();
+        $(this)[0].currentTime = 0;
+      }
+    });
+    $("a[id^='play_']").each(function(){
+      if($(this)[0] == $('#play_' + id)[0]){
+        $(this).css('display','none');
+        $('#pause_'+ id).css('display','block');
+      }
+    });
+    var id = id;
+    // $('#play_'+ id).css('display','none');
+    // $('#pause_'+ id).css('display','block');
+    $('#playing_'+ id )[0].play();
+  };
+  function pausing(id){
+    $("audio[id^='playing_']").each(function(){
+      if($(this)[0] == $('#playing_' + id)[0]){
+        $(this)[0].pause();
+        $(this)[0].currentTime = 0;
+      }
+    });
+    $("a[id^='pause_']").each(function(){
+      if($(this)[0] == $('#pause_' + id)[0]){
+        $(this).css('display','none');
+        $('#play_'+ id).css('display','block');
+      }
+    });
+    var id = id;
+    var v = $('#playing_'+ id)[0];
+    v.pause();
+    // $('#pause_'+ id).css('display','none');
+    // $('#play_'+ id).css('display','block');
+  };
+</script>

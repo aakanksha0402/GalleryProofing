@@ -1,0 +1,106 @@
+<div id="main">
+  <div id="bd">
+    <div id="pageHeaderTitle" class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-title">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="btn-group on-page-help-container">
+                  <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                    <span class="fa fa-question"></span>
+                  </a>
+                  <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                    <li><a href="#" target="_blank">Browse Full Knowledge Bas</a></li>
+                    <li><a href="#"><span class="email"><i class="fa fa-envelope"></i></span>Email Us</a></li>
+                  </ul>
+                </div>
+                <h1>
+                  <div id="pageTitleHeaderText">Recent Gallery Activity</div>
+                </h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="table">
+            <div class="table-head">
+              <div class="tr">
+                <div class="th">
+                  <span>Gallery Name</span>
+                </div>
+                <div class="th">
+                  <span>Visitors with Favorites</span>
+                </div>
+                <div class="th">
+                  <span>Visitors with Cart Items</span>
+                </div>
+                <div class="th">
+                  <span>Visitors who have not placed an Order</span>
+                </div>
+                <div class="th">
+                  <span>Visitors who have placed an Order</span>
+                </div>
+              </div>
+            </div>
+            <div class="table-body">
+              <% @galleries.each do |gallery| %>
+              <div class="tr">
+                <div class="td"><%= gallery.name %></div>
+                <div class="td">
+                  <% count = gallery.favorites.count %>
+                  <% if count > 0 %>
+                    <%= link_to "#" do %>
+                      <div class="td"><%= count %></div>
+                    <% end %>
+                  <% else %>
+                    <div class="td">-</div>
+                  <% end %>
+                </div>
+                <div class="td">
+                  <% count = gallery.carts[1].count %>
+                  <% if count > 0 %>
+                    <%= link_to "#" do %>
+                      <div class="td"><%= count %></div>
+                    <% end %>
+                  <% else %>
+                    <div class="td">-</div>
+                  <% end %>
+                </div>
+                <div class="td">
+                  <% count = gallery.not_placed_order %>
+                  <% if count > 0 %>
+                    <%= link_to "#" do %>
+                      <div class="td"><%= count %></div>
+                    <% end %>
+                  <% else %>
+                    <div class="td">-</div>
+                  <% end %>
+                </div>
+                <div class="td">
+                  <% count = gallery.orders.count %>
+                  <% if count > 0 %>
+                    <%= link_to "#" do %>
+                      <div class="td"><%= count %></div>
+                    <% end %>
+                  <% else %>
+                    <div class="td">-</div>
+                  <% end %>
+                </div>
+              </div>
+              <% end %>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+              </div>
+            </div>
+          </div>          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

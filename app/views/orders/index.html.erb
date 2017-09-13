@@ -1,0 +1,278 @@
+<% content_for :head, "GalleryProofing | Order List"%>
+<% content_for :body_class, "gallery-index" %>
+<% if @not_authorized == true %>
+  <%= render partial: "/dashboards/no_authorization" %>
+<% else %>
+ <!-- top -->
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              <!-- title -->
+              <div class="page-title">
+                <div class="row">
+                  <div class="col-md-6 col-sm-5 col-xs-5">
+                    <h2>
+                    <div id="pageTitleHeaderText">Order</div>
+                    </h2>
+                  </div>
+                  <div class="col-md-6 col-sm-7 col-xs-7">
+                    <div class="btn-group on-page-help-container">
+                      <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-question"></span>
+                      </a>
+                      <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                        <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                        <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                        <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                        <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                        <li><a href="#" >Email Us</a></li>
+                      </ul>
+                    </div>
+                    <div class="right-buttons text-right">
+                      <a class="btn btn-default" href="#">Lab Order Defaults</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /title -->
+            </div>
+          </div>
+        </div>
+        <!-- /top -->
+<% if @orders.present? %>
+<div class="container-fluid">
+
+
+          <div class="row">
+            <div class="col-lg-9">
+              <a href="#" id="filter" data-toggle="modal" data-target="#modal-order-add" class="btn btn-sm btn-default margin-bottom">Search &amp; Filter</a>
+            </div>
+            <div class="col-lg-3  text-right">
+              <%= form_for Order.new,url: bulkaction_orders_path do %>
+              <button type="button" id="startBulkActions" class="btn btn-default btn-sm btn-bulkaction margin-bottom dropdown-toggle" data-toggle="dropdown" >Bulk Actions<span class="dropdown-arrow" role="presentation"><b role="presentation"></b></span></button>
+              <%= hidden_field_tag :myVal %>
+              <ul class="dropdown-menu dropdown-menu-right bulk-actions" role="menu" id="Order-BulkAction">
+                  <li><%= link_to "Mark Paid","#",onclick: 'bulk_action($(this).text())'%><%=submit_tag "Mark Paid",id: "Submit-Change", style: "display:none"%><%= hidden_field_tag :id_order%></li>
+                  <li><%= link_to "Mark Pending","#",onclick: 'bulk_action($(this).text())  '%></li>
+                  <li><%= link_to "Mark Shipped","#",onclick: 'bulk_action($(this).text())'%></li>
+                  <li><%= link_to "Mark Completed","#",onclick: 'bulk_action($(this).text())'%></li>
+                  <li><%= link_to "Mark Canceled","#",onclick: 'bulk_action($(this).text())'%></li>
+                  <li><%= link_to "Print","#",onclick: 'bulk_action($(this).text())'%></li>
+              </ul>
+              <%end%>
+            </div>
+          </div>
+          <% if params[:order_name].present? || params[:name].present? || params[:email].present? || params[:status].present? || params[:gallery].present?   %>
+            Searched on: <%= params[:order_name].to_s + "" + params[:name].to_s + "" + params[:email].to_s + "" + params[:status].to_s + "" + params[:gallery].to_s %>
+            <%= link_to 'Clear search', orders_path %>
+          <% end %>
+          <div class="row">
+            <div class="col-lg-12">
+              <%if @orders.present?%>
+              <div class="table-responsive has-dropdown">
+
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>
+                        <div class="checkbox inside-check">
+                          <!-- <input type="checkbox" id="selAll"> -->
+                          <%= check_box_tag "order_ids","on",false,id: "selAll"%>
+                        </div>
+                      </th>
+                      <th><%= sortable "orders.id", "Order" %><span class="caret"></span></th>
+                      <th><%= sortable "orders.created_at","Placed" %></th>
+                      <th><%= sortable "orders.first_name","Customer" %></th>
+                      <th><%= sortable "galleries","Gallery" %></th>
+                      <th><%= sortable "orders.status","Order Status" %></th>
+                      <th>Total</th>
+                      <th><%= sortable "orders.paid","Paid" %></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% @orders.each do |order| %>
+                    <tr class='clickable-row' data-href="<%= edit_order_path(order) %>">
+
+                      <td class="remove-link">
+                        <div class="checkbox inside-check">
+                          <%= check_box_tag "order_ids[]",order.id,false, class: 'check1'%>
+                        </div>
+                      </td>
+                      <td><%= order.id %></td>
+                      <td><%= order.created_at.strftime("%d-%b-%Y") %></td>
+                      <td><%= order.shipping_first_name %>  <%= order.shipping_last_name %> </td>
+                      <td><%= order.gallery_visitor.gallery.name %></td>
+                      <td><%= order.checkout_status.status %></td>
+                      <td>$ <%= order.amount  %></td>
+                      <td><% if order.success == "t" %> <span class="callout callout-success callout-short"> Yes </span> <% else %><span class="callout callout-error callout-short"> No </span><% end %> </td>
+                    </tr>
+                    <% end %>
+
+                  </tbody>
+                </table>
+              </div>
+
+                <%else%>
+                We didn’t find any results based on that search/filter. Try again?
+                <%end%>
+            </div>
+          </div>
+
+    </div>
+    <!-- /main -->
+        <!-- /main -->
+        <!-- Modal -->
+        <div class="modal description-modal" id="add-gallary" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add a Gallery</h4>
+              </div>
+
+              <div class="modal-body">
+                <form >
+
+                  <div class="form-group">
+                    <label>Gallary Name</label>
+                    <input type="text" class="form-control"></input>
+                  </div>
+                  <div class="form-group">
+                    <label>Shoot Date</label>
+                    <input type="text" class="form-control"></input>
+                  </div>
+                  <div class="form-group">
+                    <label>Gallery Default Settings</label>
+                    <input type="text" class="form-control"></input>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+                <button type="button" class="btn btn-primary">Create</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /mMdal -->
+
+        <!-- Modal -->
+        <div class="modal description-modal" id="modal-order-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Search Orders</h4>
+              </div>
+              <div class="modal-body">
+              <%= form_tag orders_path, method: :get do %>
+              <div class="form-group">
+                <label>Order #</label>
+                <%= text_field_tag 'order_name', (params[:order_id]),class: 'form-control' %>
+              </div>
+              <div class="form-group">
+                <label>Gallery</label>
+                <%= select_tag 'gallery', options_from_collection_for_select(@galleries, :id, :name),{:include_blank => '-Any-',:class => 'selectpicker form-control'} %>
+              </div>
+              <div class="form-group">
+                <label>Customer Name</label>
+                <%= text_field_tag 'name', (params[:name]),class: 'form-control' %>
+              </div>
+              <div class="form-group">
+                <label>Order Status</label>
+                <%=  select_tag 'status',options_for_select([['NEW','new'],['Pending','pending'],['Shipped','shipped'],['Completed','completed'],['Canceled','canceled']]),{:include_blank => '-Any-',:class => 'selectpicker form-control'}%>
+              </div>
+              <div class="form-group">
+                <label>Lab Progress</label>
+                <%=  select_tag 'lab',options_for_select([['Awaiting Studio','awaiting'],['Sent to Lab','sent'],['Lab Completed','completed']]),{:include_blank => '-Any-',:class => 'selectpicker form-control'}%>
+              </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <%= submit_tag "Search", :name => nil,class: 'btn btn-primary' %>
+              </div>
+
+              <% end %>
+            </div>
+          </div>
+        </div>
+<% else %>
+  <%= render 'empty_order' %>
+<% end %>
+        <!-- /mMdal -->
+        <script type="text/javascript">
+        $(document).ready(function(){
+          $("tr[data-link]").click(function() {
+            window.location = this.data("link")
+          });
+        });
+        </script>
+
+
+
+        <script>
+          $(document).ready(function(){
+            var v=[];
+            $(".checkbox input").click(function(){
+              if($(this).is(':checked')){
+                if($(this).val()=="on"){
+                  v=[];
+                  $('input[class^="check1"]').each(function(){
+                    v.push($(this).val());
+                    $(this).prop("checked",true);
+                    $('#id_order').val(v.join(","));
+                  });
+                }
+                else{
+                  v.push($(this).val());
+                  $('#id_order').val(v.join(", "));
+                }
+              }else {
+                $(this).parent('.checkbox').removeClass('checked-box');
+                if($(this).val()=="on"){
+                  v=[]
+                  $('#id_order').val(v.join(","));
+                }else{
+                  var v1=v.indexOf($(this).val());
+                  if(v1 > -1){
+                    v.splice(v1,1)
+                  }
+                  $('#id_order').val(v.join(","));
+                }
+              }
+            });
+          });
+          $(".checkbox input").change(function(){
+            if($('.checkbox input:checked').size()>0){
+
+              $('.btn-bulkaction').css('display',"inline-block");
+            }
+            else{
+              $('.btn-bulkaction').css('display',"none");
+            }
+          });
+          $(".checkbox input").click(function(){
+            if($(this).is(':checked')){
+              $(this).parent('.checkbox').addClass('checked-box');
+            }
+            else{
+              $(this).parent('.checkbox').removeClass('checked-box');
+            }
+          })
+          $('#selAll').click(function(){
+            if($(this).is(':checked')){
+              $('.checkbox').addClass('checked-box');
+            }
+            else{
+              $('.checkbox').removeClass('checked-box');
+            }
+          });
+        </script>
+<% end %>
+
+<script>
+  function bulk_action(text){
+    $("#myVal").val(text);
+    $("#Submit-Change").click();
+  }
+</script>

@@ -1,0 +1,2 @@
+module AutomationSeriesEmailTemplatesHelper
+end

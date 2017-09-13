@@ -1,0 +1,47 @@
+
+$("#edit_line_item").on('shown.bs.modal',function(){
+  $("#edit_line_item #name").val("<%=j @invoice_line_item.name %>");
+  $("#edit_line_item #description").val("<%=j @invoice_line_item.description %>");
+  $("#edit_line_item #quantity").val("<%= @invoice_line_item.quantity %>");
+  $("#edit_line_item #price").val("<%= @invoice_line_item.price %>");
+  '<% if @invoice_line_item.is_taxable == true %>'
+    $("#edit_line_item").find("#is_taxable").prop('checked','checked');
+    $("#edit_line_item").find("#is_taxable").parent().addClass("checked-box");
+  '<% end %>'
+
+});
+$("#edit_line_item").modal('show');
+$("#edit_line_item #Total_Price").text($("#edit_line_item #price").val() * $("#edit_line_item #quantity").val());
+$("#edit_line_item #price").on('focusout',function(){
+  $("#edit_line_item #Total_Price").text($(this).val() * $("#edit_line_item #quantity").val());
+});
+$("#edit_line_item #quantity").on('focusout',function(){
+  $("#edit_line_item #Total_Price").text($(this).val() * $("#edit_line_item #price").val());
+});
+$("#is_taxable").click(function(){
+  if($(this).is(':checked')){
+    $(this).parent('.checkbox').addClass('checked-box');
+    $(this).val(true);
+  }
+  else{
+   $(this).parent('.checkbox').removeClass('checked-box');
+   $(this).val(false);
+  }
+});
+$("#UpdateItem").click(function(){
+  var name = $("#edit_line_item #name").val();
+  var desc = $("#edit_line_item #description").val();
+  var qty = $("#edit_line_item #quantity").val();
+  var price = $("#edit_line_item #price").val();
+  var taxable = $("#edit_line_item #is_taxable").val();
+  var id = "<%= @invoice_line_item.id %>";
+
+  $.ajax({
+    type: 'post',
+    headers: {
+      'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+    },
+    url: 'invoice_line_items/update_details',
+    data: {line_item_id: id, name: name, description: desc, quantity: qty, price: price, is_taxable: taxable }
+  }).success(location.reload());
+});

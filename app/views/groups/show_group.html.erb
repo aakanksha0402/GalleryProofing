@@ -1,0 +1,1817 @@
+<% content_for :body_class, "pricing-edit" %>
+<p id="notice"><%= notice %></p>
+<div class="full-con">
+  <!-- top -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <!-- title -->
+        <div class="page-title">
+          <div class="row">
+            <div class="col-md-6 col-sm-5 col-xs-5">
+              <%= link_to "<span class=\"fa circle fa-arrow-left back-btn\"></span>".html_safe, pricings_path(id: current_user.id) %>
+              <h2 class="gallery-title">
+                <span class="name pull-left"><%=@group_name.name%></span>
+                <a href="#" data-toggle="modal" data-target="#rename-modal"><span class="fa fa-pencil circle"></span></a>
+              </h2>
+            </div>
+            <div class="col-md-6 col-sm-7 col-xs-7">
+              <div class="btn-group on-page-help-container">
+                <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                  <span class="fa fa-question"></span>
+                </a>
+                <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                  <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                  <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                  <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                  <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                  <li><a href="#" ><span class="email"><i class="fa fa-envelope"></i></span>Email Us</a></li>
+                </ul>
+              </div>
+              <div class="right-buttons text-right">
+                <!-- <a class="btn btn-link" href="#">Print</a> -->
+                <%= link_to "Print",print_groups_path(price_sheet_id: params[:id]),class: "btn btn-link",id: "Print"%>
+                <%= link_to "Discounts",discounts_path(id: params[:id]),class: "btn btn-default"%>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /title -->
+      </div>
+    </div>
+  </div>
+  <!-- /top -->
+  <!-- main -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <ul class="nav nav-pills in-pills">
+          <%@add_class=@fixed_tab[0].id%>
+
+          <%@merge.each do |merge|%>
+          <%@init=0%>
+
+          <!-- Group Tabs -->
+          <%@fixed_tab.each do |fixed_tab|%>
+            <%@init=@init+1%>
+            <%if fixed_tab.id == merge.id%>
+              <%if fixed_tab.fix_group_id<=5%>
+                <li class="type"><a id='<%="tab#{fixed_tab.id}"%>'  href='<%="#tab-in-#{fixed_tab.id}"%>' name='<%="#{fixed_tab.id}"%>' data-toggle="tab" onclick="$('#group_name').val('<%="#{merge.name}"%>');$('<%="#div_val_#{merge.id}"%>').val($(this).attr('name'));$('#div_val').val($(this).attr('name'));$('#div_val1').val(-1);"> <%= fixed_tab.name %> <span class="count"> <% if fixed_tab.fix_group_id !=2 %> <%= @display_list_items.where(fix_group_id: fixed_tab.fix_group_id).count %><% else %><%= @display_list_items.where(fix_group_id: fixed_tab.fix_group_id,is_galleryproofing: false).count %><% end %> </span> </a> </li>
+                <script>
+                  var init="<%= @init%>";
+                  if (init == 1){
+                    $('a[id^=tab]').click();
+                  }
+                  $('#<%="tab#{fixed_tab.id}"%>').click(function(){
+                    $('div[id^="tab-in-"]').each(function(){
+                      $(this).hide();
+                    });
+                    $('div[id^="tab_in-"]').each(function(){
+                      $(this).hide();
+                    });
+                    $('#<%="tab-in-#{fixed_tab.id}"%>').show();
+                  });
+                </script>
+              <% end %>
+            <% end %>
+          <% end %>
+          <% @added_group.each do |custom_group| %>
+            <% if custom_group.id == merge.id %>
+
+              <li class="type"><a  id='<%="tab_#{custom_group.id}"%>' name='<%="#{custom_group.id}"%>' onclick="$('#group_name').val('<%="#{merge.name}"%>');$('#div_val1').val($(this).attr('name'));$('#div_val').val($(this).attr('name'));" href='<%="#tab-in-#{custom_group.id}"%>' data-toggle="tab"><%if custom_group.rename == nil%><%=custom_group.name%><% else %><%=custom_group.rename%><% end %><span class="count" id='<%="span-#{custom_group.id}"%>'>0</span></a></li>
+              <div class="tab-pane" id='<%="tab-in-#{custom_group.id}"%>' style="display:none">
+              <!-- in-side -->
+                <div class="right-buttons text-right">
+                  <a class="btn btn-default Self-Fulfilled" id='<%="add-custom-#{custom_group.id}"%>' href="#" onclick="$('#<%="div_val_#{custom_group.id}"%>').val('<%="#{custom_group.id}"%>');">Add Custom Self Fulfilled</a>
+                </div>
+              </div>
+              <script>
+              $('#<%="tab_#{custom_group.id}"%>').click(function(){
+                console.log("<%= custom_group.id %>");
+                $('a[id^="tab"]').each(function(){
+                  $(this).parent().removeClass('active');
+                });
+                $('div[id^="tab-in-"]').each(function(){
+                  $(this).hide();
+                });
+                $('div[id^="tab_in-"]').each(function(){
+                  $(this).hide();
+                });
+                $('a[id^="add_custom-"]').each(function(){
+                  $(this).hide();
+                });
+                $('div[id^="custom_tab-"]').each(function(){
+                  $(this).hide();
+                });
+                $('#<%="add_custom-#{custom_group.id}"%>').show();
+                $('a[id^="tab_"]').each(function(){
+                  $(this).parent().removeClass('active');
+                  console.log($(this).attr('id'));
+                });
+                $(this).parent().addClass('active');
+                $('div[id^="tab-in-"]').each(function(){
+                  $(this).removeClass('active');
+                });
+                $('div[id^="tab_in-"]').each(function(){
+                  $(this).removeClass('active');
+                });
+                $('#<%="tab_in-#{custom_group.id}"%>').addClass('active');
+                $('#<%="tab_in-#{custom_group.id}"%>').css("display","block");
+              });
+              </script>
+            <% end %>
+          <% end %>
+          <!-- /Group Tabs -->
+
+          <!-- Group Rename Modal -->
+          <div class="modal fade" id="Re-name-group-name" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">New Group Name</h4>
+                </div>
+                <div class="modal-body-rename">
+                  <p id="rename-group"></p>
+                  <%= form_for @group,url: groups_rename_group_path do |f| %>
+                  <%= hidden_field_tag :div_val %>
+                  <%= hidden_field_tag :pricing_id,params[:id] %>
+
+                  <% if @group.errors.any? %>
+                  <div id="error_explanation">
+                    <h2><%= pluralize(@group.errors.count, "error") %> prohibited this group from being saved:</h2>
+
+                    <ul>
+                      <% @group.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+                  <% end %>
+                  <div class="field">
+                    <div class="form-group">
+                      <%= f.label :name %><br>
+                      <%= f.text_field :name,value: merge.name,class: "form-control",maxlength: 20 %>
+                    </div>
+                  </div>
+
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <%= f.submit "Rename",class: "btn btn-primary",id: "rename_button" %>
+                </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <!-- /Group Rename mMdal -->
+          <% end %>
+
+          <!-- Edit Group -->
+          <div class="dropdown pull-right">
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Edit Groups
+              <span class="caret"></span></button>
+              <ul class="dropdown-menu">
+                <% if @added_group1.count < 3 %>
+                  <li><%= link_to 'Add Group',"#add-group-name",'data-toggle': "modal" %></li>
+                <% end %>
+                <li><%= link_to 'Rename group',"#Re-name-group-name",'data-toggle': "modal"  %></li>
+                <li><%= link_to 'Delete Group', "#delete-group-name",'data-toggle': "modal" %></li>
+              </ul>
+            </div>
+            <!-- /Edit Group -->
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="tab-content clearfix">
+            <% @merge.each do |fixed_tab| %>
+
+            <div class="tab-pane" id='<%="tab-in-#{fixed_tab.id}"%>'>
+              <!-- in-side -->
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <!--Add Self FulFilled & Add Custom Self Fulfilled buttons-->
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="right-buttons text-right">
+                          <%if fixed_tab.fix_group_id!=2 %>
+                            <% if fixed_tab.fix_group_id != 4 && fixed_tab.fix_group_id != 5 %>
+                              <%= link_to "Add Self Fulfilled",self_fulfillment_groups_path(id: params[:id],group: 1) ,class: "btn btn-default",id: "print_self_fullfilled"%>
+                            <%end %>
+                            <a class="btn btn-default Self-Fulfilled" id='<%="add-custom-#{fixed_tab.id}"%>' href="#" onclick="$('#<%="div_val_#{fixed_tab.id}"%>').val('<%="#{fixed_tab.id}"%>');">Add Custom Self Fulfilled</a>
+                            <%if @group_name.pricing_style_id > 2%>
+                              <%= link_to "Add Lab Items",self_fulfillment_groups_path(id: params[:id],group: 1),class: "btn btn-primary"%>
+                            <% end %>
+                          <% else %>
+                            <% if fixed_tab.fix_group_id != 4 && fixed_tab.fix_group_id != 5 %>
+                              <%= link_to "Add Self Fulfilled","#" ,class: "btn btn-default",id: "digital_media_self_fullfilled"%>
+                            <% end %>
+                            <a class="btn btn-primary Self-Fulfilled" id='<%="add-custom-#{fixed_tab.id}"%>' href="#">Add GalleryProofing-Fulfilled</a>
+                          <% end %>
+                        </div>
+                        <script>
+                          $("#digital_media_self_fullfilled").click(function(){
+                            $(".custom-item-1").css("display","block");
+                            $('#<%="custom-tab-#{fixed_tab.id}"%>').hide();
+                          });
+                          $('#<%="add-custom-#{fixed_tab.id}"%>').click(function(){
+                            $('#<%="custom-tab-#{fixed_tab.id}"%>').show();
+                            $(".custom-item-1").hide();
+                          });
+                          $('#<%="add-custom-#{fixed_tab.id}"%>').click(function(){
+                            $("input[id^='<%="div_val_#{fixed_tab.id}"%>']").each(function(){
+                              $(this).val('<%="#{fixed_tab.id}"%>');
+                            });
+                            // alert($('#<%="div_val_#{fixed_tab.id}"%>').val());
+                          });
+                          $(".js-cancel").click(function(){
+                            $(".custom-item").hide  ();
+                            $(".custom-auto-item").hide();
+                            $(".custom-item-5").hide();
+                            $(".custom-item-4").hide();
+                            $(".custom-item-3").hide();
+                          });
+                        </script>
+                      </div>
+                    </div>
+                    <!--/Add Self FulFilled & Add Custom Self Fulfilled buttons-->
+
+                    <!-- Add Self Fulfilled for Digital Media -->
+                    <%=form_for @catalog,url: catalogs_create_path(self: "true") do |f|%>
+                      <div class="col-lg-12">
+                        <div class="custom-item-1 item-set-tab" style="display: none;">
+                              <table class="items full-width new-item" data-digital="1">
+                                  <thead>
+                                      <tr>
+                                          <th class="col-item upper">Item</th>
+                                          <th class="col-description">&nbsp;</th>
+                                          <th class="col-price text-right upper">Price</th>
+                                          <th class="col-charge-shipping text-center upper">Charge<br>Shipping</th>
+                                          <th class="col-shipping text-center upper">Shipping</th>
+                                          <th class="col-delete">&nbsp;</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                    <%=hidden_field_tag :div_val1,nil,id: "div_val_#{fixed_tab.id}"%>
+                                    <%=hidden_field_tag :type,"Custom"%>
+                                    <%=f.hidden_field :pricing_id,value: params[:id]%>
+                                    <tr class="item">
+                                        <td class="name no-left-padding">
+                                          <%=f.text_field :sub_item_name,class: "form-control",size: "30",maxlength: "250"%>
+                                        </td>
+                                        <td class="desc">&nbsp;</td>
+                                        <td class="price">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">$</div>
+                                                <%= f.text_field :price,class: "form-control money-only text-right"%>
+                                            </div>
+                                        </td>
+                                        <td class="charge-shipping text-center">
+                                         <div class="checkbox">
+                                            <%=f.check_box :shipping_charge_apply%>
+                                            <label></label>
+                                          </div>
+                                        </td>
+                                        <td class="shipping">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">$</div>
+                                                <%= f.text_field :shipping_charge,class: "form-control money-only text-right"%>
+                                            </div>
+                                        </td>
+                                        <td class="remove">&nbsp;</td>
+                                    </tr>
+                                  </tbody>
+                            </table>
+                            <div class="button-row text-right">
+                              <%= f.submit "Add & Close",class: "btn btn-primary btn-sm js-save-and-close"%>
+                              <%= f.submit "Add & New",class: "btn btn-default btn-sm js-save-and-new", id: "add-new-#{fixed_tab.id}"%>
+                              <a href="#" class="btn btn-default btn-sm js-cancel" data-cancel-selector=".custom-item">Cancel</a>
+                            </div>
+                          </div>
+                        </div>
+                      <% end %>
+                    <!-- /Add Self Fulfilled for Digital Media -->
+                    <!-- Add Next Fulfilled for Digital Media -->
+                    <%=form_for @catalog,url: catalogs_create_path do |f|%>
+                      <div class="custom-item item-set-tab" id='<%="custom-tab-#{fixed_tab.id}"%>' style="display: none;">
+                        <%if fixed_tab.fix_group_id ==2 %>
+                          <table class="auto-digital-items full-width new-auto-item">
+                            <thead>
+                              <tr>
+                                <th class="upper">Item Overview</th>
+                                <th class="upper">For Sale</th>
+                                <th class="text-right upper">Price</th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <%=hidden_field_tag :div_val1,nil,id: "div_val_#{fixed_tab.id}"%>
+                              <%=hidden_field_tag :type,"Custom"%>
+                              <%=f.hidden_field :pricing_id,value: params[:id]%>
+                              <tr class="item first">
+                                <td>
+                                  <div class="form-inline">
+                                    <div class="pull-left">
+                                      <div class="form-group">
+                                        Item Name:
+                                        <!-- <input type="text" name="name" class="form-control" size="30" maxlength="250"> -->
+                                        <%=f.text_field :sub_item_name,class: "form-control",size: "30",maxlength: "250"%>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                                    <%=f.fields_for :digital_media_price do |ff|%>
+                                <td class="border-bottom">
+                                  <div class="checkbox">
+                                    <input type="checkbox">
+                                    <%= ff.check_box :indiviual_price_active%>
+                                    <label>Individual Photos</label>
+                                  </div>
+                                </td>
+                              </td>
+                              <td class="border-bottom ">
+                                <div class="input-group">
+                                  <div class="input-group-addon">$</div>
+                                  <%= ff.text_field :indiviual_photo_price,class: "form-control text-right money-only ",value: 0.00,maxlength: "8"%>
+                                </div>
+                              </td>
+                                  <% end %>
+                              <td class="remove border-bottom"></td>
+                            </tr>
+                            <tr class="item second">
+                              <td>
+                                <div class="form-inline">
+                                  <div class="form-group">
+                                    Resolution:
+                                    <!-- <input type="text" name="pixels" size="5" maxlength="5" class="numbers-only form-control" value=""> -->
+                                    <%=f.text_field :resolution,class: "numbers-only form-control",size: "5",maxlength: "5"%> pixels longest side
+                                  </div>
+                                </div>
+                              </td>
+                                  <%=f.fields_for :digital_media_price do |ff|%>
+                                    <td class="border-bottom ">
+                                      <div class="checkbox">
+                                        <%= ff.check_box :all_album_price_active%>
+                                        <label>All Photos in Album</label>
+                                      </div>
+                                    </td>
+                                    <td class="border-bottom">
+                                      <div class="input-group ">
+                                        <div class="input-group-addon">$</div>
+                                        <%= ff.text_field :all_album_photo_price,class: "form-control text-right money-only",value: 0.00,maxlength: "8"%>
+                                      </div>
+                                    </td>
+                                  <% end %>
+                              <td class="remove border-bottom"></td>
+                            </tr>
+                            <tr class="item third">
+                              <td class="desc border-bottom"></td>
+                              <td class="border-bottom ">
+                                <div class="checkbox">
+                                  <%=f.fields_for :digital_media_price do |ff|%>
+                                    <%= ff.check_box :all_gallery_price_active%>
+                                  <% end %>
+                                  <label>All Photos in Gallery</label>
+                                </div>
+                              </td>
+                              <td class="border-bottom">
+                                <div class="input-group disabled">
+                                  <div class="input-group-addon">$</div>
+                                  <%=f.fields_for :digital_media_price do |ff|%>
+                                    <%= ff.text_field :all_gallery_photo_price,class: "form-control text-right money-only",value: 0.00,maxlength: "8"%>
+                                  <% end %>
+                                </div>
+                              </td>
+                              <td class="remove border-bottom"></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <!-- /Add Next Fulfilled for Digital Media -->
+                      <% else %>
+                        <!-- Add Custom Self Fulfilled for Groups other than Digital Media -->
+                        <p>
+                          GalleryProofing's lab partners cannot fulfill these custom items.
+                          <br>
+                          Self-fulfilled items are to be fulfilled by your studio through your preferred lab.
+                        </p>
+                        <table class="items full-width new-item" data-digital="0">
+                          <thead>
+                            <tr>
+                              <th class="col-item upper">Item</th>
+                              <th class="col-description">&nbsp;</th>
+                              <th class="col-cost text-right upper">Cost</th>
+                              <th class="col-price text-right upper">Price</th>
+                              <th class="col-profit text-right upper">Profit</th>
+                              <th class="col-shipping text-center upper">Shipping</th>
+                              <th class="col-delete">&nbsp;</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <%=hidden_field_tag :div_val1,nil,id: "div_val_#{fixed_tab.id}"%>
+                            <%=hidden_field_tag :type,"Custom"%>
+                            <%=f.hidden_field :pricing_id,value: params[:id]%>
+
+                            <tr>
+                              <td class="crop-heading" colspan="7">
+                                <div class="form-inline">
+                                  <div class="form-group">
+                                    Size
+                                    <%=f.text_field :print_size_one,class: "form-control", size: "4"%>
+                                    x
+                                    <%=f.text_field :print_size_two,class: "form-control", size: "4"%>
+                                    <%if fixed_tab.fix_group_id == 3%>
+                                      <span class="canvas-wrapper">
+                                        Canvas Depth:
+                                        <!-- <input type="text" name="canvas_depth" size="4" class="form-control"> -->
+                                        <%=f.text_field :depth,class: "form-control", size: "4"%>
+                                      </span>
+                                    <% end %>
+                                    <span class="note">Does this item have a size?</span>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="name">
+                                <%=f.text_field :sub_item_name,class: "form-control", maxlength: "50"%>
+                              </td>
+                              <td class="desc">&nbsp;</td>
+                              <td class="cost text-right">
+                                <span class="sf">Self Fulfilled</span>
+                              </td>
+                              <td class="price">
+                                <div class="input-group">
+                                  <div class="input-group-addon">$</div>
+                                  <!-- <input type="text" name="price" class="form-control money-only text-right"> -->
+                                  <%=f.text_field :price,class: "form-control money-only text-right"%>
+                                </div>
+                              </td>
+                              <td class="profit text-center">-</td>
+                              <td class="shipping text-center">
+                                <div class="input-group">
+                                  <div class="input-group-addon">$</div>
+                                  <%=f.text_field :shipping_charge,class: "form-control money-only text-right"%>
+
+                                </div>
+                              </td>
+                              <td class="remove">&nbsp;</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      <% end %>
+                      <div class="button-row text-right">
+                        <%= f.submit "Add & Close",class: "btn btn-primary btn-sm js-save-and-close"%>
+                        <%= f.submit "Add & New",class: "btn btn-default btn-sm js-save-and-new", id: "add-new-#{fixed_tab.id}"%>
+                        <a href="#" class="btn btn-default btn-sm js-cancel" data-cancel-selector=".custom-item">Cancel</a>
+                      </div>
+                    </div>
+                    <!-- /Add Custom Self Fulfilled for Groups other than Digital Media -->
+                  <% end %>
+                  <div class="table-responsive has-dropdown border-set">
+                    <% if @display_list_items.where(fix_group_id: fixed_tab.fix_group_id).count == 0 %>
+                      <p class="text-edit-set">You currently do not have any items in this group.</p>
+                    <% else %>
+                      <% if fixed_tab.fix_group_id == 2 %>
+                      <% @display_list_items.each do |display_list_item| %>
+                        <% @digital_media_price.each do |digital_media_price| %>
+                          <% if display_list_item.fix_group_id == fixed_tab.fix_group_id %>
+                            <% if display_list_item.is_galleryproofing == true %>
+                              <table class="auto-digital-items full-width margin-bottom js-contains-switchable-items-in-pricesheet">
+                                <thead>
+                                  <tr>
+                                    <th class="upper">Item Overview</th>
+                                    <th class="upper">For Sale</th>
+                                    <th class="text-right upper">Price</th>
+                                    <th></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td class="crop-heading" colspan="4">Digital files automatically delivered by ShootProof upon purchase.</td>
+                                  </tr>
+                                  <tr class="item first" data-item-id="12811361" data-parent-item-id="12811361">
+                                    <td>
+                                      <div class="form-inline">
+                                        <div class="pull-left">
+                                          <div class="form-group">
+                                            Item Name:
+                                            <%= text_field_tag 'sub_item_name',display_list_item.sub_item_name,id: "sub_item_name_#{display_list_item.id}",class: "form-control money-only text-right",onfocusout: "updateCustomItem('#{display_list_item.id}','#{display_list_item.fix_group_id}');" %>
+                                          </div>
+                                        </div>
+                                        <div class="pull-right" style="padding-right:15px">
+                                          <% if display_list_item.is_default != true %>
+                                            <span data-toggle="modal" data-target="#Item-Deletion" class="desc-container fa close-btn" onclick="$('#delete_item_id').val(<%="#{display_list_item.id}"%>);">✕</span>
+                                          <% end %>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td class="border-bottom">
+                                      <%if digital_media_price.individual_price_active == true%>
+                                        <div class="checkbox checked-box" id='<%="check_#{digital_media_price.id}"%>'>
+                                      <% else %>
+                                        <div class="checkbox">
+                                      <% end %>
+                                        <!-- <input type="checkbox"> -->
+                                        <%=check_box_tag 'individual_price_active',digital_media_price.individual_price_active,digital_media_price.individual_price_active,id: "individual_price_active_#{digital_media_price.id}",onchange: "updateIndividualPhoto('#{digital_media_price.id}','#{display_list_item.fix_group_id}',$(this).val())"%>
+                                          <label> Individual Photos</label>
+                                      </div>
+                                    </td>
+                                    <td class="border-bottom disabled">
+                                      <div class="input-group">
+                                        <div class="input-group-addon">$</div>
+                                        <%=text_field_tag 'individual_photo_price',digital_media_price.indiviual_photo_price,{disabled: !digital_media_price.individual_price_active,id: "individual_photo_price_#{digital_media_price.id}", class: "form-control text-right money-only", onfocusout: "updateDigitalMediaPrices('#{digital_media_price.id}')"}%>
+                                      </div>
+                                    </td>
+                                    <td class="remove border-bottom"></td>
+                                  </tr>
+                                  <tr class="item second" data-item-id="12811363" data-parent-item-id="12811361">
+                                    <td>
+                                      <div class="form-inline">
+                                        <div class="form-group">
+                                          Resolution:
+                                          <%if display_list_item.is_default == true%>
+                                            Original Size
+                                          <% else %>
+                                            <%=text_field_tag 'resolution',display_list_item.resolution,id: "resolution_#{display_list_item.id}",class: "form-control",size: "5",onfocusout: "updateCustomItem('#{display_list_item.id}','#{display_list_item.fix_group_id}');"%> pixels longest side
+                                          <% end %>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td class="border-bottom">
+                                      <%if digital_media_price.all_album_price_active == true%>
+                                        <div class="checkbox checked-box" id='<%="check_#{digital_media_price.id}"%>'>
+                                      <% else %>
+                                        <div class="checkbox">
+                                      <% end %>
+                                        <%= check_box_tag 'all_album_price_active',digital_media_price.all_album_price_active,digital_media_price.all_album_price_active,id: "all_album_price_active_#{digital_media_price.id}",onchange: "updateAllAlbumPhoto('#{digital_media_price.id}','#{display_list_item.fix_group_id}',$(this).val())"%>
+                                        <label> All Photos in Album</label>
+                                      </div>
+                                    </td>
+                                    <td class="border-bottom">
+                                      <div class="input-group disabled">
+                                        <div class="input-group-addon">$</div>
+                                        <%=text_field_tag 'all_album_photo_price',digital_media_price.all_album_photo_price,{disabled: !digital_media_price.all_album_price_active,class: "form-control text-right money-only",id: "all_album_price_#{digital_media_price.id}", onfocusout: "updateDigitalMediaPrices('#{digital_media_price.id}')"}%>
+                                      </div>
+                                    </td>
+                                    <td class="remove border-bottom"></td>
+                                  </tr>
+                                  <tr class="item third" data-item-id="12811362" data-parent-item-id="12811361">
+                                    <td class="desc border-bottom">
+                                      Description:
+                                      <span data-toggle="modal" data-target="#Item-Description" class="desc-container fa plus-add">✛</span>
+                                    </td>
+                                    <td class="border-bottom">
+                                      <%if digital_media_price.all_gallery_price_active == true%>
+                                        <div class="checkbox checked-box" id='<%="check_#{digital_media_price.id}"%>'>
+                                      <% else %>
+                                        <div class="checkbox">
+                                      <% end %>
+                                        <%=check_box_tag 'all_gallery_price_active',digital_media_price.all_gallery_price_active,digital_media_price.all_gallery_price_active,id: "all_gallery_price_active_#{digital_media_price.id}",onchange: "updateAllGalleryPhoto('#{digital_media_price.id}','#{display_list_item.fix_group_id}',$(this).val())"%>
+                                        <label> All Photos in Gallery</label>
+                                      </div>
+                                    </td>
+                                    <td class="border-bottom">
+                                      <div class="input-group">
+                                        <div class="input-group-addon">$</div>
+                                        <!-- <input type="text" class="form-control text-right money-only" name="price" value="0.00" maxlength="8" disabled=""> -->
+                                        <%=text_field_tag 'all_gallery_photo_price',digital_media_price.all_gallery_photo_price, {class: "form-control text-right money-only",id: "all_gallery_price_#{digital_media_price.id}",disabled: !digital_media_price.all_gallery_price_active, onfocusout: "updateDigitalMediaPrices('#{digital_media_price.id}')"}%>
+                                      </div>
+                                    </td>
+                                    <td class="remove border-bottom">
+                                    </td>
+                                  </tr>
+                                  <% @digital_media_price_array.delete(digital_media_price.id) %>
+                                </tbody>
+                              </table>
+                            <% end %>
+                          <% end %>
+                        <% end %>
+                      <% end %>
+                      <div class="col-lg-12">
+                        <table class="items full-width new-item">
+                          <thead>
+                            <tr>
+                              <th class="col-item upper">Item</th>
+                              <th class="col-description">Description</th>
+                              <th class="col-price text-right upper">Price</th>
+                              <th class="col-charge-shipping text-center upper">Charge<br>Shipping</th>
+                              <th class="col-shipping text-center upper">Shipping</th>
+                              <th class="col-delete">&nbsp;</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="crop-heading" colspan="6">Studio self-fulfilled digital media.</td>
+                            </tr>
+                          <% @display_list_items.each do |display_list_item| %>
+                            <% @digital_media_price.each do |digital_media_price| %>
+                              <% if display_list_item.fix_group_id == fixed_tab.fix_group_id %>
+                                <% if display_list_item.is_galleryproofing == false %>
+                                    <% if display_list_item.fix_group_id == fixed_tab.fix_group_id && display_list_item.resolution.blank? && display_list_item.is_default.nil? %>
+                                    <tr class="item">
+                                      <td class="name no-left-padding">
+                                        <%=text_field_tag 'sub_item_name', display_list_item.sub_item_name,id: "sub_item_name_#{display_list_item.id}",class: "form-control",onfocusout: "updateCustomItem('#{display_list_item.id}');"%>
+                                      </td>
+                                      <td class="desc text-center">
+                                        &nbsp;
+                                      </td>
+
+                                      <td class="price">
+                                        <div class="input-group">
+                                          <div class="input-group-addon">$</div>
+                                          <%= text_field_tag 'price',display_list_item.price,class: "form-control money-only text-right" %>
+                                        </div>
+                                      </td>
+                                      <td class="charge-shipping text-center">
+                                        <%if display_list_item.shipping_charge_apply == true%>
+                                          <div class="checkbox checked-box">
+                                        <% else %>
+                                          <div class="checkbox">
+                                       <% end %>
+                                          <%= check_box_tag 'shipping_charge_apply',display_list_item.shipping_charge_apply %>
+                                          <label></label>
+                                        </div>
+                                      </td>
+                                      <td class="shipping">
+                                          <div class="input-group">
+                                              <div class="input-group-addon">$</div>
+                                              <%= text_field_tag 'shipping_charge',display_list_item.shipping_charge,class: "form-control money-only text-right"%>
+                                          </div>
+                                      </td>
+                                      <td class="remove text-right">
+                                        <span data-toggle="modal" data-target="#Item-Deletion" class="desc-container fa close-btn" onclick="$('#delete_item_id').val(<%="#{display_list_item.id}"%>);">✕</span>
+                                      </td>
+                                    </tr>
+                                    <% end %>
+                                  <% end %>
+                                <% end %>
+                              <%end%>
+                            <%end%>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <% else %>
+                          <table class="items full-width items-table js-contains-items-in-pricesheet ">
+                            <thead>
+                              <tr>
+                                <th class="col-item upper">Item</th>
+                                <th class="col-description text-center upper">Description</th>
+                                <th class="col-cost text-right upper">Cost</th>
+                                <th class="col-price text-right upper">Price</th>
+                                <th class="col-profit text-right upper">Profit</th>
+                                <th class="col-shipping text-center upper">Shipping</th>
+                                <th class="col-delete"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% @count = 0 %>
+
+                              <% @display_list_items.order(id: :asc).each do |display_list_item| %>
+                                <% @resolution.each do |resolution| %>
+                                  <% if display_list_item.catalog_type != 'Custom' %>
+                                    <% if display_list_item.item_list_id == resolution.id %>
+                                      <%if display_list_item.group_id == fixed_tab.id %>
+                                        <% if resolution.fix_group_id == fixed_tab.fix_group_id %>
+                                          <% if @array.include?display_list_item.item_list_id %>
+                                          <tr class="sub-heading">
+                                            <td class="crop-heading" colspan="7" data-bounds="0,0,4,6" data-area="24"><%=resolution.size_one%> x <%=resolution.size_two%></td>
+                                          </tr>
+                                          <% @array.delete(display_list_item.item_list_id) %>
+                                          <% end %>
+                                        <% end %>
+                                      <% end %>
+                                    <% break %>
+                                    <% end %>
+                                  <% else %>
+                                    <% if display_list_item.group_id == fixed_tab.id %>
+                                    <%#= @array %>
+                                      <% if resolution.fix_group_id == fixed_tab.fix_group_id %>
+                                        <% if @array.include?display_list_item.item_list_id %>
+                                          <tr class="sub-heading">
+                                            <td class="crop-heading" colspan="7" data-bounds="0,0,4,6" data-area="24"><%=display_list_item.print_size_one%> x <%=display_list_item.print_size_two%></td>
+                                          </tr>
+                                          <% @array.delete(display_list_item.id) %>
+                                        <% end %>
+                                        <% break %>
+                                        <% end %>
+                                      <% end %>
+                                    <% end %>
+                                <% end %>
+
+                              <% @resolution.each do |resolution| %>
+                                <%if display_list_item.catalog_type != 'Custom'%>
+                                    <% if display_list_item.item_list_id == resolution.id %>
+                                      <% if display_list_item.group_id == fixed_tab.id %>
+                                        <% if resolution.fix_group_id == fixed_tab.fix_group_id %>
+                                          <% @count = @count+1 %>
+                                          <tr class="item">
+                                            <td class="name"><%= display_list_item.sub_item_name %></td>
+                                            <td class="desc text-center">
+                                              <%if display_list_item.discription.present?%>
+                                                <span data-toggle="modal" data-target='<%="#Item-Description-#{display_list_item.id}"%>' class="desc-container fa plus-add" onclick="$('#item_description_id').val('<%="#{display_list_item.id}"%>');">－</span>
+                                              <% else %>
+                                                <span data-toggle="modal" data-target='<%="#Item-Description-#{display_list_item.id}"%>' class="desc-container fa plus-add" onclick="$('#item_description_id').val('<%="#{display_list_item.id}"%>');">✛</span>
+                                              <% end %>
+                                            </td>
+                                            <td class="cost text-right" data-cost="0">
+                                              <%if display_list_item.cost.present?%>
+                                                <%=display_list_item.cost%>
+                                              <% else %>
+                                                <span class="sf">Self Fulfilled</span>
+                                              <% end %>
+                                            </td>
+                                            <td class="price">
+                                              <div class="input-group">
+                                                <div class="input-group-addon">$</div>
+                                                <%if display_list_item.price.present?%>
+                                                  <%=text_field_tag 'price',display_list_item.price,id: "price_#{display_list_item.id}",class: "form-control money-only text-right",onfocusout: "updateCustomItem('#{display_list_item.id}');"%>
+                                                <% else %>
+                                                  <%=text_field_tag 'price',0.00,id: "price_#{display_list_item.id}",class: "form-control money-only text-right",onfocusout: "updateCustomItem('#{display_list_item.id}');"%>
+                                                <% end %>
+                                              </div>
+                                            </td>
+                                            <td class="profit text-right"><%if display_list_item.cost.present?%><%=display_list_item.price-display_list_item.cost%><% else %>-<% end %></td>
+                                            <td class="shipping text-center">
+                                              <%if display_list_item.catalog_type != 'Custom'%>
+                                              <div class="input-group ">
+
+                                                <%if display_list_item.shipping_charge.present? && display_list_item.shipping_charge != 0%>
+                                                <div class="input-group-addon">$</div>
+                                                  <%=text_field_tag 'shipping_charge',display_list_item.shipping_charge,id: "shipping_charge_#{display_list_item.id}",class: "form-control money-only text-right",onfocusout: "updateCustomItem('#{display_list_item.id}');"%>
+                                                <% else %>
+                                                  <%if @group_name.pricing_style_id > 2%>
+                                                    <%if display_list_item.cost.present?%>
+                                                      <span class="desc-container fa plus-add" style="margin-left:50px" onclick="$(this).hide();$('#<%="shipping_div_#{display_list_item.id}"%>').show();">✛</span>
+                                                      <div class="input-group" id='<%="shipping_div_#{display_list_item.id}"%>' style="display:none">
+                                                        <div class="input-group-addon">$</div>
+                                                        <%=text_field_tag 'shipping_charge',0.00,id: "shipping_charge_#{display_list_item.id}",class: "form-control money-only text-right",onfocusout: "updateCustomItem('#{display_list_item.id}');"%>
+                                                      </div>
+                                                    <% else %>
+                                                      <div class="input-group-addon">$</div>
+                                                      <%=text_field_tag 'shipping_charge',0.00,id: "shipping_charge_#{display_list_item.id}",class: "form-control money-only text-right",onfocusout: "updateCustomItem('#{display_list_item.id}');"%>
+                                                    <% end %>
+                                                  <% else %>
+                                                    <div class="input-group-addon">$</div>
+                                                    <%=text_field_tag 'shipping_charge',0.00,id: "shipping_charge_#{display_list_item.id}",class: "form-control money-only text-right",onfocusout: "updateCustomItem('#{display_list_item.id}');"%>
+                                                  <% end %>
+                                                <% end %>
+                                              </div>
+                                              <% else %>
+                                              <%=fixed_tab.fix_group_id%>
+                                              <% end %>
+                                            </td>
+                                            <td class="remove text-right">
+                                              <span data-toggle="modal" data-target="#Item-Deletion" class="desc-container fa close-btn" onclick="$('#delete_item_id').val(<%="#{display_list_item.id}"%>);">✕</span>
+                                            </td>
+                                          </tr>
+                                          <script>
+                                          $('#<%="span-#{fixed_tab.id}"%>').text("<%= @count%>");
+                                          </script>
+                                        <% end %>
+                                      <% end %>
+                                    <% end %>
+                                <% else %>
+                                  <%if display_list_item.group_id == fixed_tab.id%>
+                                    <% if display_list_item.fix_group_id == fixed_tab.fix_group_id %>
+                                    <% if display_list_item.fix_group_id == 2 %>
+                                      <%= display_list_item.as_json %>
+                                    <% end %>
+                                      <% if @array1.include?display_list_item.id %>
+                                        <% @count=@count+1 %>
+                                        <tr class="item">
+                                          <td class="name"><%=text_field_tag 'sub_item_name', display_list_item.sub_item_name,id: "sub_item_name_#{display_list_item.id}",class: "form-control",onfocusout: "updateCustomItem('#{display_list_item.id}','#{display_list_item.fix_group_id}')"%></td>
+                                          <td class="desc text-center">
+                                            <%if display_list_item.discription.present?%>
+                                              <span data-toggle="modal" data-target='<%="#Item-Description-#{display_list_item.id}"%>' class="desc-container fa plus-add" onclick="$('#item_description_id').val('<%="#{display_list_item.id}"%>');">－</span>
+                                            <% else %>
+                                              <span data-toggle="modal" data-target='<%="#Item-Description-#{display_list_item.id}"%>' class="desc-container fa plus-add" onclick="$('#item_description_id').val('<%="#{display_list_item.id}"%>');">✛</span>
+                                            <% end %>
+                                          </td>
+                                          <td class="cost text-right" data-cost="0">
+                                            <span class="sf">Self Fulfilled</span>
+                                          </td>
+                                          <td class="price">
+                                            <div class="input-group">
+                                              <div class="input-group-addon">$</div>
+                                              <%if display_list_item.price.present?%>
+                                                <%=text_field_tag 'price',display_list_item.price,id: "price_#{display_list_item.id}",class: "form-control money-only text-right",onfocusout: "updateCustomItem('#{display_list_item.id}');"%>
+                                              <% else %>
+                                                <%=text_field_tag 'price',0.00,id: "price_#{display_list_item.id}",class: "form-control money-only text-right",onfocusout: "updateCustomItem('#{display_list_item.id}');"%>
+                                              <% end %>
+                                            </div>
+                                          </td>
+                                          <td class="profit text-right">-</td>
+                                          <td class="shipping text-center">
+                                            <%if display_list_item.shipping_charge.present? && display_list_item.shipping_charge != 0%>
+                                              <div class="input-group " id='<%="shipping_#{display_list_item.id}"%>'>
+                                                <div class="input-group-addon">$</div>
+                                                <%=text_field_tag 'shipping_charge',display_list_item.shipping_charge,class: "form-control money-only text-right",id: "shipping_charge_#{display_list_item.id}",onfocusout: "updateCustomItem('#{display_list_item.id}','#{display_list_item.fix_group_id}')"%>
+                                              </div>
+                                            <% else %>
+                                              <span class="desc-container fa plus-add" onclick="$(this).hide();$('#<%="shipping_#{display_list_item.id}"%>').show();">✛</span>
+                                              <div class="input-group " id='<%="shipping_#{display_list_item.id}"%>' style="display:none">
+                                                <div class="input-group-addon">$</div>
+                                                <%=text_field_tag 'shipping_charge',0.00,class: "form-control money-only text-right",id: "shipping_charge_#{display_list_item.id}",onfocusout: "updateCustomItem('#{display_list_item.id}','#{display_list_item.fix_group_id}')"%>
+                                              </div>
+                                            <% end %>
+                                          </td>
+                                          <td class="remove text-right">
+                                            <span data-toggle="modal" data-target="#Item-Deletion" class="desc-container fa close-btn" onclick="$('#delete_item_id').val(<%="#{display_list_item.id}"%>);">✕</span>
+                                          </td>
+                                        </tr>
+                                        <script>
+                                          $('#<%="span-#{fixed_tab.id}"%>').text("<%= @count%>");
+                                        </script>
+                                        <% @array1.delete(display_list_item.id) %><br>
+                                      <% end %>
+                                    <% end %>
+                                  <% end %>
+                                <% end %>
+                                <% end %>
+                              <% end %>
+                            </tbody>
+                          </table>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% end %>
+
+          <% @added_group.each do |added_group| %>
+            <div class="tab-pane" id='<%="tab_in-#{added_group.id}"%>'>
+              <div class="col-lg-12">
+                <div class="row">
+                  <div class="right-buttons text-right">
+                    <a class="btn btn-default Self-Fulfilled" id='<%="add_custom-#{added_group.id}"%>' href="#" onclick="$('#<%="div_val_#{added_group.id}"%>').val('<%="#{added_group.id}"%>');">Add Custom Self Fulfilled</a>
+                  </div>
+                </div>
+                <%= form_for @catalog,url: catalogs_create_path do |f| %>
+                    <div class="custom-item item-set-tab" id='<%="custom_tab-#{added_group.id}"%>' style="display: none;">
+                      <p>
+                        GalleryProofing's lab partners cannot fulfill these custom items.
+                        <br>
+                        Self-fulfilled items are to be fulfilled by your studio through your preferred lab.
+                      </p>
+                      <table class="items full-width new-item" data-digital="0">
+                        <thead>
+                          <tr>
+                            <th class="col-item upper">Item</th>
+                            <th class="col-description">&nbsp;</th>
+                            <th class="col-cost text-right upper">Cost</th>
+                            <th class="col-price text-right upper">Price</th>
+                            <th class="col-profit text-right upper">Profit</th>
+                            <th class="col-shipping text-center upper">Shipping</th>
+                            <th class="col-delete">&nbsp;</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <%=hidden_field_tag :div_val1,nil,id: "div_val_#{added_group.id}"%>
+                          <%=hidden_field_tag :type,"Custom"%>
+                          <%=f.hidden_field :pricing_id,value: params[:id]%>
+
+
+                          <tr>
+                            <td class="crop-heading" colspan="7">
+                              <div class="form-inline">
+                                <div class="form-group">
+                                  Size
+                                  <%=f.text_field :print_size_one,class: "form-control", size: "4"%>
+                                  x
+                                  <%=f.text_field :print_size_two,class: "form-control", size: "4"%>
+                                  <%if added_group.fix_group_id == 3%>
+                                    <span class="canvas-wrapper">
+                                      Canvas Depth:
+                                      <!-- <input type="text" name="canvas_depth" size="4" class="form-control"> -->
+                                      <%=f.text_field :depth,class: "form-control", size: "4"%>
+                                    </span>
+                                  <% end %>
+                                  <span class="note">Does this item have a size?</span>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="name">
+                              <%=f.text_field :sub_item_name,class: "form-control", maxlength: "50"%>
+                            </td>
+                            <td class="desc">&nbsp;</td>
+                            <td class="cost text-right">
+                              <span class="sf">Self Fulfilled</span>
+                            </td>
+                            <td class="price">
+                              <div class="input-group">
+                                <div class="input-group-addon">$</div>
+                                <!-- <input type="text" name="price" class="form-control money-only text-right"> -->
+                                <%=f.text_field :price,class: "form-control money-only text-right"%>
+                              </div>
+                            </td>
+                            <td class="profit text-center">-</td>
+                            <td class="shipping text-center">
+                              <div class="input-group">
+                                <div class="input-group-addon">$</div>
+                                <%=f.text_field :shipping_charge,class: "form-control money-only text-right"%>
+
+                              </div>
+                            </td>
+                            <td class="remove">&nbsp;</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    <div class="button-row text-right">
+                      <%= f.submit "Add & Close",class: "btn btn-primary btn-sm js-save-and-close"%>
+                      <%= f.submit "Add & New",class: "btn btn-default btn-sm js-save-and-new", id: "add-new-#{added_group.id}"%>
+                      <a href="#" class="btn btn-default btn-sm js-cancel" data-cancel-selector=".custom-item">Cancel</a>
+                    </div>
+                  </div>
+                <% end %>
+                <div class="table-responsive has-dropdown border-set">
+                  <% if @display_list_items.where(group_id: added_group.id).count == 0 %>
+                    <p class="text-edit-set">You currently do not have any items in this group.</p>
+                  <% else %>
+
+                      <%#= display_list_item.sub_item_name %>
+                      <div class="col-lg-12">
+                        <table class="items full-width new-item">
+                          <thead>
+                            <tr>
+                              <th class="col-item upper">Item</th>
+                              <th class="col-description">Description</th>
+                              <th class="col-price text-right upper">Price</th>
+                              <th class="col-charge-shipping text-center upper">Charge<br>Shipping</th>
+                              <th class="col-shipping text-center upper">Shipping</th>
+                              <th class="col-delete">&nbsp;</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                              <% @display_list_items.where(group_id: added_group.id).each do |display_list_item| %>
+                                <% if @array.include? display_list_item.item_list_id %>
+                                  <% if display_list_item.group_id == added_group.id%>
+                                    <tr class="sub-heading">
+                                      <td class="crop-heading" colspan="7" data-bounds="0,0,4,6" data-area="24"><%=display_list_item.print_size_one%> x <%=display_list_item.print_size_two%></td>
+                                    </tr>
+                                  <% end %>
+                                  <% @display_list_items.each do |display_list_item| %>
+                                    <% if display_list_item.item_list_id == @array[0] %>
+                                      <% if display_list_item.catalog_type == 'Custom' %>
+                                        <% if display_list_item.group_id == added_group.id && display_list_item.resolution.blank? && display_list_item.is_default.nil?%>
+                                          <tr class="item">
+                                            <td class="name no-left-padding">
+                                              <%= text_field_tag 'sub_item_name', display_list_item.sub_item_name,id: "sub_item_name_#{display_list_item.id}",class: "form-control",onfocusout: "updateCustomItem('#{display_list_item.id}');" %>
+                                            </td>
+                                            <td class="desc text-center">
+                                              &nbsp;
+                                            </td>
+                                            <td class="price">
+                                              <div class="input-group">
+                                                <div class="input-group-addon">$</div>
+                                                <%= text_field_tag 'price',display_list_item.price,class: "form-control money-only text-right"%>
+                                              </div>
+                                            </td>
+                                            <td class="charge-shipping text-center">
+                                              <%if display_list_item.shipping_charge_apply == true%>
+                                                <div class="checkbox checked-box">
+                                              <% else %>
+                                                <div class="checkbox">
+                                              <% end %>
+                                                <%= check_box_tag 'shipping_charge_apply',display_list_item.shipping_charge_apply%>
+                                                <label></label>
+                                              </div>
+                                            </td>
+                                            <td class="shipping">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">$</div>
+                                                    <%= text_field_tag 'shipping_charge',display_list_item.shipping_charge,class: "form-control money-only text-right"%>
+                                                </div>
+                                            </td>
+                                            <td class="remove text-right">
+                                              <span data-toggle="modal" data-target="#Item-Deletion" class="desc-container fa close-btn" onclick="$('#delete_item_id').val(<%="#{display_list_item.id}"%>);">✕</span>
+                                            </td>
+                                          </tr>
+                                        <% end %>
+                                      <% end %>
+                                    <% end %>
+                                  <% end %>
+                                <% @array.delete(display_list_item.item_list_id) %>
+                              <% end %>
+                            <% end %>
+                          </tbody>
+                        </table>
+                      </div>
+                    <% end %>
+                </div>
+              </div>
+              <script>
+              $('#<%="add_custom-#{added_group.id}"%>').click(function(){
+                $('#<%="custom_tab-#{added_group.id}"%>').show();
+              });
+              </script>
+            </div>
+          <% end %>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pricing-sidebar" id="sidebarRight">
+  <div class="section">
+    <h5 id="salesTaxBeacon">Sales Taxes</h5>
+    <table class="full-width text-input">
+      <tbody>
+        <tr>
+          <td>Tax Percent</td>
+          <td>
+            <div class="input-group">
+              <!-- <input type="text" class="form-control decimal-3" id="salesTaxPercent" value="0.000"> -->
+              <%=text_field_tag 'sales_tax_percentage',@sales_tax.tax_percent,id: "salesTaxPercent",class: "form-control decimal-3", onfocusout: "updateSalesTax('#{@sales_tax.id}');"%>
+              <span class="input-group-addon">%</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>Tax Title</td>
+          <td><%= text_field_tag 'sales_tax_title',@sales_tax.title,id: "salesTaxTitle",placeholder: "Sales Tax", class: "form-control", onfocusout: "updateSalesTax('#{@sales_tax.id}')"%></td>
+        </tr>
+        <%if @state.count != 0%>
+          <tr>
+            <td>State/Province</td>
+            <td>
+              <%=collection_select :id,:name,@state,:id,:name, {include_blank: "-All States/Provinces-",selected: @sales_tax.state_id},{class: "selectpicker form-control",id: "state_id",onchange: "updateSalesTax('#{@sales_tax.id}')"}%>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <table class="full-width">
+      <tbody>
+        <tr>
+          <td>Charge tax on digitals</td>
+          <td class="text-right">
+            <%if @sales_tax.digital_charge == true%>
+              <input type="checkbox" name="my-checkbox" id="check1">
+            <% else %>
+              <input type="checkbox" name="my-checkbox" id="check1" checked>
+            <% end %>
+            <!-- <%= check_box_tag :'my-checkbox',@sales_tax.digital_charge,@sales_tax.digital_charge,include_hidden: true,id: "check1"%> -->
+            <span></span>
+          </td>
+        </tr>
+        <tr>
+          <td>Charge tax on shipping</td>
+          <td class="text-right">
+            <%if @sales_tax.shipping_tax  == true%>
+              <input type="checkbox" name="my-checkbox" id="check2">
+            <% else %>
+              <input type="checkbox" name="my-checkbox" id="check2" checked>
+            <% end %>
+            <span></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="full-width text-input">
+      <tbody>
+        <tr>
+          <td>VAT #</td>
+          <td><%= text_field_tag 'sales_tax_vat',@sales_tax.vat,id: "vatNumber",class: "form-control",onfocusout: "updateSalesTax('#{@sales_tax.id}')"%></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+
+  <div class="section">
+    <h5>Shipping</h5>
+    <table class="full-width text-input">
+      <tbody>
+        <tr>
+          <td>Shipping Title</td>
+          <td><%=text_field_tag 'shipping_title',@shipping.title,id: "shippingTitle",class: "form-control", placeholder: "Shipping",onfocusout: "updateShipping('#{@shipping.id}')" %></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div id="customShippingOptions" class="">
+      <p>Enter your own shipping prices. NOTE: If you do not add a shipping option the client will not be charged.</p>
+      <table id="shippingOptionsTable" class="full-width">
+        <thead>
+          <tr>
+            <th>Price</th>
+            <th>Title</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <%if @shipping_option.count !=0%>
+          <%@shipping_option.each do |shipping_option|%>
+          <tr name="tr[]">
+            <td>
+              <div class="input-group">
+                <div class="input-group-addon">$</div>
+                <%if @shipping_option.present?%>
+                  <%= text_field_tag 'shipping_option_price',shipping_option.price,id: "shippingOptionPrice",class: "price form-control money-only text-right",maxlength: 8,name: "price[]"%>
+                <% else %>
+                  <%= text_field_tag 'shipping_option_price',nil,id: "shippingOptionPrice",class: "price form-control money-only text-right",maxlength: 8,name: "price[]"%>
+                <% end %>
+                <!-- <input type="text" class="price form-control money-only text-right" value="" maxlength="8"> -->
+              </div>
+            </td>
+            <td>
+              <% if @shipping_option.present? %>
+              <%=text_field_tag 'shipping_option_title',shipping_option.title,id: "shippingOptionTitle",class: "title form-control",maxlength: "40",name: "title[]"%>
+              <% else %>
+              <%=text_field_tag 'shipping_option_title',nil,id: "shippingOptionTitle",class: "title form-control",maxlength: "40",name: "title[]"%>
+              <% end %>
+            </td>
+            <td class="text-right">
+            <div class="pull-right" style="padding-right:15px">
+              <!-- <span data-toggle="modal" data-target="#Item-Deletion" class="desc-container fa close-btn">✕</span> -->
+              <%=link_to '<span class="desc-container fa close-btn">✕</span>'.html_safe,delete_shipping_option_groups_path(id: params[:id],delete_item_id: shipping_option.id)%>
+            </div>
+          </td>
+          </tr>
+          <% end %>
+          <% else %>
+          <tr name="tr[]">
+            <td>
+              <div class="input-group">
+                <div class="input-group-addon">$</div>
+
+                  <%= text_field_tag 'shipping_option_price',nil,id: "shippingOptionPrice",class: "price form-control money-only text-right",maxlength: "8",name: "price[]"%>
+
+                <!-- <input type="text" class="price form-control money-only text-right" value="" maxlength="8"> -->
+              </div>
+            </td>
+            <td>
+              <%=text_field_tag 'shipping_option_title',nil,id: "shippingOptionTitle",class: "title form-control",maxlength: "40",name: "title[]"%>
+            </td>
+            <td class="text-right"><span data-toggle="modal" data-target="#Item-Deletion" class="desc-container fa close-btn">✕</span></td>
+          </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="text-right"><a href="#" class="btn btn-xs btn-link" id="AddShippingOption">Add Shipping Option</a></td>
+          </tr>
+        </tfoot>
+      </table>
+      <p id="shippingOptionsError" class="error">Please ensure that all shipping options have price and a description.</p>
+      <div class="text-right">
+        <%= link_to "Save Shipping","#",id: "saveShippingOption",class: "btn btn-xs btn-default",onclick: "updateShippingOption('#{@shipping.id}')"%>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <h5>Terms of Sale</h5>
+    <%if @shipping.terms_of_sales.present?%>
+      <a href="#" class="terms-of-sale"><span data-toggle="modal" data-target="#Terms-Of-Sales-Description" class="desc-container"><span class="fa fa-pencil circle"></span> </span> Edit</a>
+    <% else %>
+      <a href="#" class="terms-of-sale"><span data-toggle="modal" data-target="#Terms-Of-Sales-Description" class="desc-container fa plus-add">✛ </span> Add</a>
+    <% end %>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal" id="Pricing-Duplicate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Duplicate Pricesheet</h4>
+      </div>
+      <div class="modal-body">
+        <form >
+          <p>Please give the duplicated pricesheet a name.</p>
+          <div class="form-group">
+            <label>New Name:</label>
+            <input type="text" class="form-control"></input>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+<!-- Modal -->
+<div class="modal" id="Delete-item" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Confirm Deletion</h4>
+      </div>
+      <div class="modal-body">
+        <form >
+          <p>Please confirm that you would like to delete this price sheet.</p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-sm btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+
+<!-- Modal -->
+<div class="modal" id="add-Pricesheet" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create a New Pricesheet</h4>
+      </div>
+      <div class="modal-body">
+        <form >
+          <p>Please give the new pricesheet a name.</p>
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control"></input>
+          </div>
+          <div class="form-group set-up-down">
+            <select class="selectpicker" data-live-search="true"> <!-- form-control input-lg -->
+              <option>- Choose Starting Price Sheet -</option>
+              <option>Self-Fulfilled - Common Items</option>
+              <option>Self-Fulfilled - Empty</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+
+<!-- Modal -->
+<div class="modal" id="modal-filter" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Search Contacts</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label>Contact Name or Email</label>
+            <input type="text"class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Gallery</label>
+            <select class="form-control input-lg">
+              <option>Filter by Gallery</option>
+              <option>Test</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tag</label>
+            <select class="form-control input-lg">
+              <option>Filter by Tag</option>
+              <option>sfd</option>
+              <option>Vendor</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Search</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+<!-- Modal -->
+<div class="modal" id="rename-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Rename</h4>
+      </div>
+      <%= form_for @pricesheet_rename,url: pricing_path(id: params[:id]),method: :patch do |f| %>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <%= f.label :name %><br>
+          <%= f.text_field :name,class: 'form-control'%>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <%= f.submit "Rename",class: "btn btn-primary"%>
+      </div>
+      <% end %>
+
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+<!-- Modal -->
+<div class="modal" id="add-group-name" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create New Group</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_for(@group) do |f| %>
+        <% if @group.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@group.errors.count, "error") %> prohibited this group from being saved:</h2>
+
+          <ul>
+            <% @group.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+        <% end %>
+        <p>Add up to 3 custom groups. (<%=3-@added_group1.count%> remaining)</p>
+        <p>What would you like to call this group?</p>
+
+        <div class="field">
+          <%= f.label :name,"Group Name" %><br>
+          <%= f.text_field :name,class: "form-control" %>
+        </div>
+        <div class="field">
+          <%= f.hidden_field :is_deleted, value: false%>
+        </div>
+        <div class="field">
+          <%= f.hidden_field :pricing_id, value: params[:id]%>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <%= f.submit "Create",class: "btn btn-primary"%>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+
+
+<!-- Modal -->
+<div class="modal" id="delete-group-name" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Cannot Delete</h4>
+      </div>
+      <%= form_for Group.new,url: groups_delete_group_path do |f|%>
+      <div class="modal-body">
+        <%=hidden_field_tag :div_val1%>
+        <%=hidden_field_tag :pricing_id,params[:id]%>
+        <p id="delete_modal_body">This group cannot be deleted. The groups for Prints, Canvases, Metals, Products and Digital Media cannot be deleted.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <%= f.submit "Yes,Delete",class: "btn btn-danger",id: "group_delete"%>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+
+<!-- Modal -->
+<%@resolution.each do |resolution|%>
+  <% @display_list_items.each do |display_list_item|%>
+    <%if resolution.id==display_list_item.item_list_id%>
+      <%@update=display_list_item%>
+      <div class="modal description-modal" id="Item-Description-<%=display_list_item.id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Item Description</h4>
+            </div>
+            <%= form_for display_list_item,url: catalogs_update_description_path do |f| %>
+            <div class="modal-body">
+              <%= f.hidden_field :id %>
+              <%= hidden_field_tag :item_description_id %>
+              <%= hidden_field_tag :pricing_id,params[:id] %>
+              <%= @update.discription %>
+              <div class="form-group">
+                <div class="redactor-box">
+                  <%= f.text_area :discription,id: "description-text", class: "richtextbox tinymce_description" %>
+                </div>
+
+                <div id="textarea-length" class="pull-right"></div>
+              </div>
+              <div class="right-buttons pull-left">
+                <a class="btn btn-default files-select" href="#"><input type="file">Add image</a>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <%= f.submit "Save",class: "btn btn-primary"%>
+            </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>
+<!-- /mMdal -->
+
+<!-- Modal -->
+<div class="modal" id="Item-Deletion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Confirm Item Deletion</h4>
+      </div>
+      <%= form_for Catalog.new,url: groups_delete_item_path do |f|%>
+      <div class="modal-body">
+        <%= hidden_field_tag :delete_item_id%>
+        <%= hidden_field_tag :pricing_id,params[:id]%>
+        <p>Are you sure that you want to delete this item?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <%=f.submit "Yes, Delete",class: "btn btn-sm btn-danger"%>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+
+
+<!-- Shipping description Modal -->
+    <div class="modal description-modal" id="Terms-Of-Sales-Description" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Item Description</h4>
+          </div>
+          <%=form_for @shipping,url: add_terms_of_sale_groups_path ,method: :post  do |f|%>
+          <div class="modal-body">
+            <%=f.hidden_field :pricing_id,value: params[:id]%>
+
+              <div class="form-group">
+                <div class="redactor-box">
+                  <%= f.text_area :terms_of_sales,id: "terms-of-sales-text", class: "richtextbox" %>
+                </div>
+
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <%=f.submit "Save",class: "btn btn-primary"%>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+<!-- /mMdal -->
+
+<script>
+$(document).ready(function(){
+  $("#delete-group-name").on('show.bs.modal',function(){
+    if ($("#delete-group-name #div_val1").val() == -1){
+      console.log("this is the delete functionality");
+      $("#group_delete").hide();
+      $("#delete_modal_body").text("This group cannot be deleted. The groups for Prints, Canvases, Metals, Products and Digital Media cannot be deleted.");
+    }else{
+      $("#group_delete").show();
+      $("#delete_modal_body").text("You are about to delete this group. All items in this group will also be deleted. This action cannot be undone!");
+    }
+  });
+
+  $("#Re-name-group-name").on('show.bs.modal',function(){
+    if ($("#delete-group-name #div_val1").val() == -1){
+      console.log("this is the rename functionality");
+      $("#rename_button").hide();
+      $("#new_group").hide();
+      $("#rename-group").show();
+      $("#rename-group").text("This group cannot be Renamed. The groups for Prints, Canvases, Metals, Products and Digital Media cannot be Renamed.");
+    }else{
+      $("#rename_button").show();
+        $("#new_group").show();
+        $("#rename-group").hide();
+    }
+  });
+});
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".checkbox input").click(function(){
+      if($(this).is(':checked')){
+        $(this).parent('.checkbox').addClass('checked-box');
+      }
+      else{
+        $(this).parent('.checkbox').removeClass('checked-box');
+      }
+    })
+    $('#selAll').click(function(){
+      if($(this).is(':checked')){
+        $('.checkbox').addClass('checked-box');
+      }
+      else{
+        $('.checkbox').removeClass('checked-box');
+      }
+    })
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".checkbox input").click(function(){
+      if($(this).is(':checked')){
+        $(this).parent('.checkbox').addClass('checked-box');
+      }
+      else{
+        $(this).parent('.checkbox').removeClass('checked-box');
+      }
+    })
+  });
+</script>
+
+
+<script>
+  $(document).ready(function(){
+    $("#tab-in-"+"<%=@add_class%>").addClass('active');
+    $("#div_val").val($("#tab1").attr('name'));
+    $("#div_val1").val($("#tab1").attr('name'));
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    var text_max = 1000;
+    var text_length = $('#description-text').val().length;
+    // $('#textarea-length').html(text_length + ' of 1000');
+
+    $('#description-text').on('keyup',function() {
+      var text_length = $('#description-text').val().length;
+      $('#textarea-length').html(text_length + ' of 1000');
+    });
+  });
+</script>
+
+<script>
+
+  function updateCustomItem(id,fix_group_id){
+    var custom_item_id = id;
+    var custom_item_fix_group_id=$("#div_val_"+fix_group_id).val();
+    var custom_item_name = $("#sub_item_name_" + custom_item_id).val();
+    var custom_item_price = $("#price_" + custom_item_id).val();
+    var custom_item_shipping_charge = $("#shipping_charge_" + custom_item_id).val();
+    var custom_item_resolution = $("#resolution_"+custom_item_id).val();
+    $.ajax({
+      headers: {
+        'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+      },
+      type: "get",
+      url: "/groups/update_custom_item",
+      data: {d: custom_item_name, id: custom_item_id , fix_group_id: custom_item_fix_group_id ,price: custom_item_price,shipping_charge: custom_item_shipping_charge,resolution: custom_item_resolution}
+    });
+  }
+
+  function updateDigitalMediaPrices(id){
+    var custom_item_id = id;
+    var custom_item_name = $("#sub_item_name_" + custom_item_id).val();
+    var custom_item_price = $("#price_" + custom_item_id).val();
+    var custom_item_shipping_charge = $("#shipping_charge_" + custom_item_id).val();
+    var custom_item_individual_price=$('#individual_photo_price_'+id).val();
+    var custom_item_all_album_price= $("#all_album_price_"+id).val();
+    var custom_item_all_gallery_price= $("#all_gallery_price_"+id).val();
+    $.ajax({
+      headers: {
+        'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+      },
+      type: "get",
+      url: "/groups/update_custom_item",
+      data: {d: custom_item_name, id: custom_item_id ,individual_photo_price: custom_item_individual_price,all_album_photo_price: custom_item_all_album_price,all_gallery_photo_price: custom_item_all_gallery_price}
+    });
+  }
+
+
+
+  function updateIndividualPhoto(id,fix_group_id,value){
+    if (value == "true"){
+      $("#individual_price_active_"+id).val(false);
+    }else{
+      $("#individual_price_active_"+id).val(true);
+    }
+    if ($("#individual_price_active_"+id).is(":checked")){
+      $("#individual_photo_price_"+id).removeAttr("disabled");
+    }
+    else{
+      $("#individual_photo_price_"+id).attr("disabled","disabled");
+    }
+    var custom_item_id = id;
+    var custom_item_fix_group_id=$("#div_val_"+fix_group_id).val();
+    var custom_item_name = $("#sub_item_name_" + custom_item_id).val();
+    var custom_item_price = $("#price_" + custom_item_id).val();
+    var custom_item_shipping_charge = $("#shipping_charge_" + custom_item_id).val();
+    var custom_item_individual_price_active=$('#individual_price_active_'+id).val();
+    $.ajax({
+      headers: {
+        'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+      },
+      type: "get",
+      url: "/groups/update_custom_item",
+      data: {d: custom_item_name, id: custom_item_id, fix_group_id: custom_item_fix_group_id ,price: custom_item_price,shipping_charge: custom_item_shipping_charge,individual_price_active: custom_item_individual_price_active}
+    });
+  }
+
+  function updateAllAlbumPhoto(id,fix_group_id,value){
+    if (value == "true"){
+      $("#all_album_price_active_"+id).val(false);
+    }else{
+      $("#all_album_price_active_"+id).val(true);
+    }
+    if ($("#all_album_price_active_"+id).is(":checked")){
+      $("#all_album_price_"+id).removeAttr("disabled");
+    }
+    else{
+      $("#all_album_price_"+id).attr("disabled","disabled");
+    }
+    var custom_item_id = id;
+    var custom_item_fix_group_id=$("#div_val_"+fix_group_id).val();
+    var custom_item_name = $("#sub_item_name_" + custom_item_id).val();
+    var custom_item_price = $("#price_" + custom_item_id).val();
+    var custom_item_shipping_charge = $("#shipping_charge_" + custom_item_id).val();
+    var custom_item_all_album_photo_price_active=$('#all_album_price_active_'+id).val();
+    $.ajax({
+      headers: {
+        'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+      },
+      type: "get",
+      url: "/groups/update_custom_item",
+      data: {d: custom_item_name, id: custom_item_id, fix_group_id: custom_item_fix_group_id ,price: custom_item_price,shipping_charge: custom_item_shipping_charge,all_album_price_active: custom_item_all_album_photo_price_active}
+    });
+  }
+  function updateAllGalleryPhoto(id,fix_group_id,value){
+    // console.log(value);
+    if (value == "true"){
+      $("#all_gallery_price_active_"+id).val(false);
+    }else{
+      $("#all_gallery_price_active_"+id).val(true);
+    }
+    // console.log($("#all_gallery_price_active_"+id).val());
+    if ($("#all_gallery_price_active_"+id).is(":checked")){
+      $("#all_gallery_price_"+id).removeAttr("disabled");
+    }
+    else{
+      $("#all_gallery_price_"+id).attr("disabled","disabled");
+    }
+    var custom_item_id = id;
+    var custom_item_fix_group_id=$("#div_val_"+fix_group_id).val();
+    var custom_item_name = $("#sub_item_name_" + custom_item_id).val();
+    var custom_item_price = $("#price_" + custom_item_id).val();
+    var custom_item_shipping_charge = $("#shipping_charge_" + custom_item_id).val();
+    var custom_item_all_gallery_photo_price_active=$('#all_gallery_price_active_'+id).val();
+    $.ajax({
+      headers: {
+        'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+      },
+      type: "get",
+      url: "/groups/update_custom_item",
+      data: {d: custom_item_name, id: custom_item_id, fix_group_id: custom_item_fix_group_id ,price: custom_item_price,shipping_charge: custom_item_shipping_charge,all_gallery_price_active: custom_item_all_gallery_photo_price_active}
+    });
+  }
+  function updateSalesTax(id){
+
+    var sales_tax_id = id;
+    var sales_tax_percent = $("#salesTaxPercent").val();
+    var sales_tax_title = $("#salesTaxTitle").val();
+    var sales_tax_vat = $("#vatNumber").val();
+    var sales_tax_state_id = $("#state_id").val();
+    var digital_tax_charge = $("#check1").prop('checked');
+    var shipping_tax = $("#check2").prop('checked');
+    // alert(digital_tax_charge);
+    if (sales_tax_percent.length != 0){
+      $.ajax({
+        headers: {
+          'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+        },
+        type: "get",
+        url: "/groups/update_custom_item",
+        data: {id: sales_tax_id,sales_tax_per: sales_tax_percent,sales_tax_title: sales_tax_title,sales_tax_vat: sales_tax_vat,sales_tax_state_id: sales_tax_state_id,digital_tax_charge: digital_tax_charge,shipping_tax: shipping_tax}
+      });
+    }else{
+      $("#salesTaxPercent").val(0.000);
+      updateSalesTax(sales_tax_id);
+    }
+  }
+  function updateShipping(id){
+
+    var shipping_id = id;
+    var shipping_title = $("#shippingTitle").val();
+    var shipping_option_price = $("#shippingOptionPrice").val();
+    var shipping_option_title = $("#shippingOptionTitle").val();
+    $.ajax({
+      headers: {
+        'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+      },
+      type: "get",
+      url: "/groups/update_shipping_details",
+      data: {id: shipping_id,shipping_title: shipping_title,shipping_option_price: shipping_option_price,shipping_option_title: shipping_option_title}
+    });
+  }
+  function updateShippingOption(id){
+    var prices = "";
+    $('input[name="price[]"]').each(function() {
+      prices += $(this).val() + ",";
+    });
+
+    var titles = "";
+    $('input[name="title[]"]').each(function() {
+      titles += $(this).val() + ",";
+    });
+
+    var shipping_option_id = id;
+    $.ajax({
+      headers: {
+        'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+      },
+      type: "get",
+      url: "/groups/adding_shipping_option",
+      data: {id: shipping_option_id,prices: prices,titles: titles}
+    });
+  }
+</script>
+<script>
+  $("#digital_media_self_fullfilled").click(function(){
+    $(".custom-item-1").css("display","block");
+  });
+</script>
+<script>
+  $('#Terms-Of-Sales-Description').on('shown.bs.modal', function(){
+    tinymce.init({
+      selector: '#terms-of-sales-text'
+    });
+  });
+</script>
+<script>
+  $(function(){
+    var tbody = $('#tbody');
+    var i = $('#tbody tr').size() + 1;
+    var shipping_present = '<%=@shipping_option.present?%>';
+    $("#AddShippingOption").click(function(){
+        $('<tr name="tr[]"><td><div class="input-group"><div class="input-group-addon">$</div><%= text_field_tag 'shipping_option_price',nil,id: "shippingOptionPrice",class: "price form-control money-only text-right",maxlength: "8",name: "price[]"%></div></td><td><%=text_field_tag 'shipping_option_title',nil,id: "shippingOptionTitle",class: "title form-control",maxlength: "40",name: "title[]"%></td><td class="text-right"><span class="desc-container fa close-btn">✕</span></td></tr>').appendTo(tbody);
+    })
+  });
+</script>
+<script>
+  $(document).ready(function(){
+    $("#check1").on('switchChange.bootstrapSwitch',function(){
+      console.log($("#check1").prop('checked'));
+      var id = '<%=@sales_tax.id%>';
+      updateSalesTax(id);
+    });
+    $("#check2").on('switchChange.bootstrapSwitch',function(){
+      console.log($("#check2").prop('checked'));
+      var id = '<%=@sales_tax.id%>';
+      updateSalesTax(id);
+    });
+  });
+</script>
+<script>
+  $("#group_name").keyup(function(){
+    $(this).val().length == 0 ? $('#rename_button').prop('disabled', true) : $('#rename_button').prop('disabled', false)
+  });
+</script>
+<script>
+// window.open(URL,name,specs,replace)
+$("#Print").click(function(event){
+  // alert($(this).attr('href'));
+  // window.open($(this).attr('href'));
+  window.open($(this).attr('href'), 'fbShareWindow', 'height=700, width=800, top=' + ($(window).height() / 2 - 275) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+  event.preventDefault();
+});
+</script>

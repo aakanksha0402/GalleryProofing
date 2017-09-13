@@ -1,0 +1,10 @@
+// $("#cc_num").css("border","red");
+alert("hello");
+$("#cc_num").addClass('has_error');
+if($("#cc_num").val().length != 16){
+  $("#cc_num").parent().find(".form-error li").text("'"+$("#cc_num").val()+"' contains an invalid amount of digits").css("color","red");
+}
+// else if ("<%=j params[:braintree_transaction]%>" == "91577"){
+//   alert("hello");
+// }
+$("#cc_num").parent().find(".form-error").css("display","block");

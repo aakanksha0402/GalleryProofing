@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Font set:</strong>
+  <%= @color_logo.font_set %>
+</p>
+
+<p>
+  <strong>Theme:</strong>
+  <%= @color_logo.theme %>
+</p>
+
+<p>
+  <strong>Primary color:</strong>
+  <%= @color_logo.primary_color %>
+</p>
+
+<p>
+  <strong>Secondary color:</strong>
+  <%= @color_logo.secondary_color %>
+</p>
+
+<%= link_to 'Edit', edit_color_logo_path(@color_logo) %> |
+<%= link_to 'Back', color_logos_path %>

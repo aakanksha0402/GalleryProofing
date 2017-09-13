@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+<%= form_for(@gallery) do |f| %>
+<div class="field">
+  <%= f.hidden_field :contact_id, value: params[:link] %>
+</div>
+<div class="field">
+  <%= f.label :name %><br>
+  <%= f.text_field :name %>
+</div>
+<div class="field">
+  <%= f.label :shoot_date %><br>
+  <%= f.date_select :shoot_date %>
+</div>
+<div class="field">
+  <%= f.select 'gallery_layout_id', options_from_collection_for_select(current_user.gallery_layouts.all, :id, :name),{:include_blank => '-Any-'} %>
+</div>
+<div class="actions">
+  <%= f.submit %>
+</div>
+<%end%>

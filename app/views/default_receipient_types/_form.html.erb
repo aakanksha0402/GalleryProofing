@@ -1,0 +1,12 @@
+<%= form_for(@default_receipient_type) do |f| %>
+  <div class="form-inputs">
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :default_email_template_type_id %><br>
+    <%= f.collection_select :default_email_template_type_id, DefaultEmailTemplateType.all, :id, :name %>
+  </div>
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

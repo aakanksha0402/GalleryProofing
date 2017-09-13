@@ -1,0 +1,13 @@
+<% if params[:photo_id] == "all" %>
+	<% if @pin_pass == true %>
+	$("#download-link").html("<%= escape_javascript(render 'views/download_all') %>");
+	$('#download-link').modal('show');
+	<% else %>
+	$('#full-cons').modal('show');
+	<% end %>
+<% elsif @pin_pass == true %>
+$("#download-link").html("<%= escape_javascript(render 'views/pin') %>");
+$('#download-link').modal('show');
+<% else %>
+$('#full-cons').modal('show')
+<% end %>

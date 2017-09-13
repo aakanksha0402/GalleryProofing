@@ -1,0 +1,2 @@
+module GalleryVisitorsHelper
+end

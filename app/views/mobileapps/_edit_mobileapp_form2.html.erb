@@ -1,0 +1,856 @@
+<% content_for :head, "GalleryProofing | Edit Mobileapp"%>
+<% content_for :jcrop_script do%>
+  <%= stylesheet_link_tag "jquery.Jcrop" %>
+  <%= javascript_include_tag "jquery.Jcrop" %>
+<% end %>
+<% content_for :photo_class, "active"%>
+<% content_for :body_class, "mobileapp-edit" %>
+<%#= stylesheet_link_tag "jquery.Jcrop" %>
+<%#= javascript_include_tag "jquery.Jcrop.min" %>
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <!-- gallery head -->
+        <div class="col-md-6 col-sm-5 col-xs-5">
+          <div class="arrow-type">
+            <a href="<%= mobileapps_path %>"><span class="fa circle fa-arrow-left back-btn"></span></a>
+          </div>
+          <div class="cover-photo-container clearfix pull-left" style = "width: 150px,height: 100px">
+
+
+            <% if @mobileapp.photo_id? %>
+              <%= image_tag Photo.find(@mobileapp.photo_id).image.url(:small), class: "mobile-app-icon cover-photo pull-left" %>
+            <% elsif @mobileapp.logo? %>
+              <%= image_tag @mobileapp.logo.url(:small), class: "mobile-app-icon cover-photo pull-left" %>
+            <% else %>
+              <img src="/assets/no_icon_set.png" class="mobile-app-icon cover-photo pull-left">
+            <% end %>
+
+              <div data-toggle="modal" data-target="#icon-cta-app" class="icon-cta">
+                <a href="#" class="change-cover">Change Icon</a>
+              </div>
+          </div>
+            <h2 class="gallery-title">
+              <span class="name pull-left"><%=@mobileapp.name%></span>
+              <a data-target="#rename-modal-app" data-toggle="modal" href="#"><span class="fa fa-pencil circle"></span></a>
+            </h2>
+            <div class="meta-line">
+                <div class="photos-count">
+                  <span class="fa fa-image"></span>
+                  <span class="mobile-app-photos-count">
+                    <%= @sum = @mobileapp.photos.count %>
+                  </span>
+                </div>
+                <div class="link-gallery">
+                    <a href="#" data-toggle="modal" data-target="#icon-gallary-link-app" class="gallery-text"><%= @mobileapp.gallery.present? ? @mobileapp.gallery.name : "Link Gallery" %></a>
+                </div>
+            </div>
+        </div>
+        <!-- /gallery head -->
+        <div class="gallery-buttons pull-right text-right">
+          <div class="btn-group on-page-help-container"> <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown"> <span class="fa fa-question"></span> </a>
+            <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+              <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+              <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+              <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+              <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+              <li><a href="#" >Email Us</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="right-buttons text-right">
+        	<%= link_to 'Share', share_link_path(id: @mobileapp.id ,from: "edit"),  {:remote => true, 'data-toggle' =>  "modal",class: "btn btn-default", 'data-target' => '#Share'}  %>
+        </div>
+       <div class="clearfix" style="margin-bottom:calc(2em - 3px);"></div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+
+<!-- main -->
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2">
+      <h3>Photos</h3>
+    </div>
+    <% if @mobileapp.photos.where(is_delete: false).present? %>
+    	<%= render 'edit_photo' %>
+    <% else %>
+    	<%= render 'edit_without_photos' %>
+    <% end %>
+
+  </div>
+<div class="row">
+  <div class="col-lg-12">
+      <h4>Links</h4>
+      <div class="preview-edit text-right">
+          <a href="#" data-toggle="modal" data-target="#add-link-app" class="btn btn-primary btn-sm add-footer-link" , id: "Add_link">Add Link</a>
+      </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-7">
+    <p>Create a list of up to 6 custom links in this Mobile App. Send clients to your blog, to a video, and more.</p>
+    <% if @mobileapp.mobileapp_custom_links.present? %>
+    <% @mobileapp.mobileapp_custom_links.each do |c_link| %>
+    <ul class="footer-link-editors">
+        <li class="footer-link-editor clearfix col-lg-6" data-link-id="61554">
+          <div class="collapsed-content">
+          	  <% if c_link.logo.present? %>
+          	  <img src="<%= c_link.logo.url%>">
+          	  <% else %>
+              <img src="/assets/299075279.jpg">
+              <% end %>
+              <div class="link-url"><%= c_link.link %></div>
+              <a href="#" class="pull-right js-expand-editor" style="line-height:42px;">Edit</a>
+          </div>
+          <div class="expanded-content">
+            <h4>Edit Link</h4>
+            <p class="description">A 500px x 500px square image is recommended.</p>
+              <div class="edit-footer-link-url">
+                <div class="form-group">
+                	  <%= form_tag update_link_path(:mobileapp_id => @mobileapp.id,:customlink_id => c_link.id) do %>
+                    <label for="footerLinkUrl">URL</label>
+                     <%= text_field_tag :link, c_link.link, class: 'form-control' %>
+                    <div class="form-error input-footer-link-url-error" style="display: none;">
+                      This must be a valid web address.
+                    </div>
+                    <div class="form-error input-footer-link-url-length-error" style="display: none;">
+                      This URL must be 300 characters or less.
+                    </div>
+                </div>
+              </div>
+              <div class="edit-footer-link-image clearfix">
+                  <label>Icon Image</label>
+                  <% if c_link.logo.present? %>
+                  <img src="<%= c_link.logo.url%>">
+                  <% else %>
+                  <img src="/assets/299075279.jpg">
+                  <% end %>
+              </div>
+              <br>
+                <a href="#delet-link" class="delete-footer-link link-delete" data-id="<%= c_link.id %>" data-toggle="modal" >Delete Link</a>
+              <br>
+              <br>
+              <div class="clearfix text-right">
+              	<%= submit_tag "Update",:class => "btn btn-primary btn-sm pull-right js-update-footer-link" %>
+                  <a href="#" class="btn btn-default btn-sm pull-right js-collapse-editor-cancle">Cancel</a>
+                </div>
+                <% end %>
+              </div>
+        </li>
+      	<% end %>
+    </ul>
+    <% end %>
+  </div>
+  <div class="col-sm-3">
+    <div class="form-group">
+      <label>App Theme</label>
+      <%= form_for @mobileapp ,id: "mobileapp_app_submit"  do |f| %>
+      <%= f.select :color_logo_id,options_for_select(@color_logo.collect { |g| [g.name,g.id]},@mobileapp.color_logo_id),{:include_blank => '- None, Optional -'},{class: "selectpicker select-change","data-live-search"=>"true", remote: true } %>
+    </div>
+
+    <div class="form-group">
+      <div class="check-box-app">
+        <div class="checkbox">
+          <input type="checkbox" class="select-box-contact" value = <%= @mobileapp.contact_info ? "TRUE" : "FALSE"%>>
+          <label>Show Contact Info</label>
+        </div>
+      </div>
+      <div class="check-box-app">
+        <div class="checkbox">
+          <input type="checkbox" class="select-box-social">
+          <label>Social Sharing</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group mobile-section">
+      <label>Layout</label>
+     <div class="radiocon" >
+               <div class="myradio" id= "Cascade">
+            <label>
+              <span></span>
+              <%= f.radio_button(:layout, "true" , name: "rdinterested", remote: true, id:"radio_cascade") %>Cascade
+            </label>
+        </div>
+        <div class="myradio" id = "Subway">
+            <label>
+              <span></span>
+              <%= f.radio_button(:layout, "false" ,  name: "rdinterested", remote: true,id:"radio_subway") %>Subway
+            </label>
+        </div>
+      </div>
+    </div>
+     <div class="form-group">
+       <%= f.select :language, Mobileapp::LANGUAGE,{}, {class: "form-control input-lg selectpicker", "data-live-search": true, "data-size": 5, id: "select_language"}%>
+
+
+  </div>
+    <% end %>
+</div>
+</div>
+
+<!-- /main -->
+
+<!-- Share Modal -->
+
+  <div class="modal fade" id="Share" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+
+  </div>
+  <!-- /mMdal -->
+
+
+<!-- Modal -->
+<div class="modal" id="rename-modal-app" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Rename</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_for(@mobileapp) do |f| %>
+          <div class="form-group">
+          	<%= f.text_field :name,  class: 'form-control' %>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+        <%= f.submit "Rename", :class => "btn btn-primary" %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+<!-- Modal -->
+<div class="modal" id="icon-cta-app" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Upload Icon</h4>
+      </div>
+      <%= form_for(@mobileapp) do |f| %>
+      <div class="modal-body">
+          <p>Select Image...</p>
+          <%= f.file_field :logo, :id => "image_upload" %>
+          <!-- <input type="file" id = "image_upload"> -->
+      </div>
+      <div class="modal-footer text-center">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+        <%#=link_to "Select", "#icon_change" ,'data-toggle': "modal", class: "btn btn-primary", id: "select_image"%>
+        <% for attribute in [:crop_x, :crop_y, :crop_w, :crop_h] %>
+          <%= f.hidden_field attribute, :id => attribute %>
+        <% end %>
+        <%= f.submit "Select", :class => "btn btn-primary", :id => "select_image" %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+<!-- Modal -->
+<div class="modal" id="add-link-app" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add Link</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_for @mobileapp,url: add_link_path(:id => @mobileapp.id), method: :post do |f| %>
+          <%= f.fields_for :mobileapp_custom_links do |link_field| %>
+          <p>A 500px x 500px square image is recommended.</p>
+             <div class="form-group">
+                <label>Link URL:</label>
+                 <%= link_field.text_field :link ,  class: "form-control",:placeholder =>'http://www.example.com/', onkeyup: "myFunction()" %>
+              </div>
+              <div class="lightbox">
+                <div class="hover-alert" style="display:none">
+                  You have turned watermarks <strong>on</strong> by default for all techbit<br/> galleries.
+                </div>
+              </div>
+          <p>Select Image...</p>
+          <ul class="form-error list-unstyled" style="display:none" id= "add_link_error"><li><b>Images must be of type JPG or PNG.</b></li></ul>
+          <%= link_field.file_field :logo %>
+          <% end %>
+      </div>
+      <div class="modal-footer text-center">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+        <%= f.submit "Add", :class => "btn btn-primary", id: "add_link_submit" %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+<!-- Modal -->
+<div class="modal" id="icon-gallary-link-app" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Choose Gallery</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_for(@mobileapp) do |f| %>
+          <p>Select the gallery associated with this mobile app:</p>
+         <div class="form-group linked-app">
+          <label>App Theme</label>
+          <%= f.select :gallery_id,options_for_select(@gallery.collect { |g| [g.name,g.id]},@mobileapp.gallery_id),{:include_blank => '- None, Optional -'},{class: "selectpicker","data-live-search"=>"true"} %>
+        </div>
+      </div>
+      <div class="modal-footer text-center">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+        <%= f.submit "Choose Gallery", :class => "btn btn-primary" %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+
+   <!-- Modal -->
+    <div class="modal" id="delet-link" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Delete Link</h4>
+          </div>
+          <div class="modal-body">
+            <form >
+                <p>Are you sure that you want to delete this link?</p>
+                <p>This action will remove the image and its url and <strong>cannot be undone!</strong></p>
+            </form>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+            <%= link_to 'Yes, Delete', '/mobileapps'+'/pony'+'/'+ "#{@mobileapp.id}" + '/delete_link' , method: :delete, :class => 'btn btn-sm btn-danger del-link' %>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /mMdal -->
+
+     <!-- Modal -->
+    <div class="modal fade d-photo" id="delete-photo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Delete Mobile App Photo</h4>
+          </div>
+          <div class="modal-body">
+            <form >
+                <p>Are you sure that you want to delete photo 'images (1).jpg'?</p>
+                <p><strong>This action cannot be undone!</strong></p>
+            </form>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+            <%= link_to 'Yes, Delete', '', method: :delete, :class => 'btn btn-sm btn-danger' %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /mMdal -->
+
+    <!-- ajax set icon start-->
+    <div class="modal" id="icon_change" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Crop Icon</h4>
+          </div>
+          <%= form_for(@mobileapp) do |f| %>
+
+
+          <div class="modal-body">
+
+            <div class="empty stack">
+                  <%= image_tag "",size: "355x237",id: "change_icon" %>
+            </div>
+            <%#= f.file_field :logo, :id => "image_upload"  %>
+          </div>
+          <div class="modal-footer text-center">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+            <%= link_to "Save Icon", "#",class: "btn btn-primary", id: "save_icon", remote: true %>
+            <%#= f.submit "Save Icon", :class => "btn btn-primary", :id=> "save_icon" %>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <!-- ajax set icon end-->
+    <!--  -->
+    <div class="modal" id="icon_change1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Crop Icon</h4>
+          </div>
+          <%= form_for(@mobileapp) do |f| %>
+
+
+          <div class="modal-body">
+
+            <div class="empty stack">
+                  <%= image_tag "",size: "355x237",id: "change_icon1" %>
+            </div>
+            <%#= f.file_field :logo, :id => "image_upload"  %>
+          </div>
+          <div class="modal-footer text-center">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+            <%= link_to "Save Icon", "#",class: "btn btn-primary", id: "save_icon1"%>
+            <%#= f.submit "Save Icon", :class => "btn btn-primary" %>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <!--  -->
+
+<!-- $('.inside-img.ui-selected').find('img').data('id',23); -->
+<script>
+
+    $('.set-as-app-icon').click(function()
+    {
+       document.getElementById('change_icon').src = $('.inside-img.ui-selected img').attr('src');
+       var image_id = $('.inside-img.ui-selected').find('img').attr('data-id');
+        $('#change_icon').attr('data-id',image_id);
+        $(function() {
+                $('#change_icon').Jcrop({
+                   onChange: update_crop,
+                      onSelect: update_crop,
+                      allowResize: true,
+                      allowSelect: false,
+                      setSelect: [0,0, 500, 500],
+                      allowMove: true
+                });
+              });
+              function update_crop(coords) {
+                $('#crop_x').val(coords.x);
+                $('#crop_y').val(coords.y);
+                $('#crop_w').val(coords.w);
+                $('#crop_h').val(coords.h);  
+              }
+    });
+          
+    $("#save_icon").click(function()
+    {
+     var x = $('#crop_x').val();
+     var y = $('#crop_y').val();
+     var w = $('#crop_w').val();
+     var h = $('#crop_h').val();
+      $.ajax(
+        {
+          type: "GET",
+          url: "/mobileapps/set_icon",
+          data: {image_id: $('#change_icon').data('id'), id: "<%= params[:id]%>",crop_x: x,crop_y: y,crop_w: w,crop_h: h }
+        }).success();
+    })
+
+</script>
+
+
+    <!-- crop icon or set icon end -->
+
+<script type="text/javascript">
+	$('.select-change').on('change', function(){
+  $.ajax({ type: "GET",
+     url: "/mobileapps/add_theme",
+     data: { color_logo_id: $('option:selected', this).val(),id: <%= @mobileapp.id %> }
+  }).done(function(data) {
+    console.log(data);
+  });
+});
+	$(".select-box-contact").bind('change', function(){
+	  if (this.checked){
+	    $.ajax({type: "GET",
+	     url: "/mobileapps/add_theme",
+	     data: { contact_info: this.checked ,id: <%= @mobileapp.id %> }
+	    });
+	  }
+	  else {
+	     $.ajax({type: "GET",
+	     url: "/mobileapps/add_theme",
+	     data: { contact_info: false ,id: <%= @mobileapp.id %> }
+	    });
+	  }
+	});
+	$(".select-box-social").bind('change', function(){
+	  if (this.checked){
+	    $.ajax({type: "GET",
+	     url: "/mobileapps/add_theme",
+	     data: { social_sharing: this.checked ,id: <%= @mobileapp.id %> }
+	    });
+	  }
+	  else {
+	     $.ajax({type: "GET",
+	     url: "/mobileapps/add_theme",
+	     data: { social_sharing: false ,id: <%= @mobileapp.id %> }
+	    });
+	  }
+	});
+</script>
+<script type="text/javascript">
+
+  $(document).on('click', '.photo-tile' ,function(){
+
+      if ($('.all-photo').find('.ui-selected').length > 0) {
+        $('.albums-main').addClass('selected');
+        $('.selecteditem').html($('.all-photo').find('.ui-selected').length);
+      }
+      else{
+        $('.albums-main').removeClass('selected');
+      }
+  });
+</script>
+<script type="text/javascript">
+      $(document).ready(function(){
+        $(".checkbox input").click(function(){
+          if($(this).is(':checked')){
+            $(this).parent('.checkbox').addClass('checked-box');
+          }
+          else{
+           $(this).parent('.checkbox').removeClass('checked-box');
+          }
+        });
+        if (<%= @mobileapp.contact_info %>) {
+        	$(".select-box-contact").parent('.checkbox').addClass('checked-box');
+        }
+        if (<%= @mobileapp.social_sharing %>) {
+        	$(".select-box-social").parent('.checkbox').addClass('checked-box');
+        }
+      });
+
+</script>
+<script type="text/javascript">
+     $(".myradio").click(function() {
+        $(this).parent(".radiocon").find('.selected').removeClass('selected');
+        $(this).addClass('selected');
+      });
+</script>
+
+<script type="text/javascript">
+
+  $(document).on('click', '.photo-tile' ,function(){
+      $('.inside-img').removeClass('ui-selected');
+
+        // $('.selecteditem').html($('.all-photo').find('.ui-selected').length);
+       if($(this).children('.inside-img').hasClass('ui-selected')){
+          $(this).children('.inside-img').removeClass('ui-selected');
+
+       }
+       else{
+          $(this).children('.inside-img').addClass('ui-selected');
+          $(".set-as-app-icon").css("display","inline-block");
+          $(".delete-photo").css("display","inline-block");
+          $('.d-photo').find('a').attr('href', '/mobileapps/' + $(this).children('.photo-id').data('id') +'/'+$(this).children('.mobileapp-id').data('id') +'/delete_image');
+       }
+
+
+  });
+</script>
+<script type="text/javascript">
+	$(document).on('click', '.link-delete',function() {
+	      href = $('.del-link').attr('href');
+	  $('.del-link').attr('href', href.replace('pony', $(this).data('id')));
+	});
+</script>
+<script type="text/javascript">
+  $('.js-expand-editor').click(function(e){
+    e.preventDefault();
+
+    $('.expanded-content').hide();
+    $('.js-expand-editor').show();
+    $('.collapsed-content').show();
+      $(this).parent('.collapsed-content').hide();
+      $(this).parent('.collapsed-content').next('.expanded-content').show();
+      $(this).hide();
+  });
+</script>
+<script type="text/javascript">
+  $('.js-collapse-editor-cancle').click(function(e){
+    e.preventDefault();
+
+    $('.expanded-content').hide();
+    $('.js-expand-editor').show();
+    $('.collapsed-content').show();
+  });
+</script>
+<script>
+// $(document).ready(function()
+// {
+//   $('#select_image').hide();
+// });
+// $("#image_upload").change(function()
+// {
+//       alert($('#image_upload').val());
+//       var ext = $('#image_upload').val().split('.').pop().toLowerCase();
+//       if($.inArray(ext, ['jpeg','jpg']) == -1)
+//       {
+//           $('#icon_change').hide();
+//       }
+//       else
+//       {
+//             $('#icon_change').show();
+//             $("#change_icon").attr("src",$('#image_upload').val());
+//
+//       }
+//  });
+
+</script>
+<!-- add link validation start-->
+<script>
+$(document).ready(function()
+{
+  document.getElementById("add_link_submit").disabled = true;
+
+});
+
+function validate_url_image()
+{
+  email_regex = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+  if ($('#mobileapp_mobileapp_custom_links_link').val() != ''  &&  $('#mobileapp_mobileapp_custom_links_link').val().match(email_regex))
+  {
+        document.getElementById("add_link_submit").disabled = false;
+  }
+  else
+  {
+    document.getElementById("add_link_submit").disabled = true;
+  }
+}
+
+$('#mobileapp_mobileapp_custom_links_link').change(function(){
+
+   if ($('#mobileapp_mobileapp_custom_links_link').val().match("http://"))
+    {
+
+    }
+    else
+    {
+         link_protocol = "http://" + $('#mobileapp_mobileapp_custom_links_link').val() ;
+        $('#mobileapp_mobileapp_custom_links_link').val(link_protocol)  ;
+        // alert($('#mobileapp_mobileapp_custom_links_link').val());
+    }
+})
+
+// $('#mobileapp_mobileapp_custom_links_logo').change(function(event)
+// {
+//    var ext = $('#mobileapp_mobileapp_custom_links_logo').val().split('.').pop().toLowerCase();
+//    alert(ext);
+// });
+
+
+$('#add_link_submit').click(function(event)
+{
+    var ext = $('#mobileapp_mobileapp_custom_links_logo').val().split('.').pop().toLowerCase();
+      if($('#mobileapp_mobileapp_custom_links_logo').val() == '')
+      {
+          hoveralert("Please select a photo to upload before saving.");
+          $('#select_image_error').css("display","block");
+          event.preventDefault();
+      }else if( ext != "jpg" && ext != "jpeg" && ext != "png")
+      {
+          $('#add_link_error').css("display","block");
+          event.preventDefault();
+      }
+
+});
+
+
+function hoveralert(alert_text)
+{
+  console.log(alert_text);
+  $(".hover-alert").text(alert_text);
+  $(".hover-alert").fadeIn('slow').delay(1000);
+  $(".hover-alert").fadeOut('slow').delay(1000);
+}
+function myFunction()
+{
+    validate_url_image();
+}
+</script>
+<!-- add link validation end-->
+<!--  radio_button script-->
+<script>
+'<% if @mobileapp.layout == "true"%>'
+  $("#Cascade").addClass('selected');
+'<%else%>'
+  $("#Subway").addClass('selected');
+'<%end%>'
+</script>
+<!--  radio_button script-->
+
+<script>
+
+$('#radio_cascade').click(function(){
+  layout = $('#radio_cascade').val();
+  $.ajax(
+    {
+    type: "GET",
+    url: "/mobileapps/layout_language_mobile",
+    data: {layout: layout , mobileapp_id: '<%= @mobileapp.id%>' }
+    }).success();
+})
+
+$('#radio_subway').click(function(){
+  layout = $('#radio_subway').val();
+  $.ajax(
+    {
+    type: "GET",
+    url: "/mobileapps/layout_language_mobile",
+    data: {layout: layout , mobileapp_id: '<%= @mobileapp.id%>' }
+    }).success();
+})
+
+$('#select_language').change(function(){
+  language = $('#select_language').val();
+  $.ajax(
+    {
+    type: "GET",
+    url: "/mobileapps/layout_language_mobile",
+    data: { language: language , mobileapp_id: '<%= @mobileapp.id%>' }
+    }).success();
+})
+
+</script>
+<script>
+  function readURL(input) {
+      if (input.files && input.files[0]) {
+          var reader = new FileReader();
+
+          reader.onload = function (e) {
+              $('#icon-cta-app').modal('hide');
+              $('#icon_change1').modal('show');
+              $('#change_icon1').attr('src', e.target.result);
+              $(function() {
+                $('#change_icon1').Jcrop({
+                   onChange: update_crop,
+                      onSelect: update_crop,
+                      allowResize: true,
+                      allowSelect: false,
+                      setSelect: [0,0, 500, 500],
+                      allowMove: true
+                });
+              });
+              function update_crop(coords) {
+                $('#crop_x').val(coords.x);
+                $('#crop_y').val(coords.y);
+                $('#crop_w').val(coords.w);
+                $('#crop_h').val(coords.h);  
+              }
+          }
+
+          reader.readAsDataURL(input.files[0]);
+      }
+  }
+
+  // $("#image_upload").change(function(){
+  //     readURL(this);
+  // });
+
+  $(document).ready(function()
+  {
+    $('#select_image').hide();
+  });
+  $("#image_upload").change(function()
+  {
+        var ext = $('#image_upload').val().split('.').pop().toLowerCase();
+        if($.inArray(ext, ['jpeg','jpg']) == -1)
+        {
+            $ ('#icon_change1').hide();
+        }
+        else
+        {
+            readURL(this);
+        }
+   });
+
+</script>
+<script>
+$('#save_icon1').click(function(e){
+  e.preventDefault();
+$('#select_image').click();
+})
+</script>
+
+<style type="text/css">
+		.all-photo > ul{
+    list-style: none;
+    padding: 0;
+    margin-left: -86px;
+}
+.all-photo > ul li{
+    float: left;
+    text-align: center;
+    position: relative;
+    width: 155px;
+    height: 140px;
+    margin: 0 0 calc(2em - 1px) 86px;
+}
+.all-photo > ul li  .inside-img-open{
+    position: absolute;
+    top: 7px;
+    right: 1px;
+    width: 24px;
+    height: 24px;
+    background-color: transparent;
+    opacity:0;
+}
+.all-photo > ul li .inside-img:hover{
+    background-color: #F0F4F5;
+}
+.all-photo > ul li:hover .inside-img-open {
+    opacity: 1;
+}
+.all-photo > ul li  .inside-img-open {
+    display: block;
+    margin: 0px;
+    width: 24px;
+    height: 24px;
+    border-radius: 15px;
+    background-color:#585858;
+}
+.all-photo > ul li .inside-img-open a{
+    font-size: 12px;
+    color: #FFF;
+}
+.all-photo > ul li .inside-img > img{
+    max-width: 153px;
+    max-height: 102px;
+}
+.all-photo > ul li > .photo-name{
+    position: absolute;
+    cursor: default;
+    font-size: 12px;
+    color: #889EA6;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    display: block;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-decoration: none;
+}
+.jcrop-keymgr {
+  opacity: 0;
+}
+	</style>

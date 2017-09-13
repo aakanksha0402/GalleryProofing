@@ -1,0 +1,7 @@
+$('#download_album_link_popup').modal('hide');
+var hostname = window.location.origin
+var link1 = "/galleries/album_download_link/?bundle=<%= @bundle %>"
+var link2 = "&gallery=<%=@gallery.id %>"
+var link3 = "&brand=<%=@brand.id %> "
+var link4 = hostname + link1 + link2 + link3
+$('#album_download_link').val(link4);

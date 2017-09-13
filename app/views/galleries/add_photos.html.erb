@@ -1,0 +1,560 @@
+<%= puts "==============#{@photos}==============" %>
+<%= puts "---------"%>
+<% @photos.each do |p| %>
+<%= puts "#{p}" %>
+<% end %>
+<%= puts "---------"%>
+
+<% content_for :head, "GalleryProofing | Add Photos"%>
+<% content_for :body_class, "gallery-addphoto"%>
+<% content_for :photo_class, "active"%>
+
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-12">
+            <%=link_to galleries_galleryhome_path(id: @name.id) do%><span class="fa circle fa-arrow-left back-btn"></span><%end%>
+            <h2>
+              <div id="pageTitleHeaderText">Add Photos</div>
+            </h2>
+            <h5><%= @name.name%></h5>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-12">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><a href="#" >Email Us</a></li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+<!-- main -->
+<div class="container-fluid">
+  <div class="add-photos">
+    <div class="row">
+      <div id="Two" class="col-lg-6 col-lg-offset-3">
+        <div >
+          <!-- upload -->
+          <%= form_for @context,url: galleries_save_photos_path, html: {:class => "upload dropzone", multipart: true}, method: :post do |f| %>
+          <div class="upload-options-section">
+            <a href="#" class="upload-options-toggle"><span class="fa fa-plus circle"></span> Upload Options</a>
+            <!-- options -->
+            <div class="options" style="display:none;">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Add to Album:</td>
+                    <td>
+                      <!-- <select class="form-control input-lg"> -->
+                      <%= select_tag "select_album",content_tag(:option,'- No Album (Skip) -',:value=>"no_album")+options_from_collection_for_select(@gallery_album, 'id', 'title',{disabled: -> (album) { album.children_album.present? }}) ,{class: "selectpicker ","data-live-search" => "true"} %>
+                      <a href="#" data-toggle="modal" data-target="#newalbum-modal"><span class="fa fa-plus circle"></span> New Album</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Allow Duplicates:</td>
+                    <td><input type="checkbox"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- /options -->
+            </div>
+            <!-- /upload -->
+            <!-- watermark -->
+
+            <div class="watermark-settings">
+              <span class="text-uppercase">Watermark:</span>
+              <%= select_tag "apply_watermark",content_tag(:option,'No Watermark',:value=>"no_watermark")+options_from_collection_for_select(@watermarks, 'id', 'name',@watermark_id) ,{class: "selectpicker ","data-live-search" => "true"} %>
+
+            </div>
+            <!-- /watermark -->
+            <!-- upload main -->
+            <div class="text-center main-text">
+              <div class="wrapper">
+                <div class="queue-empty">
+                  <h3>Drag Photos Here</h3>
+                  <p>or</p>
+                </div>
+                <div class="photos-queued" style="display: none;">
+                  <p><span class="fa fa-image"></span><span class="queue-count"> 0 </span> photos in queue</p>
+                </div>
+
+
+                  <% if @photo.errors.any? %>
+                  <div id="error_explanation">
+                    <h2><%= pluralize(@photo.errors.count, "error") %> prohibited this photo from being saved:</h2>
+
+                    <ul>
+                      <% @photo.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+                  <% end %>
+                  <%= f.fields_for @photo do |photo| %>
+                    <div class="queue-empty">
+                      <span class="btn btn-primary btn-file">
+                        <div>
+                          <%= hidden_field_tag :gallery_id, params[:gallery_id]%>
+                        </div>
+                        <span class="dz-message fileinput-new" data-dz-message>Click to Browse</span>
+                        <%= photo.file_field :image,multiple: true,id: "File-Upload", accept: ".jpg,.jpeg|images/*" %>
+                        <%= hidden_field_tag "files" %>
+                      </span>
+                    </div>
+                  <% end %>
+                  <div class="actions photos-queued margin-top" style="display: none;">
+                    <p><%= f.submit "Start Upload",id: "Upload", class: "btn btn-primary actions"%></p>
+                    <p>or add more</p>
+                    <p>
+                      Drag or
+                      <span class="btn btn-default btn-xs btn-file">
+                        <span class="fileinput-new">Browse</span>
+                          <%= f.fields_for @photo do |photo| %>
+                              <%= photo.file_field :image,multiple: true,id: "Extra-File-Upload" %>
+                              <!-- <input type="file" id="Extra-File-Upload" multiple="true" accept="image/jpeg"> -->
+                              <% end %>
+                      </span>
+                    </p>
+                  </div>
+
+                  <!-- <div id="use_for_append" >
+                  </div> -->
+
+                  <div class="upload-warnings" style="display:none" >
+                    <div class="alert alert-warning">
+                      <span class="num" ></span> photos was not added to the queue.
+                      <span class="duplicates" style="display:none">Photos cannot have duplicate filenames.</span>
+                      <span class="unsupported" >Only JPEG photos are supported.</span>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+
+            <!-- /upload main -->
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Album Modal -->
+  <div class="modal fade" id="newalbum-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Create a New Album</h4>
+        </div>
+        <%= form_for @album do |f| %>
+        <div class="modal-body">
+          <div class="field">
+            <%= f.label :title,"New Album Name: " %><br>
+            <%= f.text_field :title ,  class: "form-control"%>
+          </div>
+          <% if params[:album_id].present?%>
+          <div>
+            <%= f.hidden_field :gallery_id, value: params[:gallery_id]%>
+            <%= f.hidden_field :parent, value: params[:album_id]%>
+            <%= f.hidden_field :level, value: @level.level+1%>
+          </div>
+          <%else%>
+          <div>
+            <%= f.hidden_field :gallery_id, value: params[:gallery_id]%>
+            <%= f.hidden_field :parent, value: 0%>
+            <%= f.hidden_field :level, value: 0%>
+          </div>
+          <%end%>
+
+
+        </div>
+        <div class="modal-footer">
+          <div class="actions">
+            <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Cancel</span></button>
+            <%= f.submit "Add Album",class: "btn btn-primary"%>
+          </div>
+        </div>
+      </div>
+      <%end%>
+    </div>
+  </div>
+  <!-- /mMdal -->
+  <!-- /main -->
+
+
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('.upload-options-toggle').click(function(){
+        $('.options').toggle();
+      });
+    });
+  </script>
+
+  <!-- <script>
+  $(document).ready(function(){
+    $('input[type=file]').change(function(e){
+      // alert("hello");
+      filename = $(this).val();
+      $("#hidden_filename").attr("value", filename);
+      if($("#hidden_filename").val()!="")
+      {
+        $(".queue-empty").css("display","none");
+        $(".photos-queued").css("display","block");
+      }
+    });
+  })
+  </script> -->
+  <script>
+  // var dupli_img = 0;
+  // var ext_img = 0 ;
+ var global_value = 0;
+  $("#File-Upload").change(function()
+  {
+      var inp = document.getElementById('File-Upload');
+      var names = $.map(inp.files, function(val) { return val.name; });
+      var file_array = jQuery.makeArray(inp.files);
+      var dup_array = jQuery.makeArray(inp.files);
+      var new_file_array = [];
+      var dupli_img = 0;
+      var ext_img = 0 ;
+
+      $.each(file_array,function(i,val1)
+      {
+          var fileExtension = ['jpeg', 'jpg'];
+          if ($.inArray(val1.name.split('.').pop().toLowerCase(), fileExtension) == -1)
+          {
+              ext_img = ext_img + 1 ;
+          }
+      })
+
+      $.each(dup_array,function(i,val1)
+      {
+        var photos = '<%= @photos %>'.replace(/&quot;/g, "'") ;
+        photos =  photos.replace(/'/g, '"');
+        photos = JSON.parse(photos);
+        if (/\s/.test(val1.name))
+        {
+            var valname = val1.name.split(" ").join("_") ;
+        }
+        else
+        {
+            var valname = val1.name ;
+        }
+
+
+        if ($.inArray(valname , photos ) == -1)
+        {
+        }
+        else
+        {
+
+            dupli_img =  dupli_img + 1 ;
+        }
+      })
+
+        if(dupli_img + ext_img > 0)
+        {
+          $(".upload-warnings").show();
+          $(".num").show();
+          $(".duplicates").hide();
+          $(".unsupported").hide();
+        }
+
+
+        if( file_array.length - (dupli_img + ext_img) > 0)
+        {
+          var a = dupli_img ;
+          var b = ext_img ;
+          var c = dupli_img + ext_img ;
+
+          $(".num").text(c);
+          if(a > 0)
+          {
+            $(".duplicates").show();
+          }
+          if(b > 0)
+          {
+            $(".unsupported").show();
+          }
+          if(file_array.length > dupli_img + ext_img)
+          {
+              $(".photos-queued").css("display","block");
+              $(".queue-empty").css("display","none");
+          }
+          // $("#files").val(new_file_array);
+          // $(".dropzone").css("border-color","#EF5E5E");
+          $(".queue-count").text(file_array.length - c);
+          global_value = file_array.length - c ;
+
+        }
+        else
+        {
+          var a = file_array.length - ext_img ;
+          var b = file_array.length - ext_img ;
+          var c = dupli_img + ext_img ;
+          $(".num").text(c);
+          if(a > 0)
+          {
+            $(".duplicates").show();
+          }
+          if(b > 0)
+          {
+            $(".unsupported").show();
+          }
+          $(".photos-queued").css("display","none");
+          $(".queue-empty").css("display","block");
+
+        }
+
+
+    })
+
+
+    $("#Extra-File-Upload").change(function()
+    {
+
+        var inp = document.getElementById('Extra-File-Upload');
+        var names = $.map(inp.files, function(val) { return val.name; });
+        var file_array = jQuery.makeArray(inp.files);
+        var dup_array = jQuery.makeArray(inp.files);
+        var new_file_array = [];
+        var dupli_img = 0;
+        var ext_img = 0 ;
+
+        $.each(file_array,function(i,val1)
+        {
+            var fileExtension = ['jpeg', 'jpg'];
+            if ($.inArray(val1.name.split('.').pop().toLowerCase(), fileExtension) == -1)
+            {
+                ext_img = ext_img + 1 ;
+            }
+        })
+
+        $.each(dup_array,function(i,val1)
+        {
+          var photos = '<%= @photos %>'.replace(/&quot;/g, "'") ;
+          photos =  photos.replace(/'/g, '"');
+          photos = JSON.parse(photos);
+          if (/\s/.test(val1.name))
+          {
+              var valname = val1.name.split(" ").join("_") ;
+          }
+          else
+          {
+              var valname = val1.name ;
+          }
+
+
+          if ($.inArray(valname , photos ) == -1)
+          {
+          }
+          else
+          {
+
+              dupli_img =  dupli_img + 1 ;
+          }
+        })
+
+          if(dupli_img + ext_img > 0)
+          {
+            $(".upload-warnings").show();
+            $(".num").show();
+            $(".duplicates").hide();
+            $(".unsupported").hide();
+          }
+
+
+          if( file_array.length - (dupli_img + ext_img) > 0)
+          {
+            alert("__________");
+            alert($("#Extra-File-Upload".length));
+            alert("__________");
+            var a = dupli_img ;
+            var b = ext_img ;
+            var c = dupli_img + ext_img ;
+
+            $(".num").text(c);
+            if(a > 0)
+            {
+              $(".duplicates").show();
+            }
+            if(b > 0)
+            {
+              $(".unsupported").show();
+            }
+            if(file_array.length > dupli_img + ext_img )
+            {
+                $(".photos-queued").css("display","block");
+                $(".queue-empty").css("display","none");
+            }
+            // $("#files").val(new_file_array);
+            // $(".dropzone").css("border-color","#EF5E5E");
+            $(".queue-count").text(global_value + (file_array.length - c));
+
+            //  global_value = global_value + (file_array.length - c);
+
+          }
+          else
+          {
+            var a = file_array.length - ext_img ;
+            var b = file_array.length - ext_img ;
+            var c = dupli_img + ext_img ;
+            $(".num").text(c);
+            if(a > 0)
+            {
+              $(".duplicates").show();
+            }
+            if(b > 0)
+            {
+              $(".unsupported").show();
+            }
+            $(".photos-queued").css("display","none");
+            $(".queue-empty").css("display","block");
+
+          }
+          // if(file_array.length > 0)
+          // {
+          //   alert('frgvdsgdfgdfgf');
+          //     $('#use_for_append').append('<%#= form_for @context,url: galleries_save_photos_path, html: {:class => "upload", multipart: true}, method: :post do |f| %><%#= f.fields_for @photo do |photo| %><%#= photo.file_field :image,multiple: true,id: "Extra-File-Upload1" %><%# end %><%# end %>' );
+          // }
+
+      })
+
+
+  //
+  // $("#File-Upload").change(function()
+  // {
+  //   var inp = document.getElementById('File-Upload');
+  //   var names = $.map(inp.files, function(val) { return val.name; });
+  //   var file_array = jQuery.makeArray(inp.files);
+  //   var dup_array = jQuery.makeArray(inp.files);
+  //   var ext_img = 0 ;
+  //   var dup_img = 0 ;
+  //   var new_file_array = [];
+  //   var new_dup_array = [];
+  //   $.each(file_array,function(i,val1)
+  //   {
+  //     var fileExtension = ['jpeg', 'jpg'];
+  //     if ($.inArray(val1.name.split('.').pop().toLowerCase(), fileExtension) == -1)
+  //     {
+  //         ext_img = ext_img + 1
+  //     }
+  //     else
+  //     {
+  //       $.each(dup_array,function(i,val1)
+  //       {
+  //         if ($.inArray('<%= @photos %>'.replace(/&quot;/g, "'"), val1.name) == -1)
+  //         {
+  //           dup_img = dup_img + 1
+  //           console.log("not valid");
+  //         }
+  //         else
+  //         {
+  //           new_dup_array.push(val1);
+  //         }
+  //       });
+  //       new_file_array.push(val1);
+  //     }
+  //   });
+  //
+  //   $(".upload-warnings").show();
+  //   square_root = Math.sqrt(dup_img)
+  //   // alert(square_root);
+  //   // alert(file_array.length);
+  //   // alert(new_file_array.length);
+  //   // alert(ext_img);
+  //   alert(file_array.length - square_root - ext_img );
+  //
+  //   if((file_array.length - new_file_array.length) > 0)
+  //   {
+  //     // $(".num").text(file_array.length - new_file_array.length );
+  //     $(".num").text( new_file_array.length + ext_img );
+  //     if(new_file_array.length > 0)
+  //     {
+  //       $(".duplicates").show();
+  //     }
+  //     if(ext_img > 0)
+  //     {
+  //       $(".unsupported").show();
+  //     }
+  //     if(file_array.length == new_file_array.length + ext_img)
+  //     {
+  //       alert('rich');
+  //         $(".photos-queued").css("display","none");
+  //         $(".queue-empty").css("display","block");
+  //     }
+  //     $("#files").val(new_file_array);
+  //     $(".dropzone").css("border-color","#EF5E5E");
+  //     $(".queue-count").text(file_array.length - square_root - ext_img);
+  //
+  //   }
+  //   else if((dup_array.length - new_dup_array.length) > 0)
+  //   {
+  //     $(".num").text(dup_array.length - new_dup_array.length);
+  //     $(".unsupported").hide();
+  //     $(".duplicates").show();
+  //     $("#files").val(new_dup_array);
+  //     $(".dropzone").css("border-color","#EF5E5E");
+  //     $(".queue-count").text(file_array.length - square_root - ext_img);
+  //
+  //     // $(".queue-count").text(new_dup_array.length);
+  //   }
+  //
+  // });
+
+  </script>
+<script type="text/javascript">
+  $(document).ready(function(){
+  // disable auto discover
+  Dropzone.autoDiscover = false;
+
+
+  var dropzone = new Dropzone (".dropzone", {
+    maxFilesize: 256, // Set the maximum file size to 256 MB
+    paramName: "image[avatar]", // Rails expects the file upload to be something like model[field_name]
+    addRemoveLinks: false, // Don't show remove links on dropzone itself.
+    autoProcessQueue: false,
+    createImageThumbnails: false,
+    uploadMultiple: true,
+    previewTemplate: false
+  });
+
+   dropzone.on("drop", function(event) {
+    $(".photos-queued").css("display","block");
+    $(".queue-empty").css("display","none");
+    alert(dropzone.getAcceptedFiles().length );
+  });
+  //  dropzone.on("completemultiple", function() {
+  //   var count= dropzone.files.length;
+  //   alert(count);
+  //   $(".queue-count").text(count);
+  // });
+  $('#Upload').click(function() {
+    // alert(dropzone.getAcceptedFiles().length );
+    //  alert(dropzone.files.length);
+    dropzone.processQueue();
+  });
+  dropzone.on("success", function(file) {
+    this.removeFile(file)
+    $.getScript("/images")
+  })
+});
+</script>

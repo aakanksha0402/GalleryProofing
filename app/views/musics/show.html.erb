@@ -1,0 +1,49 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @music.title %>
+</p>
+
+<p>
+  <strong>Theme:</strong>
+  <%= @music.theme %>
+</p>
+
+<p>
+  <strong>Style:</strong>
+  <%= @music.style %>
+</p>
+
+<p>
+  <strong>Mood:</strong>
+  <%= @music.mood %>
+</p>
+
+<p>
+  <strong>Type:</strong>
+  <%= @music.song_type %>
+</p>
+
+<p>
+  <strong>Tempo:</strong>
+  <%= @music.tempo %>
+</p>
+
+<p>
+  <strong>Instrument:</strong>
+  <%= @music.instrument %>
+</p>
+
+<p>
+  <strong>Artist:</strong>
+  <%= @music.artist %>
+</p>
+
+<p>
+  <strong>Category:</strong>
+  <%= @music.music_category_id %>
+</p>
+
+<%= link_to 'Edit', edit_music_path(@music) %> |
+<%= link_to 'Back', musics_path %>

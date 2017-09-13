@@ -1,0 +1,10 @@
+<p>Hi!</p>
+
+<p>I want to share my favorite photos from the "<%= @gallery_name.name %>" gallery with you!</p>
+
+<p><%= raw @message %></p>
+
+<p>To view these photos, <%= link_to "click here.", verify_favorites_mail_url(gallery_visitor_id: @gallery_visitor_id,brand_id: @brand_id) %></p>
+
+<p>Thanks,</p>
+<p><%= @name %></p>

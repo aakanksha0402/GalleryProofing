@@ -1,0 +1,1217 @@
+tetstetetetttst
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <!-- gallery head -->
+        <div class="gallery-meta">
+          <div data-toggle="modal"  class="cover-photo-container clearfix pull-left">
+            <div class="cover-photo default  pull-left">
+              <div class="cover-photo default  pull-left">
+                <% if @album.album_photo_id.present? %>
+                <%=image_tag @find_pic.image.url(:small)%>
+                <% elsif @album.cover_url.present? %>
+                <%=image_tag @album.cover_url.url(:small)%>
+                <%end%>
+              </div>
+            </div>
+            <div class="icon-cta">
+              <% if @album.cover_url.present? || @album.album_photo_id.present? %>
+                <%= link_to "Add<br>Cover".html_safe,"#profile-change_#{params[:album_id]}",'data-toggle': "modal" , id: "Album_cover"%>
+              <% else %>
+                <%=link_to "Add<br>Cover".html_safe, "#album-title-popup_#{params[:album_id]}" ,'data-toggle': "modal", class: "change-cover"%>
+              <% end %>
+            </div>
+          </div>
+          <h3 class="gallery-title pull-left">
+            <span class="name pull-left">
+              <%if @album.password.present?%>
+              <span class="fa fa-lock"></span>
+              <%end%>
+              <%= @album.title%>
+            </span>
+            <%= link_to "<span class=\"fa fa-pencil circle\"></span>".html_safe,"#rename-modal_#{params[:album_id]}",'data-toggle': "modal"%>
+          </h3>
+          <div class="meta-line">
+            <div class="album-icon">
+              <span class="fa fa-folder-open"></span>
+              <!-- <svg class="icon-album-no-photos">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/v2/content/201604111460397949/svg.svg#iconAlbumNoPhotos"></use>
+            </svg> -->
+            <% sub_album = @album.array_checking([] ,@album.level) %>
+            <% @total = 0 %>
+            <% sub_album.each do |s| %>
+            <% @total += @gallery.albums.find(s).photos.where(is_delete: false).count %>
+            <% end %>
+            <%= @total %> Photos
+            <%=hidden_field_tag :id_of_album,params[:album_id]%>
+          </div>
+
+        </div>
+        <!-- /gallery head -->
+
+        <div class="gallery-buttons pull-right text-right">
+          <ul class="collapse-buttons list-unstyled">
+            <li id="add_photos_link_disable">
+              <%= link_to_if(@last_album.count == 0,"<span class='fa fa-picture-o'></span> Add Photos".html_safe,albums_add_photos_path(gallery_id: params[:gallery_id],album_id: params[:album_id]),class: "btn btn-link btn-sm") { link_to "<span class='fa fa-picture-o'></span>    Add Photos".html_safe,"#",disabled: true,class: "btn btn-link btn-sm"}%>
+            </li>
+            <li id = "add_sub_album" >
+              <!-- <span class="fa fa-folder-open"></span> -->
+              <% if @level_restrict.level < 3 %>
+              <%= link_to "<span class=\"fa fa-folder-open\"></span> Add Sub Album".html_safe,"#Add-Sub-album_#{params[:album_id]}",'data-toggle': "modal",class: "btn btn-link btn-sm"%>
+              <%else%>
+              <%= link_to "<span class=\"fa fa-folder-open\"></span> Add Sub Album".html_safe,"#",disabled: true,class: "btn btn-link btn-sm"%>
+              <%end%>
+              <!-- <%= link_to_if(@level_restrict.level < 3,"Add Sub Album",new_album_path(gallery_id: params[:gallery_id],album_id: params[:album_id]),class: "btn btn-link btn-sm")%> -->
+            </li>
+            <li id="upload_album_cover">
+              <% if @album.cover_url.present? %>
+              <%= link_to "<span class=\"fa fa-cloud-upload\"></span> Upload Album Cover".html_safe,"#profile-change_#{params[:album_id]}",'data-toggle': "modal",class: "btn btn-link btn-sm"%>
+              <% else %>
+              <%=link_to "<span class=\"fa fa-cloud-upload\"></span> Upload Album Cover".html_safe, "#album-title-popup_#{params[:album_id]}" ,'data-toggle': "modal", class: "change-cover btn btn-link btn-sm" %>
+              <% end %>
+            </li>
+            <li id = "set_album_cover">
+              <%= link_to "#profile-change_#{params[:album_id]}","data-toggle": "modal" ,class: "btn btn-link btn-sm", id: "album_cover_set" do %>
+              <span class='fa fa-picture-o'></span> Set as Album Cover
+              <% end %>
+            </li>
+            <li  id = "add_set_as_gallery_cover">
+              <%= link_to "#profile-change","data-toggle": "modal" ,class: "btn btn-link btn-sm", id: "remove_set_gallery" do %>
+              <span class='fa fa-picture-o'></span> Set as Gallery Cover
+              <% end %>
+            </li>
+            <li  id = "add_create_mobile_app">
+              <%= link_to "#mobile_app_create","data-toggle": "modal" ,class: "btn btn-link btn-sm", id: "mobile_app" do%>
+              <span class="fa fa-mobile"></span> Create Mobile App
+              <% end %>
+            </li>
+
+            <li class="more-tab" style="display: block;">
+              <a href="#" class="btn btn-link btn-sm dropdown-toggle no-arrow show-archived skip" data-toggle="dropdown" aria-expanded="false"><span class="fa fa-ellipsis-h"></span></a>
+              <ul class="dropdown-menu dropdown-menu-right arrow-upper-right">
+                <li id="share">
+                  <%= link_to "Share","#ShareAlbumLink", class: "show-archived", 'data-toggle': "modal" %>
+                </li>
+
+                <li id = "set_password">
+                  <%= link_to "Set Password","#Set-Password",'data-toggle': "modal",class: "show-archived"%>
+                </li>
+                <%if @sub_album.count == 0%>
+                <li><%= link_to "Download Album Link", "#",'data-toggle': "modal", class: "show-archived", 'data-target': "#download_album_link_popup", id: "download_album_link" %></li>
+
+                <%end%>
+                <li id ="delete_album" >
+                  <%= link_to "Delete Album","#",'data-toggle': "modal", 'data-target': "#delete_album_popup" %>
+                </li>
+                <li id = "add_download_link" class="temp">
+                  <%= link_to galleries_selected_download_path(), "data-toggle": "modal" ,class: "btn btn-sm" , id: "selected_download_header" do %>
+                  Download
+                  <% end %>
+                </li>
+                <li>
+                  <%=link_to "Delete","#", id: "delete_from_header" %>
+                </li>
+                <li id = "rename_from_header">
+                  <%= link_to "Rename","#" ,class: "btn btn-sm", id: "rename_image_id", remote: true%>
+                </li>
+                <li  id = "remove_from_album" >
+                  <%=link_to "Remove From Album","#" %>
+                </li>
+
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="clearfix">
+
+
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+<div class="all-photo"> <!--start-photo-view-->
+  <%@find_album1.each do |album|%>
+  <%if album.id == params[:album_id].to_i%>
+  <%if @sub_album.count == 0%>
+  <%if @album_photos1.count != 0%>
+  <% @album_photos.each do |album_photo| %>
+  <% if album_photo.imageable_id == @album.id %>
+  <ul class="photos-view">
+    <li class="photo-tile album_photo_display">
+      <div class="inside-img"><%= image_tag album_photo.image.url , "data-id": album_photo.id %></div>
+      <div class="inside-img-open">
+        <a  href="<%= album_photo.image.url %>" class="fa fa-search lightview" data-lightview-group="shared_options" data-title="Click the right half of the image to move forward.">
+                  </a>
+      </div>
+      <div class="photo-name"><%= album_photo.image_file_name%></div>
+    </li>
+  </ul>
+  <% end %>
+  <%end%>
+  <%else%>
+  <h1><%="No Photos Yet"%></h1>
+  <%=link_to "Add Photos",albums_add_photos_path(gallery_id: params[:gallery_id],album_id: params[:album_id]),class: "btn btn-primary"%>
+  <%=link_to_if(@level_restrict.level < 3,"Add Album","#Add-Sub-album_#{params[:album_id]}",class: "btn btn-default",'data-toggle': "modal")%>
+  <%end%>
+  <%else%>
+  <% @sub_album.each do |sub|%>
+
+  <% sub_album = sub.array_checking([] ,sub.level) %>
+  <!-- main content -->
+  <div id="all-album-1">
+    <div class="row">
+      <div class="col-lg-12 main-pane albums-main">
+        <!-- head -->
+        <div class="sticky-header">
+          <div class="album-header all-photos has-photos">
+            <div class="album-meta">
+
+            </div>
+          </div>
+        </div>
+        <!-- /head -->
+        <div class="dragebal-row">
+          <ul id="sortable">
+            <%= link_to albums_albumhome_path(gallery_id: @gallery.id,album_id: sub.id),remote: true do%>
+            <li class="ui-state-default clickable-row">
+              <div class="inside-img-drag">
+                <div class="gallery-meta">
+                  <div class="cover-photo-container clearfix pull-left">
+                    <div class="cover-photo default">
+                    </div>
+                  </div>
+                  <h3 class="gallery-title pull-left">
+                    <span class="name pull-left"><%= sub.title%></span>
+                  </h3>
+                  <% @total = 0 %>
+                  <% sub_album.each do |s| %>
+                  <% @total += @gallery.albums.find(s).photos.count %>
+                  <% end %>
+                  <span class="photo-count-drag"><%= @total %> Photos</span>
+
+                  <div class="arrow pull-right">
+                    <span class="fa fa-arrows-v"></span>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <%end%>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /main content -->
+  <%end%>
+  <%end%>
+
+  <!-- Add Album1 Modal -->
+  <div class="modal fade" id='<%="Add-Sub-album_#{album.id}"%>' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Create a New Album</h4>
+        </div>
+        <%= form_for Album.new do |f| %>
+        <div class="modal-body">
+          <%= hidden_field_tag :album_id, album.id%>
+          <div class="field">
+            <%= f.label :title %><br>
+            <%= f.text_field :title ,id: "sub_album_title", class: "form-control" %>
+          </div>
+          <div>
+            <%= f.hidden_field :gallery_id, value: params[:gallery_id]%>
+            <%= f.hidden_field :parent, value: album.id%>
+            <%= f.hidden_field :level, value: album.level+1%>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="actions">
+            <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Cancel</span></button>
+            <%= f.submit "Add Album",id: "Album_Submit", class: "btn btn-primary"%>
+          </div>
+        </div>
+      </div>
+      <%end%>
+    </div>
+  </div>
+  <!-- /mMdal -->
+
+  <!-- Modal -->
+  <div id="Set-Password" class="modal" role="dialog"  data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Set Album Password</h4>
+        </div>
+        <%= form_for Album.new,url: albums_set_password_path(id: params[:gallery_id]) do |f|%>
+        <div class="modal-body">
+          <%=hidden_field_tag :albumid,params[:album_id]%>
+          <p>What would you like the album password to be? An album with no password is open to anyone with access to the event.</p>
+          <%= label_tag :password,"Password:"%>
+          <%=f.text_field :password,value: album.password,class: "form-control"%>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <%= f.submit "Save Password",class: "btn btn-primary"%>
+        </div>
+        <%end%>
+      </div>
+    </div>
+  </div>
+  <!--/mModal -->
+
+  <!-- Modal -->
+  <div class="modal" id='<%="rename-modal_#{album.id}"%>' tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Rename</h4>
+        </div>
+        <%= form_for @album do |f|%>
+        <div class="modal-body">
+          <div class="form-group">
+            <%=f.text_field :title,value: @album.title, class: "form-control" %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <%= link_to "Cancel", "#", "data-dismiss": "modal", class: "btn btn-default" %>
+          <%= f.submit "Rename", class: "btn btn-sm btn-primary" %>
+        </div>
+        <%end%>
+      </div>
+    </div>
+  </div>
+  <!-- /mMdal -->
+
+  <!-- Album Cover Modal -->
+  <div class="modal fade" id='<%="profile-change_#{album.id}"%>' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <%= link_to "Back", "#",  id: "back_link" , style: "display:none" %>
+          <%= link_to "Back", "#",  id: "back_link3" , style: "display:none" %>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="Cover-Modal-Title">Album Cover</h4>
+        </div>
+        <%= form_for @album, url: albums_update_cover_path(id: @album.id),html: {multipart: true}, method: :post do |f|%>
+        <div class="modal-body">
+          <div id="Two" style="display:none">
+            <%= form_for @album, url: albums_update_cover_path, method: :post  do |f| %>
+            <ul class="source-links">
+              <li class="js-cover-flow-upload">
+                <span class="btn btn-file">
+                  <p>Upload From Computer</p>
+                  <%= f.file_field :cover_url, onchange: "document.getElementById('album_changecover').src = window.URL.createObjectURL(this.files[0]);"  %>
+                  <%#= f.hidden_field :id, value: params[:id]%>
+                </span>
+                <span class="fa fa-caret-right pull-right"></span>
+              </li>
+              <%if @rand_record.count == 0%>
+              <li class="js-cover-flow-random" id="Choose-photo-li" style=" pointer-events:none;">
+                <%else%>
+                <li class="js-cover-flow-random" id="Choose-photo-li" >
+                  <%end%>
+                  <span class="btn btn-file">
+                    <p>Choose From Album</p>
+                  </span>
+                  <span class="fa  fa-caret-right pull-right"></span>
+                </li>
+              </ul>
+              <%= f.submit "Save", style: "display:none;",id: "Pc1"%>
+              <% end %>
+            </div>
+            <div id="One">
+              <div id="Sample"></div>
+              <div class="empty stack">
+                <%if @album.album_photo_id != nil && @find_pic.image != nil %>
+                <%=image_tag @find_pic.image.url,size: "355x237",id: "album_changecover"%>
+                <%else%>
+                  <% if @album.cover_url.present?%>
+                    <%=image_tag @album.cover_url.url,size: "355x237",id: "album_changecover"%>
+                  <%else%>
+                    <%= image_tag "",size: "355x237",id: "album_changecover"%>
+                  <%end%>
+                <%end%>
+                <%= hidden_field_tag :val %><%= params[:id]%>
+                <%= hidden_field_tag :param1,@gallery.id%>
+              </div>
+            </div>
+
+            <div id="Three" style="display:none">
+              <p>Select photo from the random gallery sample below</p>
+              <div class="button-bar-centered">
+                <button class="js-refresh-random-photos btn btn-sm btn-link" id = "reload_id_album" remote="true"><span class="fa fa-refresh"></span>Reload</button>
+              </div>
+              <%= hidden_field_tag :gallery_id, @gallery.id%>
+              <div class="random-photos-container">
+                <% @rand_record.each do |gp| %>
+                <div class="photo-thumb1 js-toggle-thumb-selection background-landscape" name="<%=gp.id%>" style="background-image:url('<%= gp.image.url %>');" id='<%="text_#{gp.id}"%>'></div>
+                <%end%>
+              </div>
+            </div>
+            <div class="modal-footer pull-left">
+              <div id="Footer-One">
+                <button data-toggle="modal" data-target='<%="album-title-popup_#{album.id}"%>' data-dismiss="modal" type="button" class="btn btn-default"><span class="fa fa-trash set-stack"></span>Remove</button>
+                <button type="button" class="btn btn-default" id="Change-btn"><span class="fa fa-picture-o set-stack"></span>Change</button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div id="Modal-Footer-One">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <%= link_to "Save","#",id: "Save-Link1",class: "btn btn-primary"%>
+              <!-- <%#= f.submit "Save",class: "btn btn-primary"%> -->
+            </div>
+            <div class="button-bar-centered" id="Modal-Footer-Three" style="display:none">
+              <%= link_to "Ok","#",class: "btn btn-sm btn-primary",id: "OK",disabled: true%>
+              <!-- <button class="btn btn-sm btn-primary">Ok</button> -->
+            </div>
+          </div>
+          <%end%>
+        </div>
+      </div>
+    </div>
+
+    <!-- /mMdal -->
+    <div class="modal fade"  id='<%="album-title-popup_#{album.id}"%>' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Album Cover</h4>
+          </div>
+          <%= form_for @album, url: {controller: "albums",action: "remove_cover_pic",id: @album.id},method: :post do |f|%>
+          <div class="modal-body">
+            <div class="empty">
+              <p class="empty-style">No Cover Photo</p>
+              <%= link_to "Add Cover","#",class: "btn btn-primary",id: "Add-Cover"%>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <!-- <button type="button" class="btn btn-primary">Save</button> -->
+            <%=f.submit "Save",class: "btn btn-primary"%>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+   <!-- delete_album_popup  start -->
+    <div id="delete_album_popup" class="modal" role="dialog" data-backdrop = "static">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Delete Album?</h4>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to delete this album?</p><br>
+            <p>Photos in this album won't be deleted from your Gallery, they will just be removed from the deleted album and can still be viewed in All Photos.<p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <%= link_to "Delete Album",album_path(params[:album_id]),method: :delete, class: "btn btn-danger", "data-disable-with": "Delete Album"  %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- delete album popup end -->
+    <!-- Download album link -->
+    <div id="download_album_link_popup" class="modal" role="dialog" data-backdrop = "static">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Album Download Link</h4>
+          </div>
+          <div class="modal-body">
+           <p>We'll prepare a link to download the photos in this album.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" id="dismiss">Cancel</button>
+            <%= link_to "Submit Request",'#', 'data-toggle': "modal",class: "btn btn-primary",'data-target': "#download_album_confirmation_popup", id: "album_image_download" %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- download_album_link end -->
+
+    <!--  download album confirmation -->
+    <div id="download_album_confirmation_popup" class="modal" role="dialog" data-backdrop = "static">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Download Link</h4>
+          </div>
+          <div class="modal-body">
+           <p>The download link is:</p>
+            <p> <textarea class="form-control" id= "album_download_link"> </textarea></p>
+          </div>
+          <div class="modal-footer">
+            <center><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></center>
+            <%#= link_to "Submit Request", galleries_download_all_path(id: params[:id]), class: "btn btn-primary", id: "all_download" %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- download album confirmation  -->
+    <!-- share album link  -->
+    <div class="modal" id="ShareAlbumLink" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" "data-backdrop": "static">
+      <%= puts "%%%%%%%%%%#{params[:gallery_id]}%%%%%%%%%%"%>
+      <div class="modal-dialog" id="New1" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Email Link to this Album</h4>
+          </div>
+
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
+
+                <%= form_for @share_album_mailer,url: share_details_albums_path(id: params[:album_id]), :html => {:id => "share_album_form"} do |f|%>
+                <%@buttontext="ViewAlbum"%>
+                <%@subject="Your Album is Ready!"%>
+                <%@album_cover_url=album.cover_url.url%>
+                <%@gallery_cover_url=@find_gallery.cover_url.url%>
+                <% @brand_name%>
+                <%= f.hidden_field :album_id,value: params[:album_id]%>
+                <div class="row">
+                  <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group", id="recipient_div" >
+                    <%=f.label :recipient,"To"%>
+                    <%=f.text_field :recipient,class: "form-control", name: "recipient"%>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group" id = "subject_div">
+                    <%=f.label :subject,"Subject"%>
+                    <%=f.text_field :subject,value: "Your Album is Ready!",class: "form-control"%>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                    <%=f.label :headline,"HeadLine"%>
+                    <%=f.text_field :headline,value: album.title,class: "form-control"%>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                    <%= f.label :button_text %>
+                    <p class="form-input-description">Clicking button will open album</p>
+                    <div class="row">
+                      <div class="col-lg-8 col-md-7 col-sm-8 col-xs-12">
+                        <%= f.text_field :buttontext,value: "VIEW ALBUM", class: "form-control" %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12 form-group">
+                    <%= f.label :message %>
+                    <%= f.text_area :message,value: "Hi!
+
+                    Your album is ready to be viewed.
+
+                    Thanks,
+                    #{current_brand.brand_name}", class: "form-control", rows: "8", cols:"50" %>
+                  </div>
+                </div>
+                <div class="actions pull-left">
+                  <%=link_to "Cancel",galleries_galleryhome_path(id: params[:id]),class: "btn btn-default"%>
+                  <%=f.submit "Send",class: "btn btn-primary", id:"share_album_submit"%>
+                </div>
+                <% end %>
+              </div>
+
+
+              <div class="col-md-7">
+                <label>Email Preview</label>
+                <%=render "preview",album: album%>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  -->
+    <script>
+    function updatecover(input){
+      if (input.files) {
+        var reader = new FileReader();
+        reader.readAsDataURL(input.files[0]);
+        reader.onload = function (e) {
+          $("#album_changecover").attr('src', e.target.result);
+        }
+      }
+    }
+
+    $("#gallery_cover_url").change(function(){
+      updatecover(this);
+      $(this).hide();
+      $("#profile-change").show();
+    });
+    </script>
+    <script>
+    $("#Save-Link1").click(function(){
+      $("#Pc1").click();
+    });
+    </script>
+
+    <script>
+    $("#Change-btn").click(function(){
+      $("#Two").css("display","block");
+      $("#One").css("display","none");
+      $("#Footer-One").css("display","none");
+      $("#Modal-Footer-One").css("display","none");
+      $("#Cover-Modal-Title").text("Add Cover");
+      $('#back_link').css("display","inline-block");
+      $('#back_link3').css("display","none");
+      $('#back_link').click(function()
+      {
+        $("#Two").css("display","none");
+        $("#One").css("display","block");
+        $("#Footer-One").css("display","block");
+        $("#Modal-Footer-One").css("display","block");
+        $("#Cover-Modal-Title").text("Gallery Cover");
+        $('#back_link').css("display","none");
+
+      })
+    })
+    </script>
+    <script>
+    $("#album_cover_url").change(function(){
+      var ext = $('#album_cover_url').val().split('.').pop().toLowerCase();
+      if(ext != "jpeg" || ext != "jpg")
+      {
+
+      }
+      if( ext == "jpeg" || ext == "jpg")
+      {
+        $('#back_link').css("display","none");
+        $("#Two").css("display","none");
+        $("#One").css("display","block");
+        $("#Footer-One").css("display","block");
+        $("#Modal-Footer-One").css("display","block");
+        $("#Cover-Modal-Title").text("Gallery Cover");
+        $('#back_link3').css("display","inline-block");
+        $('#back_link3').click(function()
+        {
+          back_to_add_cover();
+        })
+      }
+    });
+    </script>
+    <script>
+    $("#Choose-photo-li").click(function(){
+      $("#Two").css("display","none");
+      $("#One").css("display","none");
+      $("#Footer-One").css("display","none");
+      $("#Modal-Footer-One").css("display","none");
+      $("#Three").css("display","block");
+      $("#Modal-Footer-Three").css("display","block");
+      $("#Cover-Modal-Title").text("Choose Cover");
+      $("#back_link").click(function()
+      {
+        $("#One").css("display","none");
+        $("#Three").css("display","none");
+        $("#Two").css("display","block");
+        $("#Modal-Footer-One").css("display","none");
+        $("#Modal-Footer-Three").css("display","none");
+        $("#Footer-One").css("display","none");
+        $("#Cover-Modal-Title").text("Add Cover");
+        $("#back_link").css("display","inline-block")
+        $("#back_link").click(function()
+        {
+          $("#One").css("display","block");
+          $("#Three").css("display","block");
+          $("#Two").css("display","none");
+          $("#Modal-Footer-One").css("display","block");
+          $("#Footer-One").css("display","block");
+          $("#Cover-Modal-Title").text("Gallery Cover");
+          $("#Three").css("display","none")
+          $("#back_link").css("display","none")
+        })
+      });
+    });
+
+    </script>
+    <script>
+    $("#Add-Cover").click(function()
+    {
+      $("#album-title-popup_<%= album.id%>").modal('hide');
+      $("#profile-change_<%= album.id%>").modal("show");
+      $("#Two").css("display","block");
+      $("#One").css("display","none");
+      $("#Footer-One").css("display","none");
+      $("#Modal-Footer-One").css("display","none");
+      $("#Three").css("display","none");
+      $("#Modal-Footer-Three").css("display","none");
+      $("#Cover-Modal-Title").text("Add Cover");
+      $("#back_link").css("display","inline-block");
+    });
+    $("#profile-change .close").click(function()
+    {
+      $("#profile-change").modal("hide");
+      $("#album-title-popup").find(".close").click();
+    });
+    </script>
+
+    <!-- Loading modal within modal-->
+
+    <%end%>
+    <%end%>
+  </div><!--/start-photo-view-->
+
+  <script type="text/javascript">
+  $(document).ready(function()
+  {
+    $("#set_album_cover").css("display","none");
+    $("#add_set_as_gallery_cover").css("display","none");
+    $("#add_create_mobile_app").css("display","none");
+    $("#add_download_link").css("display","none");
+    $("#delete_from_header").css("display","none");
+    $("#rename_from_header").css("display","none");
+    $("#remove_from_album").css("display","none");
+  });
+  var image_array=new Array;
+  $('.photo-tile').mousedown(function(event)
+  {
+    if(event.button == 2)
+    {
+      var uicount = document.getElementsByClassName('ui-selected').length;
+      if (uicount < 1)
+      {
+        $(this).find(".inside-img").addClass("ui-selected");
+        $("#set_album_cover").css("display","block");
+        $("#add_set_as_gallery_cover").css("display","block");
+        $("#add_create_mobile_app").css("display","block");
+        $("#add_download_link").css("display","block");
+        $("#delete_from_header").css("display","block");
+        $("#rename_from_header").css("display","block");
+        $("#remove_from_album").css("display","block");
+
+        $("#set_album").css("display","block");
+        $("#remove_set_gallery2").css("display","block");
+        $("#mobile_app2").css("display","block");
+        $("#selected_download_context").css("display","block");
+        $("#rename_image_id2").css("display","block");
+        $("#remove_context").css("display","block");
+        $("#delete_context").css("display","block");
+
+        $("#add_photos_link_disable").css("display","none");
+        $("#add_sub_album").css("display","none");
+        $("#upload_album_cover").css("display","none");
+        $("#share").css("display","none");
+        $("#set_password").css("display","none");
+        $("#download_album_link").css("display","none");
+        $("#delete_album").css("display","none");
+
+        $('#mobile_app').prop('disabled', true);
+        $("#mobile_app").attr("disabled","disabled");
+        $('#mobile_app2').prop('disabled', true);
+        $("#mobile_app2").attr("disabled","disabled");
+
+        $('#set_album_cover').click(function()
+        {
+          document.getElementById('album_changecover').src = $('.inside-img.ui-selected img').attr('src');
+          $('#val').val($('.inside-img.ui-selected img').data('id'));
+        })
+
+        $("#remove_set_gallery, #remove_set_gallery2").click(function()
+        {
+          document.getElementById('changecover').src = $('.inside-img.ui-selected img').attr('src') ;
+          $('#val').val($('.inside-img.ui-selected img').data('id'));
+        });
+
+        image_id = $(this).find('img').attr('data-id');
+        if ($.inArray(image_id, image_array) == -1)
+        {
+          image_array.push(image_id);
+        }
+      }
+    }
+    else if (event.button == 0)
+    {
+      if ($(this).find(".inside-img").hasClass("ui-selected"))
+      {
+        $(this).find(".inside-img").removeClass("ui-selected");
+        image_id = $(this).find('img').attr('data-id');
+        var i = image_array.indexOf(image_id);
+        if(i != -1)
+        {
+          image_array.splice(i, 1);
+        }
+        var uicount = document.getElementsByClassName('ui-selected').length;
+        if( uicount == 0 )
+        {
+          $("#set_album_cover").css("display","none");
+          $("#add_set_as_gallery_cover").css("display","none");
+          $("#add_create_mobile_app").css("display","none");
+          $("#add_download_link").css("display","none");
+          $("#delete_from_header").css("display","none");
+          $("#rename_from_header").css("display","none");
+          $("#remove_from_album").css("display","none");
+
+          $("#add_photos_link_disable").css("display","block");
+          $("#add_sub_album").css("display","block");
+          $("#upload_album_cover").css("display","block");
+          $("#share").css("display","block");
+          $("#set_password").css("display","block");
+          $("#download_album_link").css("display","block");
+          $("#delete_album").css("display","block");
+        }
+        if (uicount == 1)
+        {
+          $("#set_album_cover").css("display","block");
+          $("#add_set_as_gallery_cover").css("display","block");
+          $("#add_create_mobile_app").css("display","block");
+          $("#add_download_link").css("display","block");
+          $("#delete_from_header").css("display","block");
+          $("#rename_from_header").css("display","block");
+          $("#remove_from_album").css("display","block");
+
+          $("#add_photos_link_disable").css("display","none");
+          $("#add_sub_album").css("display","none");
+          $("#upload_album_cover").css("display","none");
+          $("#share").css("display","none");
+          $("#set_password").css("display","none");
+          $("#download_album_link").css("display","none");
+          $("#delete_album").css("display","none");
+
+          $('#album_cover_set').prop('disabled', false);
+          $("#album_cover_set").removeAttr("disabled");
+          $('#remove_set_gallery').prop('disabled', false);
+          $("#remove_set_gallery").removeAttr("disabled");
+          $('#rename_image_id').prop('disabled', false);
+          $("#rename_image_id").removeAttr("disabled");
+
+          $('#mobile_app').prop('disabled', true);
+          $("#mobile_app").attr("disabled","disabled");
+          $('#mobile_app2').prop('disabled', true);
+          $("#mobile_app2").attr("disabled","disabled");
+
+          $('#set_album').prop('disabled', false);
+          $("#set_album").removeAttr("disabled");
+          $('#remove_set_gallery2').prop('disabled', false);
+          $("#remove_set_gallery2").removeAttr("disabled");
+          $('#rename_image_id2').prop('disabled', false);
+          $("#rename_image_id2").removeAttr("disabled");
+
+          $('#set_album_cover').click(function()
+          {
+            document.getElementById('album_changecover').src = $('.inside-img.ui-selected img').attr('src');
+            $('#val').val($('.inside-img.ui-selected img').data('id'));
+          })
+
+          $("#remove_set_gallery, #remove_set_gallery2").click(function()
+          {
+            document.getElementById('changecover').src = $('.inside-img.ui-selected img').attr('src') ;
+            $('#val').val($('.inside-img.ui-selected img').data('id'));
+          });
+
+        }
+        if (uicount > 1)
+        {
+          $('#album_cover_set').prop('disabled', true);
+          $("#album_cover_set").attr("disabled","disabled");
+          $('#remove_set_gallery').prop('disabled', true);
+          $("#remove_set_gallery").attr("disabled","disabled");
+          $('#rename_image_id').prop('disabled', true);
+          $("#rename_image_id").attr("disabled","disabled");
+          $('#mobile_app').prop('disabled', false);
+          $("#mobile_app").removeAttr("disabled");
+          $('#mobile_app2').prop('disabled', false);
+          $("#mobile_app2").removeAttr("disabled");
+        }
+      }
+      else
+      {
+        $(this).find(".inside-img").addClass("ui-selected");
+        image_id = $(this).find('img').attr('data-id');
+        if ($.inArray(image_id, image_array) == -1)
+        {
+          image_array.push(image_id);
+        }
+        var uicount = document.getElementsByClassName('ui-selected').length;
+        if (uicount == 1)
+        {
+          $("#set_album_cover").css("display","block");
+          $("#add_set_as_gallery_cover").css("display","block");
+          $("#add_create_mobile_app").css("display","block");
+          $("#add_download_link").css("display","block");
+          $("#delete_from_header").css("display","block");
+          $("#rename_from_header").css("display","block");
+          $("#remove_from_album").css("display","block");
+
+          $("#add_photos_link_disable").css("display","none");
+          $("#add_sub_album").css("display","none");
+          $("#upload_album_cover").css("display","none");
+          $("#share").css("display","none");
+          $("#set_password").css("display","none");
+          $("#download_album_link").css("display","none");
+          $("#delete_album").css("display","none");
+
+          $('#mobile_app').prop('disabled', true);
+          $("#mobile_app").attr("disabled","disabled");
+          $('#mobile_app2').prop('disabled', true);
+          $("#mobile_app2").attr("disabled","disabled");
+
+
+          $('#set_album_cover').click(function()
+          {
+            document.getElementById('album_changecover').src = $('.inside-img.ui-selected img').attr('src');
+            $('#val').val($('.inside-img.ui-selected img').data('id'));
+          })
+
+          $("#remove_set_gallery, #remove_set_gallery2").click(function()
+          {
+            document.getElementById('changecover').src = $('.inside-img.ui-selected img').attr('src') ;
+            $('#val').val($('.inside-img.ui-selected img').data('id'));
+          });
+        }
+        if (uicount > 1)
+        {
+          $('#album_cover_set').prop('disabled', true);
+          $("#album_cover_set").attr("disabled","disabled");
+          $('#remove_set_gallery').prop('disabled', true);
+          $("#remove_set_gallery").attr("disabled","disabled");
+          $('#rename_image_id').prop('disabled', true);
+          $("#rename_image_id").attr("disabled","disabled");
+
+          $('#mobile_app').prop('disabled', false);
+          $("#mobile_app").removeAttr("disabled");
+          $('#mobile_app2').prop('disabled', false);
+          $("#mobile_app2").removeAttr("disabled");
+
+          $('#set_album').prop('disabled', true);
+          $("#set_album").attr("disabled","disabled");
+          $('#remove_set_gallery2').prop('disabled', true);
+          $("#remove_set_gallery2").attr("disabled","disabled");
+          $('#rename_image_id2').prop('disabled', true);
+          $("#rename_image_id2").attr("disabled","disabled");
+
+        }
+      }
+    }
+  })
+
+  </script>
+
+  <script >
+  $("#add_download_link, #selected_download_context").click(function(e)
+  {
+    if(image_array.length < 2)
+    {
+      if ($('.inside-img.ui-selected'))
+      {
+        var image_id = $('.inside-img.ui-selected img').attr('data-id');
+        var newPath = '/galleries/selected_download?photo=' + image_id ;
+        $('#selected_download_context').attr('href', newPath);
+        $('#selected_download_header').attr('href', newPath);
+      }
+    }
+    else
+    {
+      e.preventDefault();
+      $("#download_selected").modal("show");
+      $("#send_request").click(function()
+      {
+        $.ajax({
+          type: 'GET',
+          url: '/galleries/download_mail_send',
+          data: {photo: image_array}
+        }).success();
+      });
+    }
+  });
+  </script>
+
+  <script>
+  $("#delete_from_header, #delete_context ").click(function()
+  {
+    $.ajax(
+      {
+        type: 'GET',
+        url: '/galleries/delete_selected',
+        data: {photo: image_array}
+      }).success();
+    });
+    $("#after_create_app").submit(function(e)
+    {
+      e.preventDefault();
+      $('#after_create_app').append('<input type="hidden" value="'+ image_array + '"name="mobile_app_photo" />')
+    });
+    </script>
+    <!-- Raname image start -->
+    <script>
+    $(document).ready(function()
+    {
+      if ($('.inside-img.ui-selected'))
+      {
+        $("#rename_context, #rename_image_id").click(function()
+        {
+          image_id = $('.inside-img.ui-selected img').attr('data-id');
+          $.ajax({
+            type: 'GET',
+            url: '/galleries/find_image',
+            data: {id: image_id}
+          }).success();
+        });
+      }
+    });
+    </script>
+    <!-- Raname image end -->
+
+    <!-- code for right click -->
+    <ul class='custom-menu album_show'>
+      <li id= "set_album_context"> <%= link_to "Set as Album Cover","#profile-change_#{params[:album_id]}","data-toggle": "modal" ,class: "btn btn-sm", id: "set_album" %></li>
+      <li id= "set_cover_context"> <%= link_to "Set as Gallery Cover","#profile-change","data-toggle": "modal" ,class: "btn btn-sm", id: "remove_set_gallery2" %></li>
+      <li id= "mobile_app_context"><%= link_to "Create Mobile App","#mobile_app_create","data-toggle": "modal" ,class: "btn btn-sm", id: "mobile_app2" %></li>
+      <li id= "download_context"><%=link_to "Download",galleries_selected_download_path(),"data-toggle": "modal" ,class: "btn btn-sm", id: "selected_download_context" %></li>
+      <li id= "rename_context" ><%= link_to "Rename","#" ,class: "btn btn-sm", id: "rename_image_id2", remote: true %></li>
+      <li id= "remove_context"><%=link_to "Remove From Album","#",class: "btn btn-sm" %></li>
+      <li id= "delete_context"><%=link_to "Delete","#",class: "btn btn-sm" %></li>
+    </ul>
+
+    <!-- script for right click -->
+    <script>
+    $('.inside-img').bind("contextmenu", function (event)
+    {
+      event.preventDefault();
+      $(".album_show ").finish().toggle(100).
+      css({
+        top: (event.pageY-150) + "px",
+        left: (event.pageX-20) + "px"
+      });
+    });
+    $(document).bind("mousedown", function (e)
+    {
+      if (!$(e.target).parents(".album_show ").length > 0)
+      {
+        $(".album_show ").hide(100);
+      }
+    });
+    </script>
+    <!-- code right click end -->
+    <!-- set album cover right click start-->
+    <script>
+    $('#set_album').click(function()
+    {
+      document.getElementById('album_changecover').src = $('.inside-img.ui-selected img').attr('src');
+      $('#val').val($('.inside-img.ui-selected img').data('id'));
+    })
+    </script>
+    <!-- set album cover right click end-->
+
+
+    <!-- relted to set gallery cover -->
+    <script>
+    $("#Save-Link1").click(function(){
+      if ($("#val").val() == ""){
+        $("#Pc1").click();
+      }else {
+        $.ajax({
+          type: 'get',
+          url: '/albums/update_cover?id=' + $("#val").val()+'&g_id='+'<%= @gallery.id %>',
+          success: function() {
+            window.location.reload();
+          }
+        });
+      }
+    })
+    </script>
+    <script>
+    $("#OK").click(function(){
+      if($(this).attr("disabled",true)){
+        event.preventDefault();
+      }else{
+        $("#cover-flow-random").modal('hide');
+        $("#profile-change").modal('show');
+      }
+    });
+    </script>
+
+    <!-- relted to set gallery cover -->
+    <script>
+    $('#reload_id_album').click(function(e)
+    {
+      e.preventDefault();
+      $("#OK").attr("disabled",true);
+      $.ajax(
+        {
+          type: 'GET',
+          url: '/albums/<%= @album.id %>/load_images',
+          // data: {id: '<%= @album.id %>'}
+        });
+      })
+      </script>
+
+      <script>
+      $('#Choose-photo-li').click(function(){
+        $("#OK").attr("disabled",true);
+        $.ajax(
+          {
+            type: 'GET',
+            url: '/albums/<%= @album.id %>/load_images',
+          });
+        })
+        </script>
+
+        <script>
+        $("#back_link").click(function(){
+          if ($("#One").css("display") == "inline-block")
+          {
+            $("#Two").css("display","block");
+            $("#One").css("display","none");
+            $("#Cover-Modal-Title").text("Add Cover");
+            $("#Modal-Footer-One").css("display","none");
+            $("#Footer-One").css("display","none");
+          }
+          else
+          {
+            if ($("#One #album_changecover").attr('src') == "")
+            {
+              $("#profile-change_<%= @album.id%>").modal("hide");
+              $("#album-title-popup_<%= @album.id%>").modal('show');
+            }
+            else
+            {
+              $("#Two").css("display","none");
+              $("#Cover-Modal-Title").text("Gallery Cover");
+              $("#Modal-Footer-One").css("display","block");
+              $("#Footer-One").css("display","block");
+              $("#One").css("display","block");
+              $('#back_link').css("display","inline-block");
+            }
+          }
+        })
+
+        function back_to_add_cover()
+        {
+          $('#back_link3').css("display","none");
+          $('#back_link').css("display","inline-block");
+          $("#Two").css("display","block");
+          $("#One").css("display","none");
+          $("#Footer-One").css("display","none");
+          $("#Modal-Footer-One").css("display","none");
+          $("#Cover-Modal-Title").text("Add Cover");
+          $('#album-title-popup_<%= @album.id %>').modal('hide');
+          $('#back_link').click(function(){
+            back_to_gallery_cover();
+          })
+        }
+        function back_to_gallery_cover()
+        {
+          $("#Cover-Modal-Title1").text("Gallery Cover");
+          $("#One").css("display","block");
+          $("#Footer-One").css("display","block");
+          $("#Modal-Footer-One").css("display","block");
+          $("#Two").css("display","none");
+          $("#back_link").css("display","inline-block")
+          $("#back_link").click(function()
+          {
+            back_to_add_cover();
+          });
+
+        }
+        $('#Album_cover').click(function()
+        {
+          $("#back_link").css("display","none");
+          $("#Cover-Modal-Title").text("Gallery Cover");
+          $("#One").css("display","block");
+          $("#Footer-One").css("display","block");
+          $("#Modal-Footer-One").css("display","block");
+          $("#Two").css("display","none");
+        })
+        </script>
+
+        <script>
+        $("#album_image_download").click(function()
+                  {
+                      $.ajax({
+                        type: 'GET',
+                        url: '/albums/download_mail_send',
+                        data: {id: '<%= @album.id %>'}
+                      }).success();
+                  });
+        </script>
+        <script>
+        $(document).ready(function()
+        {
+            $("#share_album_form").submit(function(e){
+
+                var email_regex =  new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+
+                if($('#album_share_recipient').val() == '' ||  email_regex.test($('#album_share_recipient').val()) == false)
+                {
+                      if($('#p_div').length)
+                      {
+
+                      }
+                      else
+                      {
+                        $('#recipient_div').append('<p style="color:red;" id="p_div" >Please enter an email address.<p>');
+                        $('#album_share_recipient').css('border-color', 'red');
+                      }
+
+                   e.preventDefault(e);
+                }
+                if($('#album_share_subject').val() == '')
+                {
+                  if($('#s_div').length)
+                  {
+
+                  }
+                  else
+                  {
+                    $('#subject_div').append('<p style="color:red;" id="s_div" >Please enter the subject for this email.<p>');
+                    $('#album_share_subject').css('border-color', 'red');
+                  }
+                   e.preventDefault(e);
+                }
+            });
+        });
+        </script>
+        <script>
+        $("#Submit").click(function(e){
+           if($('#album_title').val() == "")
+           {
+            e.preventDefault();
+            }
+         })
+        </script>
+        <script>
+        $("#remove_from_album,#remove_context ").click(function()
+        {
+          $.ajax(
+            {
+              type: 'GET',
+              url: '/galleries/remove_from_album',
+              data: {photo: image_array, gallery_id: "<%= params[:gallery_id]%>"}
+            }).success();
+          });
+        </script>
+        <script>
+            $('#Album_Submit').click(function(e) {
+              if ($('#sub_album_title').val() === '') {
+                e.preventDefault();
+              }
+            });
+         </script>

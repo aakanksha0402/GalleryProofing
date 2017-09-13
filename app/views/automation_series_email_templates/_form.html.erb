@@ -1,0 +1,42 @@
+<%= form_for(@automation_series_email_template) do |f| %>
+  <% if @automation_series_email_template.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@automation_series_email_template.errors.count, "error") %> prohibited this automation_series_email_template from being saved:</h2>
+
+      <ul>
+      <% @automation_series_email_template.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :automation_series_id %><br>
+    <%= f.collection_select(:id, current_brand.automation_series.all, :id, :name, {prompt: "Select one"}, {class: "selectpicker"}) %>
+
+  </div>
+  <div class="field">
+    <%= f.label :email_template_id %><br>
+    <%= f.text_field :email_template_id %>
+  </div>
+  <div class="field">
+    <%= f.label :default_receipient_type_id %><br>
+    <%= f.text_field :default_receipient_type_id %>
+  </div>
+  <div class="field">
+    <%= f.label :default_trigger_type_id %><br>
+    <%= f.text_field :default_trigger_type_id %>
+  </div>
+  <div class="field">
+    <%= f.label :trigger_days %><br>
+    <%= f.number_field :trigger_days %>
+  </div>
+  <div class="field">
+    <%= f.label :template_name %><br>
+    <%= f.text_field :template_name %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

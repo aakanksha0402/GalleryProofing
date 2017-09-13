@@ -1,0 +1,263 @@
+<!-- <p id="notice"><%= notice %></p> -->
+<% content_for :head, "GalleryProofing | Watermarks"%>
+<% content_for :body_class, "brand-watermark" %>
+<% content_for :photo_class, "active"%>
+<% if @first %>
+  <%= render 'empty_watermark' %>
+<% else %>
+  <!-- top -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <!-- title -->
+          <div class="page-title">
+            <div class="row">
+              <div class="col-md-6 col-sm-5 col-xs-5">
+                <h2>
+                    <div id="pageTitleHeaderText">Watermarks</div>
+                </h2>
+              </div>
+              <div class="col-md-6 col-sm-7 col-xs-7">
+
+                <div class="btn-group on-page-help-container">
+                  <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                    <span class="fa fa-question"></span>
+                  </a>
+                  <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                    <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                    <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                    <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                    <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                    <li><a href="#" >Email Us</a></li>
+                  </ul>
+                </div>
+                <div class="right-buttons text-right">
+                  <a  id="gallary" data-toggle="modal" data-target="#add-watermark"  class="btn btn-primary" href="#">Add Watermark</a>
+                </div>
+             <!--    <div class="right-buttons text-right">
+                  <a class="btn btn-primary" id="btn-newtemp" href="newTemplate.html" data-toggle="modal" data-target="#newtemp-filter" >New Template</a>
+                  <a class="btn btn-default" id="btn-newauto" href="newAutomation.html" data-toggle="modal" data-target="#newauto-filter" >New Automation Series</a>
+                </div -->
+
+              </div>
+            </div>
+          </div>
+          <!-- /title -->
+        </div>
+      </div>
+    </div>
+    <!-- /top -->
+
+    <!-- main -->
+   <div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 set-top-box">
+            <div class="checkbox">
+                <%= check_box_tag 'completed' %>
+
+                <label>Apply default watermark to new photo uploads. You will have the opportunity to turn them on or off before uploading photos.</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+       <div class="col-lg-12">
+            <% @watermarks.each do |watermark| %>
+              <div class="grid-item">
+                <div class="sp-tile sub-title">
+                  <a href="<%=edit_watermark_path(watermark.id)%>">
+                    <div class="img-rounded-top full-width default text-center" style="background-size: auto 176px !important;background-image:url(<%= watermark.watermark_image.url %>)">
+                      <div class="status-flag status-flag-warning" style="display:none;">Pre-Registration</div>
+                      <% if watermark.is_default %>
+                      <div class="status-flag status-flag-info">Default</div>
+                      <% end %>
+                      <div class="status-flag status-flag-info" style="display:none;">Inactive</div>
+                      <div class="status-flag status-flag-error" style="display: none;">Archived</div>
+                      <div class="status-flag status-flag-primary flag-selected">Selected</div>
+                    </div>
+                    <div class="card-content">
+                      <div class="card-title" title="Test"><%= watermark.name %></div>
+                    </div>
+                  </a>
+                  <div class="push-pop">
+                    <% if watermark.is_default %>
+                    <div class="dropup">&nbsp</div>
+                    <% else %>
+                    <div class="dropup">
+                      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Quick Actions
+                      <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <li><%= link_to "Set as Default", watermark_path(watermark,:watermark =>{:is_default => true},:remove_all => true), :method => :put %></li>
+                        <li><%= link_to "Delete","#delete-Watermark_#{watermark.id}",'data-toggle': "modal"%></li>
+                      </ul>
+                    </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+               <!-- Modal -->
+                <div id='<%="delete-Watermark_#{watermark.id}"%>' class="modal " role="dialog" data-backdrop="static" data-keyboard="false">
+                  <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Confirm Delete</h4>
+                      </div>
+                      <div class="modal-body">
+                        <p>Are you sure you want to delete <%= watermark.name %>? You will no longer be able to use this watermark. This cannot be undone.</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-link" data-dismiss="modal">Close</button>
+                        <%= link_to 'Yes,Delete', watermark_path(watermark.id), method: :delete,class: "btn btn-sm btn-danger" %>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <!--  /mModal -->
+              <% end %>
+
+        </div>
+        <div class="lightbox">
+          <div class="hover-alert">
+            You have turned watermarks <strong>on</strong> by default for all techbit<br/> galleries.
+          </div>
+        </div>
+  </div>
+
+    <!-- /main -->
+
+
+    <!-- Modal -->
+    <div class="modal" id="add-watermark" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Add Watermark</h4>
+          </div>
+          <div class="modal-body">
+            <%= form_for(@watermark, remote: true) do |f| %>
+
+                  <div class="form-group" id="watermark_div">
+                    <label>Watermark Name</label>
+                    <%= f.text_field :name,  class: 'form-control' %>
+                    <%= f.hidden_field :brand_id, :value => current_brand.id%>
+                    <%= f.hidden_field :text_name, :value => current_user.studio_name%>
+                    <%= f.hidden_field :font_set, :value => "Adler"%>
+                    <%= f.hidden_field :color, :value => true%>
+                    <%= f.hidden_field :text_opacity_value, :value => 30%>
+                    <%= f.hidden_field :is_default, :value => false%>
+                    <%= f.hidden_field :is_first, :value => false%>
+                    <%= f.hidden_field :selected_as, :value => true%>
+                  </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+            <%= submit_tag "Create", :class => "btn btn-primary" %>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <!-- /mMdal -->
+
+<% end %>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!-- <script src="../js/jquery-1.12.1.min.js"></script> -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <!-- <script src="../js/bootstrap.min.js"></script> -->
+    <!-- Latest compiled and minified JavaScript -->
+    <!-- <script src="../js/bootstrap-select.min.js"></script> -->
+
+
+
+    <script type="text/javascript">
+  $('.sitemenu > li').mouseout(function() {
+    $(this).children('.dropdown-menu').hide();
+  });
+   $('.sitemenu > li').mouseover(function() {
+    $(this).children('.dropdown-menu').show();
+  });
+</script>
+<script type="text/javascript">
+      $(document).ready(function(){
+        $(".checkbox input").click(function(){
+          if($( ".checkbox input" ).is(':checked')){
+            $(".checkbox").addClass('checked-box');
+          }
+          else{
+            $(".checkbox").removeClass('checked-box');
+          }
+        })
+      });
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    var apply_watermark = <%= @brand.apply_watermark %>
+        if (apply_watermark) {
+          $(".checkbox").addClass('checked-box');
+        }
+  });
+</script>
+
+ <script type="text/javascript">
+      $(document).ready(function($) {
+          $(".clickable-row>td").click(function() {
+            if($(this).hasClass('deleted')){
+            }
+            else{
+              window.document.location = $(this).parent().data("href");
+            }
+          });
+          $(".checkbox input").bind('change', function(){
+              if (this.checked){
+                  $.ajax({
+                    beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+                    url: '/watermarks/apply_default',
+                    type: 'POST',
+                    data: {"completed": this.checked},
+                    success: function(){
+                      $(".lightbox").fadeIn().delay(4000).fadeOut();
+                    }
+                  });
+              }
+              else {
+                $.ajax({
+                    beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+                    url: '/watermarks/apply_default',
+                    type: 'POST',
+                    data: {"completed": false},
+                    success: function(){
+                      $(".lightbox").fadeIn().delay(4000).fadeOut();
+                    }
+                  });
+              }
+          });
+      });
+    </script>
+    <!-- <script>
+    $('input[type="submit"]').click(function(event)
+    {
+      if( $('#watermark_name').val() == "" )
+      {
+          if($('#e_div').length)
+          {
+
+          }
+          else
+          {
+            $('#watermark_div').append('<p style="color:red;" id="e_div" >Please enter a name for this new watermark.<p>');
+            $('#watermark_name').css('border-color', 'red');
+          }
+
+        event.preventDefault(event);
+      }
+    })
+    </script> -->

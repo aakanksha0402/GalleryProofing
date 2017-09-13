@@ -1,0 +1,124 @@
+<p id="notice"><%= notice %></p>
+<%=params[:id]%>
+<p>
+  <strong>Name:</strong>
+  <%= @gallery_layout.name %>
+</p>
+
+<p>
+  <strong>Introduction page layout:</strong>
+  <%= @gallery_layout.introduction_page_layout %>
+</p>
+
+<p>
+  <strong>Photo page layout:</strong>
+  <%= @gallery_layout.photo_page_layout %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @gallery_layout.status %>
+</p>
+
+<p>
+  <strong>Gallery access privacy:</strong>
+  <%= @gallery_layout.gallery_access_privacy %>
+</p>
+
+<p>
+  <strong>Password:</strong>
+  <%= @gallery_layout.password %>
+</p>
+
+<p>
+  <strong>Email require:</strong>
+  <%= @gallery_layout.email_require %>
+</p>
+
+<p>
+  <strong>Cropping:</strong>
+  <%= @gallery_layout.cropping %>
+</p>
+
+<p>
+  <strong>Preregistration:</strong>
+  <%= @gallery_layout.preregistration %>
+</p>
+
+<p>
+  <strong>Black and white filtering:</strong>
+  <%= @gallery_layout.black_and_white_filtering %>
+</p>
+
+<p>
+  <strong>Studio link:</strong>
+  <%= @gallery_layout.studio_link %>
+</p>
+
+<p>
+  <strong>Show filename:</strong>
+  <%= @gallery_layout.show_filename %>
+</p>
+
+<p>
+  <strong>Social sharing link:</strong>
+  <%= @gallery_layout.social_sharing_link %>
+</p>
+
+<p>
+  <strong>Content:</strong>
+  <%= @gallery_layout.content %>
+</p>
+
+<p>
+  <strong>Min order:</strong>
+  <%= @gallery_layout.min_order %>
+</p>
+
+<p>
+  <strong>Add photo to cart:</strong>
+  <%= @gallery_layout.add_photo_to_cart %>
+</p>
+
+<p>
+  <strong>Pay later:</strong>
+  <%= @gallery_layout.pay_later %>
+</p>
+
+<p>
+  <strong>Pickup option:</strong>
+  <%= @gallery_layout.pickup_option %>
+</p>
+
+<p>
+  <strong>Checkout message:</strong>
+  <%= @gallery_layout.checkout_message %>
+</p>
+
+<p>
+  <strong>Digital download:</strong>
+  <%= @gallery_layout.digital_download %>
+</p>
+
+<p>
+  <strong>Entire gallery download:</strong>
+  <%= @gallery_layout.entire_gallery_download %>
+</p>
+
+<p>
+  <strong>Hide photos:</strong>
+  <%= @gallery_layout.hide_photos %>
+</p>
+
+<p>
+  <strong>Archiving:</strong>
+  <%= @gallery_layout.archiving %>
+</p>
+
+<p>
+  <strong>Is default:</strong>
+  <%= @gallery_layout.is_default %>
+</p>
+
+<%= link_to 'Edit', edit_gallery_layout_path(@gallery_layout) %> |
+<%= link_to 'Back', gallery_layouts_path %>

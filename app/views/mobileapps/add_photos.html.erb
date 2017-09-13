@@ -1,0 +1,153 @@
+<% content_for :head, "GalleryProofing | Add Photos"%>
+<% content_for :photo_class, "active"%>
+<% content_for :body_class, "gallery-addphoto mobile-app" %>
+<!-- top -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <!-- title -->
+          <div class="page-title">
+            <div class="row">
+              <div class="col-md-6 col-sm-5 col-xs-12">
+                  <a href="<%= edit_mobileapp_path(@mobileapp) %>"><span class="fa circle fa-arrow-left back-btn"></span></a>
+                <h2>
+                    <div id="pageTitleHeaderText">Add Photos</div>
+                </h2>
+              </div>
+              <div class="col-md-6 col-sm-7 col-xs-12">
+                <div class="btn-group on-page-help-container">
+                  <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                    <span class="fa fa-question"></span>
+                  </a>
+                  <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                    <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                    <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                    <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                    <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                    <li><a href="#" >Email Us</a></li>
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <!-- /title -->
+        </div>
+      </div>
+    </div>
+    <!-- /top -->
+
+    <!-- main -->
+    <div class="container-fluid">
+      <div class="add-photos">
+        <div class="row">
+          <div class="col-lg-6 col-lg-offset-3">
+            <div class="dropzone">
+              <!-- upload main -->
+              <div class="text-center main-text">
+                <div class="wrapper">
+                  <div class="queue-empty">
+                      <h3>Drag Photos Here</h3>
+                      <p>or</p>
+                  </div>
+                  <div class="photos-queued" style="display: none;">
+                      <p><span class="fa fa-image"></span><span class="queue-count"> 1</span> photos in queue</p>
+                  </div>
+
+
+                  <%= form_for @mobileapp,url: save_photos_path(:id => @mobileapp.id), html: {:class => "upload", multipart: true}, method: :post do |f| %>
+                  <% if @mobileapp_photos.errors.any? %>
+                  <div id="error_explanation">
+                    <h2><%= pluralize(@mobileapp_photos.errors.count, "error") %> prohibited this photo from being saved:</h2>
+
+                    <ul>
+                      <% @mobileapp_photos.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+                  <% end %>
+                  <%= f.fields_for @mobileapp_photos do |photo| %>
+                    <div class="queue-empty">
+                      <span class="btn btn-primary btn-file">
+                        <div>
+                          <%= hidden_field_tag :id, @mobileapp.id%>
+                        </div>
+                        <span class="fileinput-new">Click to Browse</span>
+                        <%= photo.file_field :photo,multiple: true,id: "File-Upload"%>
+                        <%= hidden_field_tag "files" %>
+                      </span>
+                    </div>
+                  <% end %>
+                  <div class="photos-queued margin-top" style="display: none;">
+                      <p><%= f.submit "Start Upload",id: "Upload", class: "btn btn-primary actions"%></p>
+                      <p>or add more</p>
+                      <p>
+                          Drag or
+                          <span class="btn btn-default btn-xs btn-file">
+                              <span class="fileinput-new">Browse</span>
+                              <input type="file" id="files" multiple="" accept="image/jpeg">
+                          </span>
+                      </p>
+                  </div>
+                </div>
+              </div>
+              <!-- /upload main -->
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /main -->
+
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('.upload-options-toggle').click(function(){
+          $('.options').toggle();
+        });
+      });
+    </script>
+    <script>
+  $(document).ready(function(){
+    $('input[type=file]').change(function(e){
+      // alert("hello");
+      filename = $(this).val();
+      $("#hidden_filename").attr("value", filename);
+      if($("#hidden_filename").val()!="")
+      {
+        $(".queue-empty").css("display","none");
+        $(".photos-queued").css("display","block");
+      }
+
+    });
+
+  })
+  </script>
+    <script>
+  $("#File-Upload").change(function(){
+    var inp = document.getElementById('File-Upload');
+    var names = $.map(inp.files, function(val) { return val.name; });
+    var file_array = jQuery.makeArray(inp.files);
+    var new_file_array = [];
+    $.each(file_array,function(i,val1){
+      var fileExtension = ['jpeg', 'jpg'];
+      if ($.inArray(val1.name.split('.').pop().toLowerCase(), fileExtension) == -1) {
+          console.log("not valid");
+      }else{
+        new_file_array.push(val1);
+      }
+    });
+    // alert(new_file_array.length);
+    if((file_array.length - new_file_array.length) > 0){
+      $(".num").text(file_array.length - new_file_array.length);
+      $(".upload-warnings").show();
+      $(".upload-warnings .duplicates").hide();
+      $("#files").val(new_file_array);
+      $(".dropzone").css("border-color","#EF5E5E");
+    }
+    $(".queue-count").text(new_file_array.length);
+  });
+
+  </script>

@@ -1,0 +1,12 @@
+
+<a href="javascript:document.location.href=getUrl();">OPEN GALLERY</a>
+<script type="text/javascript">
+    function getUrl()
+    {
+      var hostname = window.location.origin
+      alert(hostname);
+      var fullpath = hostname + "/1/gallery/<%= params[:id]%>"
+      alert (fullpath);
+        return fullpath;
+    }
+</script>

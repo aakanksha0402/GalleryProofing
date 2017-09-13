@@ -1,0 +1,119 @@
+<% if @galleries.present? || (params[:search].present? || params[:gallery_access_privacy].present? || params[:shoot_year].present?) %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>
+          <div class="checkbox inside-check">
+            <input type="checkbox" id="selAll">
+          </div>
+        </th>
+        <th align="center" width="70"></th>
+        <th><%= sortable "galleries.name", "Gallery Name" %></th>
+        <th><span class="spec-th">Photos</span></th>
+        <th><%= sortable "galleries.shoot_date", "Shoot Date" %><span class="caret"></span></th>
+        <th><%= sortable "galleries.expiration_date","Expiration Date"%><span class="caret"></th>
+          <th><%= sortable "galleries.release_date","Release Date"%><span class="caret"></th>
+            <th><%= sortable "galleries.status","Status"%></th>
+            <th>-</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= form_tag galleries_update_multiple_path do%>
+          <% @galleries.each do |gallery| %>
+            <tr class='clickable-row' data-href="<%=galleries_galleryhome_path(id: gallery.id)%>">
+              <td class="remove-link">
+                <div class="checkbox inside-check">
+                  <%= check_box_tag "gallery_ids[]",gallery.id,false, class: 'check1'%>
+                </div>
+              </td>
+              <td align="center">
+                <% if gallery.cover_url.exists?%>
+                  <div class="icon-img"><%= image_tag gallery.cover_url.url,size: "42x42"%></div>
+                <% elsif gallery.gallery_photo_id %>
+                  <% @photos.each do |photo| %>
+                    <% if photo.id == gallery.gallery_photo_id %>
+                      <div class="icon-img"><%= image_tag photo.image.url,size: "42x42"%></div>
+                    <% end %>
+                  <% end %>
+                <%else%>
+                  <div class="icon-img"></div>
+                <% end %>
+              </td>
+              <td><%= gallery.name %></td>
+              <td align="right">
+                <% @sum = gallery.photos.where(is_delete: false).count %>
+                <% gallery.albums.includes(:photos).each do |album| %>
+                  <% @sum += album.photos.where(is_delete: false).count %>
+                <% end %>
+                <%= @sum %>
+              </td>
+              <td><%if gallery.shoot_date.present?%><%= gallery.shoot_date.strftime("%d-%b-%Y") %><% end %></td>
+              <td><%=gallery.expiration_date%></td>
+              <td><%=gallery.release_date%></td>
+              <%@galleries1.each do |status|%>
+                <%if status.gallery_id == gallery.id%>
+                  <%if status.preregistration == true%>
+                    <td>Pre-registered</td>
+                  <%else%>
+                    <td><%= gallery.status %></td>
+                  <% end %>
+                <% end %>
+              <% end %>
+              <td class="quick-actions">
+                <div class="dropdown text-right">
+                  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Quick Actions
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="#">Gallery Visitors</a>
+                      <%= gallery.custom_link%>
+                    </li>
+                    <li><%= link_to "Client View", view_gallery_url(brand: @current_subdomain,gallery: gallery.id),target: "_blank" %></li>
+                    <!-- <li><%#= link_to "Client View", view_gallery_url(subdomain: @current_subdomain,gallery: gallery.id),target: "_blank" %></li> -->
+                    <li><%= link_to "Email Link","#Share1_#{gallery.id}",'data-toggle': "modal"%></li>
+                    <li><%= link_to "Settings",edit_custom_gallery_layout_path(id: gallery.custom_gallery_layout.id)%></li>
+                    <!-- <li><a href="#">Archive</a></li> -->
+                    <% unless @not_authorized_to_delete == true%>
+                      <li><%= link_to "Delete","#delete-Gallery_#{gallery.id}",'data-toggle': "modal"%></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+
+          <!-- Modal -->
+          <div id='<%="delete-Gallery_#{gallery.id}"%>' class="modal fade description-modal" role="dialog">
+            <div class="modal-dialog">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Delete Gallery?</h4>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure that you want to delete this gallery? This <span class="bold">CANNOT</span> be undone. The photos and gallery visitors information will be removed from the system.</p>
+
+                  <p>Alternatively, you can archive this gallery for only <span class="bold">$0.04/GB</span> per month and the photos will not count against your plan total. <a href="https://kb.shootproof.com/help/article/link/archiving-photos" target="_blank">Learn More</a></p>
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-sm btn-link" data-dismiss="modal">Close</button>
+                  <%= link_to 'Delete', gallery_path(gallery.id), method: :delete,class: "btn btn-sm btn-danger" %>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!--  /mModal -->
+
+
+          <% end %>
+          <% end %>
+
+        </tbody>
+      </table>
+      <% else %>
+      There are no records found. Try again?
+      <% end %>

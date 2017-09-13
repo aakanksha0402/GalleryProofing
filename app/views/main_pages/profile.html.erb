@@ -1,0 +1,38 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="login-box">
+      <div class="logo">
+
+
+      </div>
+      <div class="form">
+        <h3>Profile</h3>
+        <div class="login">
+
+        <%= form_for(resource, as: resource_name, url: main_pages_update_path) do |f| %>
+        <%= devise_error_messages! %>
+
+        <div class="field">
+          <%= f.label :firstname %><br />
+          <%= f.text_field :firstname, class: 'form-control', autofocus: true, style: 'color:black' %>
+        </div>
+
+        <div class="field">
+          <%= f.label :lastname %><br/>
+          <!-- <% if @minimum_password_length %>
+          <em>(<%= @minimum_password_length %> characters minimum)</em>
+          <% end %><br /> -->
+          <%= f.text_field :lastname, autocomplete: "off", class: 'form-control',style: 'color:black' %>
+        </div>
+
+        <div class="button-row text-center">
+        <div class="actions">
+          <%= f.submit "Submit",style: 'color:black' %>
+        </div>
+      </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

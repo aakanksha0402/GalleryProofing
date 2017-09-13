@@ -1,0 +1,27 @@
+<div class="col-sm-10 text-right">
+        <!-- <a href="#" class="btn btn-sm btn-default set-as-app-icon" style="display: none;">Set as app icon</a> -->
+        <%= link_to "Set as app icon", "#icon_change","data-toggle": "modal" ,class: "btn btn-sm btn-default set-as-app-icon", id: "set_icon_mobile", style: "display: none;"%>
+        <%#= link_to "Set as Gallery Cover","#profile-change","data-toggle": "modal" ,class: "btn btn-link btn-sm", id: "remove_set_gallery" %>
+        <a href="#" class="btn btn-sm btn-default delete-photo" data-toggle="modal" data-target="#delete-photo" style="display: none;">Delete photo</a>
+        <%= link_to "Add Photos",add_photos_path(id: @mobileapp.id),class: "btn btn-sm btn-primary add-photos"%>
+      </div>
+      <div class="col-xs-12">
+        <div id="allPhotos" class="clearfix">
+           <div class="all-photo"> <!--start-photo-view-->
+                        <ul class="photos-view">
+
+                          <% @mobileapp.photos.where(is_delete: false).each do |image| %>
+                          <li class="photo-tile">
+                            <div class="inside-img"><%= image_tag image.image.url, "data-id": image.id %></div>
+                            <div class="inside-img-open">
+                              <a href="<%= image.image.url %>" class="fa fa-search lightview" data-lightview-group="shared_options" ></a>
+                            </div>
+                            <div class="photo-name"><%= image.image_file_name %></div>
+                            <div class= "photo-id" data-id="<%= image.id %>"></div>
+                            <div class= "mobileapp-id" data-id="<%= @mobileapp.id %>"></div>
+                          </li>
+                          <% end %>
+                        </ul>
+          </div><!--/start-photo-view-->
+        </div>
+      </div>

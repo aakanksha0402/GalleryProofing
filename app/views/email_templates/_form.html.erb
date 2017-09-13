@@ -1,0 +1,37 @@
+<%= form_for(@email_template) do |f| %>
+  <% if @email_template.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@email_template.errors.count, "error") %> prohibited this email_template from being saved:</h2>
+
+      <ul>
+      <% @email_template.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <%= f.hidden_field :name, value: params[:name] %>
+  <div class="field">
+    <%= f.label :default_email_template_id, "Template Type" %>
+    <%= f.collection_select(:id, DefaultEmailTemplate.all, :id, :email_type, {prompt: "Select one"}, {:data => {remote: true}, class: "selectpicker"}) %>
+ </div>
+  <div class="field">
+    <%= f.label :email_subject %>
+    <%= f.text_field :email_subject %>
+  </div>
+  <div class="field">
+    <%= f.label :headline %>
+    <%= f.text_field :headline %>
+  </div>
+  <div class="field">
+    <%= f.label :button_text %>
+    <%= f.text_field :button_text %>
+  </div>
+  <div class="field">
+    <%= f.label :email_body %>
+    <%= f.text_area :email_body %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

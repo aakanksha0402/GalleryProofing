@@ -1,0 +1,5 @@
+// alert("<%= @client_contact.email%>");
+$("#invoice_email #email").text("<%= @client_contact.email %>");
+$("#client_email_id").val("<%= @client_contact.id %>");
+$("#invoice_id").val("<%=j params[:invoice_id]%>")
+$("#invoice_email").modal('show');

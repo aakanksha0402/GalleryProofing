@@ -1,0 +1,163 @@
+$('#ad-to-cart').append('<%=j render "/carts/view_items" %> ');
+$('#add-cart-item').modal('show');
+$('.item-choose').find($('img')).prop('src','<%= @photo.image.url if @photo %>');
+$('.item-choose').find($('img')).attr('data-value','<%= @photo.id if @photo %>');
+$('.item-choose').show();
+if (<%= !@photo %>) {
+  $('.item-choose').hide();
+}else {
+  $('.item-choose').show();
+}
+if (<%= session.key?(@photo.id) %>) {
+  $('.item-choose').find($('img')).css({'filter': 'grayscale(100%)'});
+}
+JcropAPI = $('#cropbox').data('Jcrop');
+if (JcropAPI != null) {
+  JcropAPI.destroy();
+}
+$('#edit_crop').hide();
+$('#back-button').remove();
+$('#do_not_delete').css('display','block');
+$('.model-title-side').css('display','block');
+$('#options').remove();
+$('.added-to-cart').remove();
+$('#items').find('.container-fluid').remove();
+$('#items').css('display','block');
+$('.main-side-calc').remove();
+$('.add-cart-btn').remove();
+$('.email-for-cart').remove();
+$('#items').append('<div class="container-fluid">' +
+  '<div class="row">' +
+    '<ul class="nav nav-pills in-pills center-tabs pop-tabs">' +
+      '<% @groups.each do |group| %>' +
+        '<li class="type <%= group.id == @groups.first.id ? 'active' : '' %>"><a id="tab1"  href="#<%= group.id %>" data-toggle="tab"><%= group.name %></a></li>' +
+      '<% end %>' +
+    '</ul>' +
+  '</div>' +
+'</div>' +
+'<div class="container-fluid">' +
+  '<div class="row">' +
+    '<div class="col-lg-12">' +
+      '<div class="tab-content clearfix">' +
+        '<% @groups.each do |group| %>' +
+        '<div class="tab-pane <%= group.id == @groups.first.id ? 'active' : '' %>" id="<%= group.id %>">' +
+          '<ul>' +
+            '<% @catalogs.each do |catalog| %>' +
+              '<% if catalog.group_id == group.id %>' +
+                '<% if catalog.print_size_one.present? || catalog.print_size_two.present? %>' +
+                  '<li id="<%= catalog.group_id %>" onclick="show(<%= catalog.group_id %>, <%= catalog.print_size_one %>, <%= catalog.print_size_two %>,<%= params[:photo] %>)" remote = true><svg class="sp-svg" version="1.1" viewBox="0 0 7.969 12.798"><path d="M0.854,0.125l6.939,5.898c0.234,0.199,0.234,0.553,0,0.753l-6.939,5.898C0.521,12.956,0,12.727,0,12.297V0.501C0,0.071,0.521-0.158,0.854,0.125z"></path></svg>' +
+                    '<div class="bound-pricing">' +
+                      '<span class="font-text">' +
+                        '<% @c = @cat.where("print_size_one = ? AND print_size_two = ?", catalog.print_size_one, catalog.print_size_two).maximum(:price) %>' +
+                        '<% if @c %>' +
+                          '<span class="ng-binding">$ <%= @c %> </span>' +
+                        '<% else %>' +
+                          '<span class="ng-binding">$ 0.00 </span>' +
+                        '<% end %>' +
+                        '<span class="bound-pricing-min-indicator ng-binding"></span>' +
+                      '</span>' +
+                    '</div>' +
+                    '<h4 class="item-name">' +
+                      '<span class="font-text">' +
+                        '<span class="ng-binding"><%= catalog.print_size_one %> x <%= catalog.print_size_two %></span>' +
+                      '</span>' +
+                    '</h4>' +
+                  '</li>' +
+                '<% else %>' +
+                  '<% @digital.each do |digital| %>' +
+                    '<% if !digital.digital_media_prices.present? %>' +
+                      '<li onclick="show_digital(<%= digital.id %>, true,<%= group.id %>,1)" remote = true><svg class="sp-svg" version="1.1" viewBox="0 0 7.969 12.798"><path d="M0.854,0.125l6.939,5.898c0.234,0.199,0.234,0.553,0,0.753l-6.939,5.898C0.521,12.956,0,12.727,0,12.297V0.501C0,0.071,0.521-0.158,0.854,0.125z"></path></svg>' +
+                        '<div class="bound-pricing">' +
+                          '<span class="font-text">' +
+                            '<span class="ng-binding">$<%= digital.price %></span>' +
+                            '<span class="bound-pricing-min-indicator ng-binding"></span>' +
+                          '</span>' +
+                        '</div>' +
+                        '<h4 class="item-name">' +
+                          '<span class="font-text">' +
+                            '<% if digital.resolution.present? %>' +
+                              '<span class="ng-binding"><%= digital.resolution %></span>' +
+                            '<% else %>' +
+                              '<span class="ng-binding"><%= digital.sub_item_name %></span>' +
+                            '<% end %>' +
+                          '</span>' +
+                        '</h4>' +
+                      '</li>' +
+                    '<% else %>' +
+                      '<% digital.digital_media_prices.each do |sub_digital| %>'+
+                        '<% if sub_digital.individual_price_active? %>'+
+                          '<li onclick="show_digital(<%= digital.id %>, true,<%= group.id %>,2)" remote = true><svg class="sp-svg" version="1.1" viewBox="0 0 7.969 12.798"><path d="M0.854,0.125l6.939,5.898c0.234,0.199,0.234,0.553,0,0.753l-6.939,5.898C0.521,12.956,0,12.727,0,12.297V0.501C0,0.071,0.521-0.158,0.854,0.125z"></path></svg>' +
+                            '<div class="bound-pricing">' +
+                              '<span class="font-text">' +
+                                '<span class="ng-binding">$<%= sub_digital.indiviual_photo_price %></span>' +
+                                '<span class="bound-pricing-min-indicator ng-binding"></span>' +
+                              '</span>' +
+                            '</div>' +
+                            '<h4 class="item-name">' +
+                              '<span class="font-text">' +
+                                '<% if digital.resolution.present? %>' +
+                                  '<span class="ng-binding"><%= digital.resolution %></span>' +
+                                '<% else %>' +
+                                  '<span class="ng-binding"><%= digital.sub_item_name %></span>' +
+                                '<% end %>' +
+                              '</span>' +
+                            '</h4>' +
+                          '</li>' +
+                        '<% end %>' +
+                        '<% if sub_digital.all_gallery_price_active? %>'+
+                          '<li onclick="show_digital(<%= digital.id %>, true,<%= group.id %>,3)" remote = true><svg class="sp-svg" version="1.1" viewBox="0 0 7.969 12.798"><path d="M0.854,0.125l6.939,5.898c0.234,0.199,0.234,0.553,0,0.753l-6.939,5.898C0.521,12.956,0,12.727,0,12.297V0.501C0,0.071,0.521-0.158,0.854,0.125z"></path></svg>' +
+                            '<div class="bound-pricing">' +
+                              '<span class="font-text">' +
+                                '<span class="ng-binding">$<%= sub_digital.all_gallery_photo_price %></span>' +
+                                '<span class="bound-pricing-min-indicator ng-binding"></span>' +
+                              '</span>' +
+                            '</div>' +
+                            '<h4 class="item-name">' +
+                              '<span class="font-text">' +
+                                '<% if digital.resolution.present? %>' +
+                                  '<span class="ng-binding"><%= digital.resolution %></span>' +
+                                '<% else %>' +
+                                  '<span class="ng-binding"><%= digital.sub_item_name %> ALL GALLERY PHOTOS <br/> <%= @gallery.photos.count %> photos in <%= @gallery.name %></span>' +
+                                '<% end %>' +
+                              '</span>' +
+                            '</h4>' +
+                          '</li>' +
+                        '<% end %>' +
+                      '<% end %>' +
+                    '<% end %>' +
+                  '<% end %>' +
+                '<% end %>' +
+              '<% end %>' +
+            '<% end %>' +
+          '</ul>' +
+        '</div>' +
+        '<% end %>' +
+      '</div>' +
+    '</div>' +
+  '</div>' +
+'</div>');
+
+
+  function show(group_id, print_size_one, print_size_two) {
+    photo = $('.item-choose').find('img').attr('data-value');
+    $.ajax({
+      headers: {
+        'X-CSRF-Token':'<%= form_authenticity_token.to_s %>'
+      },
+      type: 'post',
+      url: '/views/show_modal',
+      data: {group_id: group_id, print_size_one: print_size_one,photo: photo, print_size_two: print_size_two, brand: '<%= params[:brand] %>', gallery: '<%= params[:gallery] %>',is_photo: '<%= @is_photo %>'}
+    });
+  }
+
+function show_digital(digital_catalog_id,from_digital = false,group_id,from) {
+    photo = $('.item-choose').find('img').attr('data-value');
+    $.ajax({
+      headers: {
+        'X-CSRF-Token':'<%= form_authenticity_token.to_s %>'
+      },
+      type: 'post',
+      url: '/views/show_modal',
+      data: {group_id: group_id,digital_catalog_id: digital_catalog_id,photo: photo, from_digital: from_digital,from: from, brand: '<%= params[:brand] %>', gallery: '<%= params[:gallery] %>',is_photo: '<%= @is_photo %>'}
+    });
+  }

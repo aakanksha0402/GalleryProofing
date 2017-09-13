@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Default Receipient Types</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Active</th>
+      <th>Template Type</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @default_receipient_types.each do |default_receipient_type| %>
+      <tr>
+        <td><%= default_receipient_type.name %></td>
+        <td><%= default_receipient_type.active %></td>
+        <td><%= default_receipient_type.default_email_template_type.name %></td>
+        <td><%= link_to 'Show', default_receipient_type %></td>
+        <td><%= link_to 'Edit', edit_default_receipient_type_path(default_receipient_type) %></td>
+        <td><%= link_to 'Destroy', default_receipient_type, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Default receipient type', new_default_receipient_type_path %>

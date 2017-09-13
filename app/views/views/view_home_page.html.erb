@@ -1,0 +1,332 @@
+<% content_for :body_class, "index_index_1" %>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12 text-center">
+      <div class="brand-page ng-scope" id="pageBrandHome">
+        <% if @color_set.gallery_logo.present?%>
+          <%= image_tag @color_set.gallery_logo.url(:small) %>
+        <%else%>
+          <h5 class="theme-color-primary effects_from_primary"><%= @brand.brand_name %></h5>
+        <% end %>
+        <div class="links ng-scope">
+          <% if @home_page.fb_url.present? %>
+          <!-- ngIf: brandData.contact.facebookUrl -->
+          <div class="facebook ng-scope">
+            <%= link_to "https://facebook.com/#{@home_page.fb_url}" do %>
+              <span class="fa fa-facebook"></span>
+            <% end %>
+          </div>
+          <!-- end ngIf: brandData.contact.facebookUrl -->
+          <% end %>
+
+          <% if @home_page.twitter_username.present? %>
+          <div class="facebook ng-scope">
+            <%= link_to "https://twitter.com/#{@home_page.twitter_username}" do %>
+              <span class="fa fa-twitter"></span>
+            <% end %>
+          </div>
+          <% end %>
+
+          <% if @home_page.intagram_username.present? %>
+          <!-- ngIf: brandData.contact.instagramUrl -->
+          <div class="facebook ng-scope">
+            <%= link_to "https://www.instagram.com/#{@home_page.intagram_username}" do %>
+              <span class="fa fa-instagram">
+            <% end %>
+          </div>
+          <!-- end ngIf: brandData.contact.instagramUrl -->
+          <% end %>
+
+          <% if @home_page.pinterest_username.present? %>
+          <!-- ngIf: brandData.contact.pinterestUrl -->
+          <div class="facebook ng-scope">
+            <%= link_to "https://www.pinterest.com/#{@home_page.pinterest_username}" do%>
+              <span class="fa fa-pinterest"></span>
+            <% end %>
+          </div>
+          <!-- end ngIf: brandData.contact.pinterestUrl -->
+          <% end %>
+          <% if @home_page.show_website_link == true %>
+            <% if @brand.website_url.present? %>
+            <!-- ngIf: brandData.contact.website -->
+            <div class="facebook ng-scope">
+              <%= link_to "http://#{@brand.website_url}" do%>
+                <span class="fa fa-television"></span>
+              <% end %>
+            </div>
+            <!-- end ngIf: brandData.contact.website -->
+            <% end %>
+          <% end %>
+
+          <% if @home_page.show_email == true %>
+            <% if @brand.email.present? %>
+            <!-- ngIf: brandData.contact.email -->
+            <div class="facebook ng-scope">
+              <%= mail_to @brand.email do %>
+                <span class="fa fa-envelope"></span>
+              <% end %>
+            </div>
+            <!-- end ngIf: brandData.contact.email -->
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+        <% if @home_page.show_address == true %>
+          <div class="view-home-set-1 text-center">
+            <div class="address theme-font-primary ng-scope">
+              <span class="font-text ng-binding">
+                <% if @brand.address1.present? %>
+                <%= @brand.address1 %>
+                <% end %>
+                <% if @brand.address2.present? %>
+                <%= @brand.address2 %>
+                <% end %>
+                <% if @brand.city.present? %>
+                <%= @brand.city %>
+                <% end %>
+                <% if @brand.pincode.present? %>
+                <%= @brand.pincode %>
+                <% end %>
+                <% if @brand.brand_country.present? %>
+                <%= @brand.brand_country %>
+                <% end %>
+              </span>
+            </div>
+          </div>
+          <br>
+        <% end %>
+
+        <% if @home_page.show_phone == true %>
+          <div class="view-home-set-1 text-center">
+            <div class="address theme-font-primary ng-scope">
+              <span class="font-text ng-binding">
+                <% if @brand.phone_number.present? %>
+                <%= link_to @brand.phone_number, "tel:+#{@brand.phone_number}", class: "effects_from_secondary" %>
+                <% end %>
+              </span>
+            </div>
+          </div>
+        <% end %>
+
+        <% if @home_page.show_about == true %>
+        <div class="view-home-set-1 text-center">
+          <div class="address theme-font-primary ng-scope">
+            <span class="font-text ng-binding">
+              <% if @home_page.about.present? %>
+                <%= raw @home_page.about %>
+              <% end %>
+            </span>
+          </div>
+        </div>
+        <br>
+        <% end %>
+      </div>
+
+        <!-- When Galleries is selected -->
+        <% if @home_page.homepage_layout == "Galleries"%>
+          <div class="col-md-offset-1">
+            <% @galleries.each do |g| %>
+              <%= link_to view_gallery_url(gallery: g.id) do %>
+                <div class="view-home-set-2">
+                  <div class="event-cover no-cover ng-scope effects_from_theme_div">
+                    <span class="fa fa-picture-o effects_from_theme_icon"></span>
+                  </div>
+                  <h4 class="event-name theme-color-secondary">
+                    <span class="font-text tab-greeen-sub effects_from_secondary"><%= g.name %></span>
+                  </h4>
+                </div>
+              <% end %>
+            <% end %>
+         </div>
+
+        <!-- When Categories of Galleries is selected -->
+        <% elsif @home_page.homepage_layout == "Category of Galleries" %>
+          <div class="col-md-offset-1">
+            <% @categories.each do |c| %>
+              <%= link_to view_category_path(category: c.id, brand: params[:brand]) do %>
+                <div class="view-home-set-2">
+                  <div class="event-cover no-cover ng-scope effects_from_theme_div">
+                    <% if c.category_cover_pic.present?%>
+                      <%=image_tag c.category_cover_pic.url%>
+                    <% else %>
+                    <span class="fa fa-picture-o effects_from_theme_icon"></span>
+                    <% end %>
+                  </div>
+                  <h4 class="event-name theme-color-secondary">
+                    <span class="font-text tab-greeen-sub effects_from_secondary"><%= c.name %></span>
+                  </h4>
+                </div>
+              <% end %>
+            <% end %>
+          <% @no_category_gallery.each do |g| %>
+            <%= link_to view_gallery_url(gallery: g.id) do %>
+              <div class="view-home-set-2">
+                <div class="event-cover no-cover ng-scope effects_from_theme_div">
+                  <span class="fa fa-picture-o effects_from_theme_icon"></span>
+                </div>
+                <h4 class="event-name theme-color-secondary">
+                  <span class="font-text tab-greeen-sub effects_from_secondary"><%= g.name %></span>
+                </h4>
+              </div>
+            <% end %>
+          <% end %>
+          </div>
+        <!-- When Widget is selected -->
+        <% elsif @home_page.homepage_layout == "Widget" %>
+          <div class= "col-lg-12 text-center">
+            <% if @home_page.event_list == true && @home_page.email_field == true%>
+                <!-- both<b>done</b> -->
+                <div class="form-group-view-home">
+                  <%= form_tag({action: "galleries_password_visitors", brand: params[:brand]}, remote: true) do %>
+                    <div class="form-group" id = "divChooseGallery">
+                      <%= label_tag :gallery, "Gallery" %>
+                      <%= collection_select :gallery,:id, @brand.galleries.all, :id ,:name, {prompt: "Choose a Gallery"}, {name: "gallery", class: "selectpicker widget-edit", id: "both_gallery"} %><br>
+                    </div>
+                    <div class="form-group" id= "divEmail">
+                      <%= label_tag :email, "E-Mail" %>
+                      <%= email_field_tag :email, '', required: true, class: "form-control" %>
+                    </div>
+
+                    <div class="form-group" id= "divPassword">
+
+                    </div>
+                    <div class=:"form-group">
+                      <%= submit_tag "View Gallery", class: "btn btn-primary" %>
+                    </div>
+                  <% end %>
+                </div>
+                <!-- both<b>done</b> -->
+            <% elsif @home_page.email_field == true %>
+                <!-- email field <b>[done]</b> -->
+                <div class="form-group-view-home">
+                  <%= form_tag({action: "galleries_password", brand: params[:brand]}, remote: true) do %>
+                    <div class="form-group" id= "divEmail">
+                      <%= label_tag :email, "E-Mail" %>
+                      <%= email_field_tag :email, '', required: true, class: "form-control" %>
+                    </div>
+                    <div class="form-group" id= "divPassword">
+                      <%= label_tag :password, "Password" %>
+                      <%= password_field_tag :password, '', class: "form-control" %>
+                    </div>
+                    <div class=:"form-group">
+                      <%= submit_tag "View Gallery", class: "btn btn-primary" %>
+                    </div>
+                  <% end %>
+                </div>
+                <!-- email field <b>[done]</b> -->
+            <% elsif @home_page.event_list == true  %>
+                <!-- event list <b>[done]</b> -->
+                <div class="form-group-view-home">
+                  <%= form_tag({action: "view_widget", brand: params[:brand]}, remote: true) do %>
+                    <div class="form-group">
+                      <%= label_tag :gallery, "Gallery" %>
+                      <%= collection_select :gallery,:id, @brand.galleries.all, :id ,:name, {prompt: "Choose a Gallery"}, {name: "gallery", class:
+                        "selectpicker widget-edit", remote: true} %><br>
+                    </div>
+                    <div class="form-group" id="divPassword">
+
+                    </div>
+                    <div class="form-group" id="divEmail">
+
+                    </div>
+                    <div class=:"form-group">
+                      <%= submit_tag "View Gallery", class: "btn btn-primary" %>
+                    </div>
+                  <% end %>
+                </div>
+                <!-- event list <b>[done]</b> -->
+            <% else %>
+                <!-- none <b>[done]</b> -->
+                <div class="form-group-view-home">
+                  <%= form_for(@gallery, url: {action: 'galleries_password', brand: params[:brand]}, remote: true) do |f|%>
+                    <div class="form-group" id= "divPassword">
+                      <%= f.label :password %>
+                      <%= f.password_field :password, name: "password", class: "form-control" %>
+                    </div>
+                    <div class= "form-group">
+                      <%= submit_tag "View Gallery", class: "btn btn-primary" %>
+                    </div>
+                  <% end %>
+                </div>
+                <!-- none <b>[done]</b> -->
+            <% end %>
+        <!-- When Widget is selected -->
+        </div>
+        <% end %>
+      </div>
+<script>
+  $(document).ready(function(){
+    $("body").css('background-color', '<%= session[:theme] %>');
+    $(".effects_from_theme_div").css('background-color', '<%= session[:div] %>');
+    $(".effects_from_theme_icon").css('color', '<%= session[:icon] %>');
+    $(".effects_from_primary").css('color', '<%= session[:primary_color] %>');
+    $(".effects_from_secondary").css('color', '<%= session[:secondary_color] %>');
+  });
+</script>
+<style>
+.btn.dropdown-toggle.btn-default, .btn.dropdown-toggle.btn-default:focus{
+  background-color: <%= session[:text] %>;
+}
+.form-group-view-home input.form-control, #password.form-control, #email.form-control {
+    width: 220px;
+    display: inline-block;
+    background-image: none;
+    background-color: <%= session[:text] %>;
+}
+.form-control, .form-control:focus {
+  border-color: #A5A5A5;
+  color: #A5A5A5;
+}
+.form-group-view-home #email.form-control:hover {
+    border-color: <%= session[:primary_color] %>
+}
+.form-group-view-home {
+    text-align: center;
+}
+.form-group-view-home input[type=submit].btn.btn-primary {
+    background-color: <%= session[:text] %>;
+    border-color: <%= session[:primary_color] %>;
+    color: <%= session[:primary_color] %>;
+    border-radius: 2px;
+    min-width: 160px;
+    padding: 8px 19px;
+    font-size: 16px;
+}
+.form-group-view-home input[type=submit].btn.btn-primary:hover{
+    background-color: <%= session[:primary_color] %>;
+    border-color: <%= session[:primary_color] %>;
+    color: #000000;
+}
+</style>
+<script>
+$("#gallery_id").change(function(){
+  $('#error').remove();
+  // alert("mj");
+  // alert($("#gallery_id").val());
+  $.ajax({
+    type: "post",
+    headers: {
+      'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+    },
+    url: '/get_both',
+    data: {gallery_id: $("#gallery_id").val()}
+  });
+});
+</script>
+<script>
+$("#both_gallery").change(function(){
+  $('#error').remove();
+  // alert("mj");
+  // alert($("#both_gallery").val());
+  $.ajax({
+    type: "post",
+    headers: {
+      'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+    },
+    url: '/get_password',
+    data: {gallery_id: $("#both_gallery").val()}
+  });
+});
+</script>

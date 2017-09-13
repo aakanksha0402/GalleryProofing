@@ -1,0 +1,11 @@
+$("#show_item_modal").on('show.bs.modal',function(){
+  $(this).find(".table-body").html('<% @invoice_line_items.each do |invoice_line_item| %>'+
+                                    '<div class="tr">'+
+                                      '<div class="td"><%= invoice_line_item.name %></div>'+
+                                      '<div class="td"><%= invoice_line_item.quantity %></div>'+
+                                      '<div class="td">$&nbsp;<%= invoice_line_item.price %></div>'+
+                                      '<div class="td">$&nbsp;<%= invoice_line_item.total_price %></div>'+
+                                    '</div>'+
+                                  '<% end %>');
+});
+$("#show_item_modal").modal('show');

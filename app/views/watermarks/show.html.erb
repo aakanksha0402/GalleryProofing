@@ -1,0 +1,64 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @watermark.name %>
+</p>
+
+<p>
+  <strong>Text name:</strong>
+  <%= @watermark.text_name %>
+</p>
+
+<p>
+  <strong>Font set:</strong>
+  <%= @watermark.font_set %>
+</p>
+
+<p>
+  <strong>Color:</strong>
+  <%= @watermark.color %>
+</p>
+
+<p>
+  <strong>Text opacity value:</strong>
+  <%= @watermark.text_opacity_value %>
+</p>
+
+<p>
+  <strong>Image url:</strong>
+  <%= @watermark.image_url %>
+</p>
+
+<p>
+  <strong>Image placement:</strong>
+  <%= @watermark.image_placement %>
+</p>
+
+<p>
+  <strong>Size:</strong>
+  <%= @watermark.size %>
+</p>
+
+<p>
+  <strong>Image opacity value:</strong>
+  <%= @watermark.image_opacity_value %>
+</p>
+
+<p>
+  <strong>Selected as:</strong>
+  <%= @watermark.selected_as %>
+</p>
+
+<p>
+  <strong>Is default:</strong>
+  <%= @watermark.is_default %>
+</p>
+
+<p>
+  <strong>Brand:</strong>
+  <%= @watermark.brand %>
+</p>
+
+<%= link_to 'Edit', edit_watermark_path(@watermark) %> |
+<%= link_to 'Back', watermarks_path %>

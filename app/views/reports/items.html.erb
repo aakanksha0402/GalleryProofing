@@ -1,0 +1,90 @@
+<div id="main">
+  <div id="bd">
+
+    <div class="container-fluid" id="pageHeaderTitle">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-title">
+            <div class="row">
+              <div class="col-md-6 col-sm-5 col-xs-5">
+
+                <h2>
+                  <div id="pageTitleHeaderText">Items Report</div>
+                </h2>
+              </div>
+              <div class="col-md-6 col-sm-7 col-xs-7">
+                <div class="btn-group on-page-help-container">
+                  <a data-toggle="dropdown" class="on-page-help dropdown-toggle" href="#"><svg class="touch-icon on-page-help"><use xlink:href="/v2/content/201607281469727466/svg.svg#iconOnPageHelp"/></svg></a>
+                  <ul role="menu" class="dropdown-menu dropdown-menu-right arrow-upper-right" id="onPageHelp">
+                    <li>What is the Items Report?</li>
+                    <li>Browse Full Knowledge Base</li>
+                    <li><svg class="icon-email"><use xlink:href="/v2/content/201607281469727466/svg.svg#iconEmail"/></svg>Email Us</li>
+                  </ul>
+                </div>
+
+                <div class="right-buttons text-right">
+                  <%= link_to "Download as CSV",reports_items_path(format: "csv"),class: "btn btn-default" %>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-6 select2-sm">
+            <%= select_tag :days, options_for_select(LineItem::DURATION),{class: "margin-bottom inputsm col-lg-3 selectpicker",'data-live-search': true}%>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12 ">
+            <div class="table-responsive">
+              <div class="table">
+                <div class="table-head">
+                  <div class="tr">
+                    <div class="th selected desc"><a href="?sort_by=quantity">Quantity</a></div>
+                    <div class="th"><a href="?sort_by=revenue">Revenue</a></div>
+                    <div class="th"><a href="?sort_by=item_name">Item</a></div>
+                  </div>
+                </div>
+                <div class="table-body">
+                  <% @line_items.each do |line_item| %>
+                    <div class="tr">
+                      <div class="td"><%= @line_items1.joins(:catalog).where('line_items.catalog_id = ?',line_item.catalog_id).count %></div>
+                      <div class="td"><%= @line_items.joins(:catalog).where('line_items.catalog_id = ?',line_item.catalog_id).sum('quantity') * line_item.catalog.price %></div>
+                      <div class="td"><%= line_item.catalog.print_size_one %> x <%= line_item.catalog.print_size_two %> <%= line_item.catalog.sub_item_name %> (<%= line_item.catalog.group.name %>)</div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+<script>
+  $("#days").change(function(){
+    var days = $(this).val();
+    // alert("hello");
+    $.ajax({
+      type: "get",
+      url: "/reports/items",
+      data: {year: days},
+      success: function(data){
+        location.href = "/reports/items?days=" + days
+      }
+    });
+  });
+  $(document).ready(function(){
+    $("#days").val("<%= params[:days]%>");
+  });
+</script>

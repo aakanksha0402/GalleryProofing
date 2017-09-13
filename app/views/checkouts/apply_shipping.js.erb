@@ -1,0 +1,4 @@
+$('#shipping_row').show();
+$('#shipping_summary_row').show();
+$('#total_price').html('$<%= @total_price.to_d %>');
+$('#checkout_amount').val('<%= @total_price.to_d %>');

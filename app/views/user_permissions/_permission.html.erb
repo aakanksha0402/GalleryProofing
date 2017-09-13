@@ -1,0 +1,81 @@
+<% @permission_section.where(section_id: section.id).each do |ps| %>
+  <div class="form-group">
+      <div class="col-xs-6"><%= ps.name %></div>
+      <% @paps.where(permission_section_id: ps.id).each do |paps| %>
+
+          <% @permissions.where(permission_action_permission_section_id: paps.id).each do |per| %>
+
+            <% @paps.where(id: per.permission_action_permission_section_id).each do |p|%>
+
+              <% @permission_action.each do |permission_action| %>
+
+                <% if permission_action.id == p.permission_action_id %>
+
+                  <% if @user.new_record? %>
+                    <div class="col-xs-2">
+
+                      <% if per.value == true%>
+                        <div class="checkbox first-row checked-box">
+                          <%= check_box_tag "values[]", paps.id, true %>
+                        </div>
+                      <% else %>
+                        <div class="checkbox first-row">
+                          <%= check_box_tag "values[]", paps.id %>
+                        </div>
+                      <% end %>
+                    </div>
+
+                  <% elsif @user.studio_id.nil?  %>
+
+                    <div class="col-xs-2">
+                      <div class="checkbox first-row checked-box">
+                        <%= check_box_tag "values[]", paps.id, true, disabled: true %>
+                      </div>
+                    </div>
+
+                  <% elsif @user.id == session[:user].id  %>
+
+                    <div class="col-xs-2">
+                      <% if per.value == true%>
+                        <div class="checkbox first-row checked-box">
+                          <%= check_box_tag "values[]", paps.id, true, disabled: true %>
+                        </div>
+                      <% else %>
+                        <div class="checkbox first-row">
+                          <%= check_box_tag "values[]", paps.id, false, disabled: true %>
+                        </div>
+                      <% end %>
+                    </div>
+
+                  <% elsif @user.studio_id.present? %>
+
+                    <div class="col-xs-2">
+                      <% if per.value == true%>
+                        <div class="checkbox first-row checked-box">
+                          <%#= check_box_tag "values[]", paps.id, true %>
+                          <%= check_box_tag "values[]", paps.id, true, id: paps.name.tr(" ", "_").downcase %>
+                        </div>
+                      <% else %>
+                        <div class="checkbox first-row">
+                          <%#= check_box_tag "values[]", paps.id %>
+                          <%= check_box_tag "values[]", paps.id, true, id: paps.name.tr(" ", "_").downcase %>
+                        </div>
+                      <% end %>
+                    </div>
+
+                  <% end %>
+
+                <% else %>
+                  <div class="col-xs-2">
+                  </div>
+                <% end %>
+
+              <% end %>
+
+            <% end %>
+
+          <% end %>
+
+      <% end %>
+  </div>
+<% end %>

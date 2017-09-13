@@ -1,0 +1,5 @@
+<%#= puts "**********/////#{params.inspect}//////////************"%>
+<h1>Zip File Download</h1>
+<p>Below is a list of zip files for download:</p>
+
+<%= link_to "file 1 of 1","/galleries/download_page?bundle=#{params[:bundle]}" ,class: "btn btn-sm", id: "download_gallery_image"%>

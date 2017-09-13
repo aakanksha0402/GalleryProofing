@@ -1,0 +1,779 @@
+
+$("#edit-discount .discount-next").show();
+$("#edit-discount #step-1-promo").val("<%= @discount.promocode %>");
+console.log($("#edit-discount #step-1-promo").val());
+$("#edit-discount #promocode_limit").val("<%= @discount.use_limit %>");
+'<%if @discount.is_automatic == false %>'
+  $("#edit-discount #edit_promocode_expiration").val("<%= @discount.expiration_date %>");
+'<% end %>'
+$("#edit-discount #discount_type_name").val("<%= @discount_type.type_name %>");
+$('#edit-discount #discount_type_id').val("<%=@discount_type.id%>");
+
+
+$("#edit-discount").find($('div[id^="step-3"]')).each(function(){
+  if ($(this).css("display") == "block"){
+    $(".back-button").show();
+  }
+});
+'<%= puts @discount_type.type_name%>'
+'<%= puts "______________"%>'
+if ("<%= @discount_type.type_name %>" == "Item" ){
+  $("#edit-discount #checkout_limit").val("<%= @discount.checkout_limit%>");
+  $("#edit-discount #Qty").val("<%= @discount.quantity %>");
+  console.log("Item");
+  $("#edit-discount #item_radio_option").val("<%= @discount_offer.value %>");
+  var div = "#edit-discount #step-3-item .row"
+  $(div).find(".items").remove();
+  $(div).append('<div class="items"><%= hidden_field_tag 'item_discount_type'%><ul class=\"list-unstyled item_list\"></ul></div>')
+  $(div+" .items .item_list").append('<%@groups.each do |group|%>'+
+  '<li>'+
+  ' <%if group.fix_group_id != 6%>'+
+  '    <div class="group_name"><%= group.name%></div>'+
+  '  <% end %>'+
+  ''+
+  '  <%@item_array=@list_item_id_array%>'+
+  '  <% @catalog_items.each do |catalog_item| %>'+
+  '    <% if catalog_item.fix_group_id == group.fix_group_id %>'+
+  '    <%if @item_array.include?catalog_item.item_list_id%>'+
+  '      <div class="bounds_name"><%= catalog_item.print_size_one %> x <%= catalog_item.print_size_two %> (8 Wallets)</div>'+
+  '      <%@catalog_items.each do |catalog_item|%>'+
+  '        <%if catalog_item.item_list_id == @item_array[0]%>'+
+  '          <ul>'+
+  '            <li id="12706051" class="item_data">'+
+  '              <span class="itemGroupName" style="display:none">Printsf</span>'+
+  '              <span class="boundsName" style="display:none">2.5 x 3.5 (8 Wallets)</span>'+
+  '                 <% @d.each do |d|%>'+
+  '                   <% if d.catalog_id == catalog_item.id %>'+
+  '                     <% if d.active == true %>'+
+  '                       <div class="checkbox checked-box">'+
+  '                         <%=check_box_tag 'item_id[]',catalog_item.id,true%>'+
+  '                       </div>'+
+  '                      <% else %>'+
+  '                         <div class="checkbox">'+
+  '                            <%=check_box_tag 'item_id[]',catalog_item.id,false%>'+
+  '                         </div>'+
+  '                     <% end %>'+
+  '                   <% end %>'+
+  '                 <% end %>'+
+  '              <span class="item_name"><%= catalog_item.sub_item_name%></span>'+
+  '              <span class="item_price">$&nbsp;0.00</span>'+
+  '            </li>'+
+  '          </ul>'+
+  '          <% end %>'+
+  '        <% end %>'+
+  '        <%@item_array.delete(catalog_item.item_list_id)%>'+
+  '      <% end %>'+
+  '    <% end %>'+
+  '  <% end %>'+
+  '</li>'+
+  '<%end%>'+
+  '</ul>');
+
+  $("#edit-discount").find("#step-4-item .myradio").each(function(){
+    $(this).removeClass("selected");
+      if ($(this).find("input[type=radio]").val() == '<%= @discount_offer.value %>'){
+        $(this).find("input[type=radio]").parent().parent().parent().addClass("selected");
+        // console.log($(this).hasClass("selected"));
+        $("#edit-discount #item_radio_option").val($(this).find("input[type=radio]").val());
+      }
+      if ($(this).find("input[type=radio]").val() == "A" && $(this).hasClass("selected")){
+        $("#edit-discount #edit_off_each_selected_item_value").val("<%= @discount.value %>");
+        console.log("A <%= @discount.value %>");
+      }else if ($(this).find("input[type=radio]").val() == "E" && $(this).hasClass("selected")) {
+        $("#edit-discount #edit_percent_off_each_item_value").val("<%= @discount.value %>");
+        console.log("E");
+      }else if ($(this).find("input[type=radio]").val() == "B" && $(this).hasClass("selected")){
+        $("#edit-discount #edit_cost_for_each_item_value").val("<%= @discount.value %>");
+        console.log("B");
+      }
+    });
+}else if ( "<%= @discount_type.type_name %>" == "Credit" ) {
+  console.log("Credit");
+  var div = "#edit-discount #step-3-credit .row"
+  $(div).find(".col_lg-12").remove();
+  $(div).append('<div class="col_lg-12">'+
+                  '<p>Give a credit<%=hidden_field_tag "credit_radio_option"%></p>'+
+                  '<ul class="list-unstyled list form-inline radiocon" id="item_radio">'+
+                    '<li class="myradio">'+
+                      '<div class="input-group">'+
+                      '<label>'+
+                        '<span></span>'+
+                        '<%=radio_button_tag "off_each_selected_item_credit","A",false,onclick: "$('#edit-discount #credit_radio_option').val($(this).val());"%>'+
+                      '<div class="input-group">'+
+                        '<div class="input-group-addon">$</div>'+
+                        '<%=text_field_tag "edit_credit_off_each_selected_item_value",'',class: "numbersOnly form-control",size: 3%>'+
+                      '</div>'+
+                      '</label>'+
+                    '</div>'+
+                    '</li>'+
+                    '<li class="myradio">'+
+                      '<div class="input-group">'+
+                      '<label>'+
+                        '<span></span>'+
+                        '<%=radio_button_tag "free_shipping_for_each_item_credit","D",false,onclick: "$('#edit-discount #credit_radio_option').val($(this).val());"%>'+
+                        'Free Shipping'+
+                      '</label>'+
+                    '</div>'+
+                    '</li>'+
+                  '</ul>'+
+                '</div>');
+  $("#edit-discount #credit_radio_option").val("<%= @discount_offer.value %>");
+  $("#edit-discount").find("#step-3-credit .myradio").each(function(){
+    $(this).removeClass("selected");
+    if ($(this).find("input[type=radio]").val() == '<%= @discount_offer.value %>'){
+      $(this).find("input[type=radio]").parent().parent().parent().addClass("selected");
+      $("#edit-discount #credit_radio_option").val($(this).find("input[type=radio]").val());
+    }
+    if ($(this).find("input[type=radio]").val() == "A" && $(this).hasClass("selected")){
+      $("#edit-discount #edit_credit_off_each_selected_item_value").val("<%= @discount.value %>");
+      console.log("A $('#edit-discount #edit_credit_off_each_selected_item_value').val()");
+    }
+  });
+}else if ( "<%= @discount_type.type_name %>" == "Group" ) {
+  $("#edit-discount #edit_checkout_limit").val("<%= @discount.checkout_limit%>");
+  $("#edit-discount #edit_group_quantity").val("<%= @discount.quantity %>");
+  console.log("Group");
+  $("#edit-discount #group_radio_option").val("<%= @discount_offer.value %>");
+  var div = "#edit-discount #step-3-group .row"
+  $(div).find(".col-lg-12").remove();
+  $(div).append('<div class="col-lg-12">'+
+                  '<p>Choose what Product Group(s) you\'d like to discount.</p>'+
+                  '<p>This discount will be applied if any item from a Product Group selected below is added to a buyer\'s cart.</p>'+
+                  '<ul class="step-3-group-error form-error" style="display:none">'+
+                    '<li>Please select a group</li>'+
+                  '</ul>'+
+                  '<div class="groups">'+
+                    '<%= hidden_field_tag 'item_discount_type'%>'+
+                    '<ul class="item_list list-unstyled">'+
+                    '</ul>'+
+                  '</div>'+
+                '</div>');
+  $(div+" .groups ul").append('<% @groups.each do |group| %>'+
+                              '<%if group.fix_group_id != 6%>'+
+                              '<li>'+
+                              '<% @groups_list.each do |group_list| %>'+
+                                  '<% if group_list.group_id == group.id %>'+
+                                    '<% if group_list.active == true %>'+
+                                      '<div class="checkbox checked-box">'+
+                                        '<%= check_box_tag 'group_id[]', group.id, true %>'+
+                                      '</div>'+
+                                    '<% else %>'+
+                                      '<div class="checkbox">'+
+                                        '<%= check_box_tag 'group_id[]', group.id, false %>'+
+                                      '</div>'+
+                                    '<% end %>'+
+                                  '<% end %>'+
+                                '<% end %>'+
+                                '<span class="item_name"><%=group.name%></span>'+
+                              '</li>'+
+                              '<% end %>'+
+                              '<% end %>');
+
+  $("#edit-discount").find("#step-4-group .myradio").each(function(){
+    $(this).removeClass("selected");
+    if ($(this).find("input[type=radio]").val() == '<%= @discount_offer.value %>'){
+      $(this).find("input[type=radio]").parent().parent().parent().addClass("selected");
+      $("#edit-discount #credit_radio_option").val($(this).find("input[type=radio]").val());
+    }
+    if ($(this).find("input[type=radio]").val() == "A" && $(this).hasClass("selected")){
+      $("#edit-discount #edit_group_off_each_selected_item_value").val("<%= @discount.value %>");
+      console.log("A <%= @discount.value %>");
+    }else if ($(this).find("input[type=radio]").val() == "E" && $(this).hasClass("selected")) {
+      $("#edit-discount #edit_group_percent_off_each_item_value").val("<%= @discount.value %>");
+      console.log("E");
+    }else if ($(this).find("input[type=radio]").val() == "B" && $(this).hasClass("selected")){
+      $("#edit-discount #edit_group_cost_for_each_item_value").val("<%= @discount.value %>");
+      console.log("B");
+    }
+  });
+}else if ( "<%= @discount_type.type_name %>" == "BOGO" ) {
+  $("#edit-discount #edit_qty_bogo").val("<%= @discount.quantity %>");
+  console.log("<%= @discount.bogo_buy_qty%> <%= @discount.bogo_get_qty%>");
+
+  console.log("Bogo");
+  console.log("<%= @discount_offer.value %>");
+
+  var div = "#edit-discount #step-3-bsgs .row"
+  $(div).find(".row #buyItemList").remove();
+  $(div).find(".row #getItemList").remove();
+  $(div).find(".row").append('<div id="buyItemList" class="col-lg-6">'+
+                              '<div class="heading">'+
+                                '<div class="form-inline">'+
+                                  'Buy <%= text_field_tag "edit_buy_qty_bogo",1,class: "numbersOnly form-control",size: 2%> of the following items below:'+
+                                '</div>'+
+                              '</div>'+
+                              '<ul class="step-3-bsgs-error-buy form-error" style="display:none">'+
+                                '<li>Please select "Buy" items</li>'+
+                              '</ul>'+
+                              '<div class="items">'+
+                                '<ul class="list-unstyled item_list">'+
+                                  '<%@bsgs_array=@catalog_items.uniq.pluck(:item_list_id).sort%>'+
+                                  '<%@groups.each do |group|%>'+
+                                  '<li>'+
+                                    '<%if group.fix_group_id != 6%>'+
+                                      '<div class="group_name"><%= group.name%></div>'+
+                                    '<%end%>'+
+                                    '<% @catalog_items.each do |catalog_item| %>'+
+                                      '<% if catalog_item.fix_group_id == group.fix_group_id %>'+
+                                      '<%if @bsgs_array.include?catalog_item.item_list_id%>'+
+                                        '<div class="bounds_name"><%= catalog_item.print_size_one %> x <%= catalog_item.print_size_two %> (8 Wallets)</div>'+
+                                        '<%@catalog_items.each do |catalog_item|%>'+
+                                            '<%if catalog_item.item_list_id == @bsgs_array[0]%>'+
+                                            '<ul>'+
+                                              '<li id="12706051" class="item_data">'+
+                                                '<span class="itemGroupName" style="display:none">Printsf</span>'+
+                                                '<span class="boundsName" style="display:none">2.5 x 3.5 (8 Wallets)</span>'+
+                                                '<% @discount_bsgs_buy_items.each do |buy_item_id| %>'+
+                                                  '<% if buy_item_id.catalog_id == catalog_item.id %>'+
+                                                    '<% if buy_item_id.active == true %>'+
+                                                      '<div class="checkbox checked-box">'+
+                                                        '<%= check_box_tag 'buy_item_id[]',catalog_item.id,true %>'+
+                                                      '</div>'+
+                                                    '<% else %>'+
+                                                      '<div class="checkbox">'+
+                                                        '<%= check_box_tag 'buy_item_id[]',catalog_item.id,false %>'+
+                                                      '</div>'+
+                                                    '<% end %>'+
+                                                  '<% end %>'+
+                                                '<% end %>'+
+                                                '<span class="item_name"><%= catalog_item.sub_item_name%></span>'+
+                                                '<span class="item_price">$&nbsp;0.00</span>'+
+                                              '</li>'+
+                                            '</ul>'+
+                                            '<%end%>'+
+                                          '<%end%>'+
+                                          '<%@bsgs_array.delete(catalog_item.item_list_id)%>'+
+                                        '<% end %>'+
+                                      '<%end%>'+
+                                    '<% end %>'+
+                                  '</li>'+
+                                  '<%end%>'+
+                                '</ul>'+
+                              '</div>'+
+                            '</div>');
+  $(div).find(".row").append('<div id="getItemList" class="col-lg-6">'+
+                              '<div class="heading">'+
+                                '<div class="form-inline">'+
+                                  'Get <%=text_field_tag "edit_get_qty_bogo",1,class: "item-qty numbersOnly form-control", size: 4,maxlength: 4%> of the following items below:<%=hidden_field_tag 'bsgs_radio_option'%>'+
+                                '</div>'+
+                              '</div>'+
+                              '<div class="section border">'+
+                                '<div class="heading">For:</div>'+
+                                '<ul class="step-3-bsgs-error2 form-error" style="display:none">'+
+                                  '<li>Please select the kind of discount</li>'+
+                                '</ul>'+
+                                '<ul class="list-unstyled list radiocon">'+
+                                  '<li class="myradio">'+
+                                    '<div class="form-inline">'+
+                                      '<div class="input-group">'+
+                                        '<label>'+
+                                          '<span></span>'+
+                                          '<%=radio_button_tag "each_item_free",'C',false,onclick: "$(\'#edit-discount #bsgs_radio_option\').val($(this).val());"%>'+
+                                         'each item free'+
+                                        '</label>'+
+                                      '</div>'+
+                                    '</div>'+
+                                  '</li>'+
+                                  '<li class="myradio">'+
+                                      '<div class="form-inline">'+
+                                        '<label>'+
+                                          '<span></span>'+
+                                          '<%=radio_button_tag "cost_for_each_item",'B',false,onclick: "$(\'#edit-discount #bsgs_radio_option\').val($(this).val());"%>'+
+                                          '<div class="input-group">'+
+                                          '<div class="input-group-addon">$</div>'+
+                                          '<%=text_field_tag "edit_bsgs_cost_for_each_item_value",'',class: "numbersOnly form-control",size: 3%>'+
+                                        '</div>'+
+                                         'Each'+
+                                        '</label>'+
+                                    '</div>'+
+                                  '</li>'+
+                                  '<li class="myradio">'+
+                                    '<div class="form-inline">'+
+                                      '<div class="input-group">'+
+                                        '<label>'+
+                                          '<span></span>'+
+                                          '<%=radio_button_tag "percent_off_each_item",'E',false,onclick: "$(\'#edit-discount #bsgs_radio_option\').val($(this).val());"%>'+
+                                        '<div class="input-group">'+
+                                          '<%=text_field_tag "edit_bsgs_percent_off_each_item_value",'',class: "numbersOnly cart_option_percentage form-control",size: 3%>'+
+                                          '<div class="input-group-addon">%</div>'+
+                                        '</div>'+
+                                        'Off each'+
+                                        '</label>'+
+                                      '</div>'+
+                                    '</div>'+
+                                  '</li>'+
+                                '</ul>'+
+                              '</div>'+
+                              '<ul class="step-3-bsgs-error-get form-error" style="display:none">'+
+                                '<li>Please select "Get" items</li>'+
+                              '</ul>'+
+                              '<div class="items">'+
+                              '<ul class="list-unstyled item_list">'+
+                                '<%@bsgs_array=@catalog_items.uniq.pluck(:item_list_id).sort%>'+
+                                '<%@groups.each do |group|%>'+
+                                '<li>'+
+                                  '<%if group.fix_group_id != 6%>'+
+                                    '<div class="group_name"><%= group.name%></div>'+
+                                  '<%end%>'+
+                                  '<% @catalog_items.each do |catalog_item| %>'+
+                                    '<% if catalog_item.fix_group_id == group.fix_group_id %>'+
+                                    '<%if @bsgs_array.include?catalog_item.item_list_id%>'+
+                                      '<div class="bounds_name"><%= catalog_item.print_size_one %> x <%= catalog_item.print_size_two %> (8 Wallets)</div>'+
+                                      '<%@catalog_items.each do |catalog_item|%>'+
+                                          '<%if catalog_item.item_list_id == @bsgs_array[0]%>'+
+                                          '<ul>'+
+                                            '<li id="12706051" class="item_data">'+
+                                              '<span class="itemGroupName" style="display:none">Printsf</span>'+
+                                              '<span class="boundsName" style="display:none">2.5 x 3.5 (8 Wallets)</span>'+
+                                              '<% @discount_bsgs_get_items.each do |get_item_id| %>'+
+                                                '<% if get_item_id.catalog_id == catalog_item.id %>'+
+                                                  '<% if get_item_id.active == true %>'+
+                                                    '<div class="checkbox checked-box">'+
+                                                      '<%=check_box_tag 'get_item_id[]',catalog_item.id,true%>'+
+                                                    '</div>'+
+                                                  '<% else %>'+
+                                                    '<div class="checkbox">'+
+                                                      '<%=check_box_tag 'get_item_id[]',catalog_item.id,false%>'+
+                                                    '</div>'+
+                                                  '<% end %>'+
+                                                '<% end %>'+
+                                              '<% end %>'+
+                                              '<span class="item_name"><%= catalog_item.sub_item_name%></span>'+
+                                              '<span class="item_price">$&nbsp;0.00</span>'+
+                                            '</li>'+
+                                          '</ul>'+
+                                          '<%end%>'+
+                                        '<%end%>'+
+                                        '<%@bsgs_array.delete(catalog_item.item_list_id)%>'+
+                                      '<% end %>'+
+                                    '<%end%>'+
+                                  '<% end %>'+
+                                '</li>'+
+                                '<%end%>'+
+                              '</ul>'+
+                              '</div>'+
+                            '</div>');
+  $("#edit-discount #edit_buy_qty_bogo").val("<%= @discount.bogo_buy_qty%>");
+  $("#edit-discount #edit_get_qty_bogo").val("<%= @discount.bogo_get_qty%>");
+  $("#edit-discount #bsgs_radio_option").val("<%= @discount_offer.value %>");
+  $("#edit-discount").find("#step-3-bsgs .myradio").each(function(){
+    $(this).removeClass("selected");
+    if ($(this).find("input[type=radio]").val() == '<%= @discount_offer.value %>'){
+      if ($(this).find("input[type=radio]").val() == "E"){
+        $(this).find("input[type=radio]").parent().parent().parent().parent().addClass("selected");
+      }else{
+        $(this).find("input[type=radio]").parent().parent().parent().addClass("selected");
+      }
+      $("#edit-discount #credit_radio_option").val($(this).find("input[type=radio]").val());
+      console.log($(this).find("input[type=radio]").parent().parent().parent());
+    }
+    if ($(this).find("input[type=radio]").val() == "E" && $(this).hasClass("selected")) {
+      $("#edit-discount #edit_bsgs_percent_off_each_item_value").val("<%= @discount.value %>");
+      console.log("E");
+    }else if ($(this).find("input[type=radio]").val() == "B" && $(this).hasClass("selected")){
+      $("#edit-discount #edit_bsgs_cost_for_each_item_value").val("<%= @discount.value %>");
+      console.log("B");
+    }
+  });
+}else if ( "<%= @discount_type.type_name %>" == "Cart" ) {
+  var div = "#edit-discount #step-3-cart .row"
+  $(div).find(".col-lg-12").remove();
+  $(div).append('<div class="col-lg-12">'+
+    '<p>Give an entire cart free shipping or a percentage discount</p><%=hidden_field_tag "cart_radio_option"%>'+
+    '<ul class="list-unstyled list radiocon">'+
+        '<li class="myradio">'+
+          '<div class="input-group">'+
+            '<label>'+
+              '<span></span>'+
+              '<%=radio_button_tag "percent_off_each_item_of_cart","D",false,onclick: "$('#edit-discount #cart_radio_option').val($(this).val());"%>'+
+              'Free Shipping'+
+            '</label>'+
+          '</div>'+
+        '</li>'+
+      '<li class="myradio">'+
+        '<div class="input-group">'+
+          '<label>'+
+            '<span></span>'+
+            '<%=radio_button_tag "percent_off_each_item_of_cart","E",false,onclick: "$('#edit-discount #cart_radio_option').val($(this).val());"%>'+
+            'Percentage'+
+          '</label>'+
+        '</div>'+
+      '</li>'+
+      '<li class="myradio">'+
+        '<div class="input-group">'+
+          '<label>'+
+            '<span></span>'+
+            '<%=radio_button_tag "off_each_selected_item_cart","A",false,onclick: "$('#edit-discount #cart_radio_option').val($(this).val());"%>'+
+            'Dollar'+
+          '</label>'+
+        '</div>'+
+      '</li>'+
+    '</ul>'+
+    '<div class="heading">Set the "cart total" range for the buyer to receive the discount</div>'+
+    '<div class="sub_heading cart_option_percentage cart_option_dollar">Set several ranges for tiered discounts, for instance: "the more you spend the more you save"</div>'+
+    '<div class="section">'+
+      '<table>'+
+        '<thead>'+
+          '<tr>'+
+            '<th>From</th>'+
+            '<th></th>'+
+            '<th>To</th>'+
+            '<th></th>'+
+            '<th></th>'+
+          '</tr>'+
+        '</thead>'+
+        '<tbody class="cart-tier-body">'+
+        '<% @discount_cart_values.each do |value| %>'+
+          '<tr>'+
+            '<td>'+
+              '<div class="form-inline">'+
+                '<div class="input-group">'+
+                  '<div class="input-group-addon">$</div>'+
+                  '<%= text_field_tag "From_Value",value.from_value,class: "numbersOnly cart_from cart_range form-control", size: 4,name: "From_Value[]"%>'+
+                '</div>'+
+              '</div>'+
+            '</td>'+
+            '<td class="spacer">-</td>'+
+            '<td>'+
+              '<div class="form-inline">'+
+                '<div class="input-group">'+
+                  '<div class="input-group-addon">$</div>'+
+                  '<%= text_field_tag "To_Value",value.to_value,class: "numbersOnly cart_to cart_range form-control",size: 4,name: "To_Value[]"%>'+
+                '</div>'+
+              '</div>'+
+            '</td>'+
+            '<td class="cart_option_percentage break">'+
+              '<div class="form-inline">'+
+                '<div class="input-group">'+
+                  '<%= text_field_tag "cart_percentage",value.percentage_value,class: "cart_option_percentage numbersOnly form-control",size: 4,name: "cart_percentage[]"%>'+
+                  '<div class="input-group-addon">%</div>'+
+                '</div>'+
+              '</div>'+
+            '</td>'+
+            '<td class="cart_option_dollar break" style="display:none">'+
+              '<div class="form-inline">'+
+                '<div class="input-group">'+
+                  '<div class="input-group-addon">$</div>'+
+                  '<%= text_field_tag "cart_dollar",value.dollar_value,class: "cart_option_dollar numbersOnly form-control",size: 4,name: "cart_dollar[]"%>'+
+                '</div>'+
+              '</div>'+
+            '</td>'+
+            '<td class="delete">'+
+              '<div>'+
+                '<%= link_to "&times;".html_safe,"#",class: "delete_span close"%>'+
+              '</div>'+
+            '</td>'+
+          '</tr>'+
+          '<% end %>'+
+        '</tbody>'+
+      '</table>'+
+      '<ul class="cart_price_ranges form-error" style="display:none">'+
+        '<li>Double check your price ranges!</li>'+
+      '</ul>'+
+      '<div class="btn btn-sm btn-default add_row" id="discount-cart-add-row">Add Range</div>'+
+    '</div>'+
+    '<div id="step-3-cart-blank-row" style="display:none">'+
+      '<table>'+
+        '<tbody>'+
+          '<tr>'+
+            '<td>'+
+              '<div class="form-inline">'+
+                '<div class="input-group">'+
+                  '<div class="input-group-addon">$</div>'+
+                  '<input type="text" size="4" name="cart_from_" class="numbersOnly cart_from cart_range form-control">'+
+                '</div>'+
+              '</div>'+
+            '</td>'+
+            '<td class="spacer">-</td>'+
+            '<td>'+
+              '<div class="form-inline">'+
+                '<div class="input-group">'+
+                  '<div class="input-group-addon">$</div>'+
+                  '<input type="text" size="4" name="cart_to_" class="numbersOnly cart_to cart_range form-control">'+
+                '</div>'+
+              '</div>'+
+            '</td>'+
+            '<td class="cart_option_percentage break">'+
+              '<div class="form-inline">'+
+                '<div class="input-group">'+
+                  '<input type="text" size="4" name="cart_percentage_" class="cart_option_percentage numbersOnly form-control">'+
+                  '<div class="input-group-addon">%</div>'+
+                '</div>'+
+              '</div>'+
+            '</td>'+
+            '<td class="cart_option_dollar break" style="display:none">'+
+              '<div class="form-inline">'+
+                '<div class="input-group">'+
+                  '<div class="input-group-addon">$</div>'+
+                  '<input type="text" size="4" name="cart_dollar_" class="cart_option_dollar numbersOnly form-control">'+
+                '</div>'+
+              '</div>'+
+            '</td>'+
+            '<td class="cart_option_percentage cart_option_dollar delete">'+
+              '<span class="cart_row_delete"><svg class="icon-delete"></svg></span>'+
+            '</td>'+
+          '</tr>'+
+        '</tbody>'+
+      '</table>'+
+    '</div>'+
+  '</div>');
+  $("#edit-discount").find("#step-3-cart .myradio").each(function(){
+    $(this).removeClass("selected");
+    if ($(this).find("input[type=radio]").val() == '<%= @discount_offer.value %>'){
+      $(this).find("input[type=radio]").parent().parent().parent().addClass("selected");
+      $("#edit-discount #cart_radio_option").val($(this).find("input[type=radio]").val());
+    }
+    if ($(this).find("input[type=radio]").val() == "E" && $(this).hasClass("selected")) {
+      $("#edit-discount .cart_option_dollar").hide();
+      $("#edit-discount .cart_option_percentage").show();
+      $("#edit-discount #discount-cart-add-row").show();
+      $("#edit-discount .delete_span").show();
+      console.log("E");
+    }else if ($(this).find("input[type=radio]").val() == "A" && $(this).hasClass("selected")){
+      $("#edit-discount .cart_option_dollar").show();
+      $("#edit-discount .cart_option_percentage").hide();
+      $("#edit-discount #discount-cart-add-row").show();
+      $("#edit-discount .delete_span").show();
+      console.log("B");
+    }else if ($(this).find("input[type=radio]").val() == "D" && $(this).hasClass("selected")){
+      $("#edit-discount .cart_option_dollar").hide();
+      $("#edit-discount .cart_option_percentage").hide();
+      $("#edit-discount #discount-cart-add-row").hide();
+      $("#edit-discount .delete_span").hide();
+      console.log("B");
+    }
+  });
+}else if ( "<%= @discount_type.type_name %>" == "Package" ) {
+  var div = "#edit-discount #step-3-package .row";
+  $(div).find(".col-lg-12").remove();
+  $(div).append('<div class="col-lg-12">'+
+    '<p>Package Details</p>'+
+    '<div class="info">'+
+      '<p>Select an item and quantity to add to your package or a group of items that can share a quantity</p><p>'+
+      '</p><p>Single Item Example: 5 Glossy 8x10\'s (The buyer must add 5 Glossy 8x10s to qualify for the discount)</p>'+
+      '<p>Multi Item Example: 5 Glossy 8x10s or Matte 8x10s (The buyer must add a total of 5 but can choose between the two different items)</p>'+
+    '</div>'+
+    '<div class="section border">'+
+      '<div class="row">'+
+        '<div class="col-lg-3 text-left">'+
+          '<div class="form-inline">'+
+            'Qty Limit <%= text_field_tag "package_qty","",class: "limit numbersOnly form-control",size: 3%>'+
+          '</div>'+
+        '</div>'+
+        '<div class="col-lg-3 text-center">'+
+          '<ul class="step-3-package-error form-error" style="display:none">'+
+            '<li>Enter a package price.</li>'+
+          '</ul>'+
+          '<div class="form-inline">'+
+            'Total Package Price'+
+            '<div class="input-group">'+
+              '<div class="input-group-addon">$</div>'+
+              '<%= text_field_tag "package_price","0.00",class: "packagePrice numbersOnly form-control",size: 3%>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="col-lg-3 text-center">'+
+          '<div class="form-inline">'+
+            'Total Package Shipping'+
+            '<div class="input-group">'+
+              '<div class="input-group-addon">$</div>'+
+              '<%= text_field_tag "package_shipping","",class: "packageShipping numbersOnly form-control",size: 3 %>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="col-lg-3 right text-center">'+
+          '(replaces individual item shipping values)'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="text-center">'+
+      '<div class="form-inline">'+
+        '<div class="btn btn-sm btn-default" id="discount-package-add">Add</div>'+
+        '<%= text_field_tag "discount_package_add_qty","1",class: "numbersOnly form-control",size: 2%>'+
+      '</div>'+
+    '</div>'+
+    '<div class="row">'+
+      '<div class="col-lg-6">'+
+        '<div class="items">'+
+          '<ul class="list-unstyled item_list">'+
+            '<%@package_array=@catalog_items.uniq.pluck(:item_list_id).sort%>'+
+            '<%@groups.each do |group|%>'+
+            '<li>'+
+              '<%if group.fix_group_id != 6%>'+
+                '<div class="group_name"><%= group.name%></div>'+
+              '<% end %>'+
+              '<% @catalog_items.each do |catalog_item| %>'+
+                '<% if catalog_item.fix_group_id == group.fix_group_id %>'+
+                '<%if @package_array.include?catalog_item.item_list_id%>'+
+                  '<div class="bounds_name"><%= catalog_item.print_size_one %> x <%= catalog_item.print_size_two %> (8 Wallets)</div>'+
+                  '<%@catalog_items.each do |catalog_item|%>'+
+                      '<%if catalog_item.item_list_id == @package_array[0]%>'+
+                      '<ul>'+
+                        '<li id=\'<%="#{catalog_item.id}"%>\' class="item_data">'+
+                          '<span class="itemGroupName" style="display:none"><%= group.name%></span>'+
+                          '<span class="boundsName" style="display:none"><%= catalog_item.print_size_one %> x <%= catalog_item.print_size_two %> (8 Wallets)</span>'+
+                          '<div class="checkbox">'+
+                            '<%= check_box_tag "package_item_id[]",catalog_item.id %>'+
+                          '</div>'+
+                          '<span class="item_name"><%= catalog_item.sub_item_name%></span>'+
+                          '<span class="item_price">$&nbsp;0.00</span>'+
+                        '</li>'+
+                      '</ul>'+
+                      '<% end %>'+
+                    '<% end %>'+
+                    '<%@package_array.delete(catalog_item.item_list_id)%>'+
+                  '<% end %>'+
+                '<% end %>'+
+              '<% end %>'+
+            '</li>'+
+            '<% end %>'+
+          '</ul>'+
+          '</ul>'+
+        '</div>'+
+      '</div>'+
+      '<div id="package-item-selected" class="col-lg-6">'+
+      '<% @package_discounts.each do |package_discount|%>'+
+        '<% if package_discount.discount_id == @discount.id%>'+
+          '<div id="packageItem-0" class="collection"><div class="heading"><span class="title"><%= package_discount.package_qty%> total from</span><ul>'+
+          '<% @package_discount_items.each do |package_discount_item|%>'+
+            '<% if package_discount_item.package_discount_id == package_discount.id %>'+
+              '<% @catalog_items.each do |catalog_item|%>'+
+                '<% if catalog_item.id == package_discount_item.catalog_id%>'+
+                  '<li><%= catalog_item.sub_item_name%></li>'+
+                '<% end %>'+
+              '<% end %>'+
+            '<% end %>'+
+          '<% end %>'+
+          '</ul><%= hidden_field_tag "packageItem-child-0"%><%= hidden_field_tag "qty-packageItem-child-0"%></div></div>'+
+        '<% end %>'+
+      '<% end %>'+
+      '</div>'+
+    '</div>'+
+  '</div>');
+  $("#edit-discount #package_qty").val("<%= @discount.quantity%>");
+  $("#edit-discount #package_price").val("<%= @discount.package_price%>");
+  $("#edit-discount #package_shipping").val("<%= @discount.package_shipping%>");
+  if ("<%= @discount.is_automatic %>" == true){
+    $("#edit-discount #item_discount_type").val("Automatic");
+  }else{
+    $("#edit-discount #item_discount_type").val("Promocode");
+  }
+  for(count = 1 ; count <= '<%= @package_discounts.count %>' ; count++){
+    $(div).find(".col-lg-12 .row #package-item-selected").find("#packageItem-0").attr('id','packageItem-'+count);
+     $(div).find(".col-lg-12 .row #package-item-selected").find("#packageItem-child-0").attr({id: 'packageItem-child-'+count,name: 'packageItem-child-'+count});
+     $(div).find(".col-lg-12 .row #package-item-selected").find("#qty-packageItem-child-0").attr({id: 'qty-packageItem-child-'+count,name: 'qty-packageItem-child-'+count});
+  }
+  // while(count1 <= "<%= @package_discounts.count %>"){
+  var count1 = 1;
+    '<% @package_discounts.each do |package_discount| %>'
+    console.log('Package <%= package_discount.package_qty %>');
+    '<% @package_discount_items.each do |package_discount_item| %>'
+      '<% if package_discount_item.package_discount_id == package_discount.id %>'
+        '<% @catalog_items.each do |catalog_item| %>'
+          '<% if catalog_item.id == package_discount_item.catalog_id %>'
+          console.log(count1);
+            // '<%= puts catalog_item.id %>'
+            if ($("#edit-discount").find("#packageItem-child-"+count1).val().length == 0){
+              $("#edit-discount").find("#packageItem-child-"+count1).val("<%= catalog_item.id %>");
+            }else{
+              $("#edit-discount").find("#packageItem-child-"+count1).val($("#edit-discount").find("#packageItem-child-"+count1).val()+","+"<%= catalog_item.id %>");
+            }
+            $("#edit-discount").find("#qty-packageItem-child-"+count1).val("<%= package_discount.package_qty %>");
+            // console.log('<%= catalog_item.id %>');
+            // console.log(count1);
+          '<% end %>'
+        '<% end %>'
+      '<% end %>'
+    '<% end %>'
+    count1++;
+  '<% end %>'
+  // }
+
+}
+console.log("<%= @discount_type.type_name %>");
+$(".myradio").click(function() {
+  $(this).parent(".radiocon").find('.selected').removeClass('selected');
+  $(this).addClass('selected');
+  console.log("selected");
+});
+$("#edit-discount #discount-cart-add-row").click(function(){
+  if ($("#edit-discount #cart_radio_option").val() ==  "E"){
+    $('<tr><td><div class="form-inline"><div class="input-group"><div class="input-group-addon">$</div><%= text_field_tag 'From_Value','',class: "numbersOnly cart_from cart_range form-control", size: 4,name: "From_Value[]"%></div></div></td><td class="spacer">-</td><td><div class="form-inline"><div class="input-group"><div class="input-group-addon">$</div><%= text_field_tag 'To_Value','',class: "numbersOnly cart_to cart_range form-control",size: 4,name: "To_Value[]"%></div></div></td><td class="cart_option_percentage break"><div class="form-inline"><div class="input-group"><%= text_field_tag 'cart_percentage','',class: "cart_option_percentage numbersOnly form-control",size: 4,name: "cart_percentage[]"%><div class="input-group-addon">%</div></div></div></td><td class="cart_option_dollar break" style="display:none"><div class="form-inline"><div class="input-group"><div class="input-group-addon">$</div><%= text_field_tag 'cart_dollar','',class: "cart_option_dollar numbersOnly form-control",size: 4,name: "cart_dollar[]"%></div></div></td><td class="delete"><div><%= link_to "&times;".html_safe,"#",class: "delete_span close"%></div></td></tr>').appendTo('.cart-tier-body');
+  }else if ($("#cart_radio_option").val() ==  "A") {
+    $('<tr><td><div class="form-inline"><div class="input-group"><div class="input-group-addon">$</div><%= text_field_tag 'From_Value','',class: "numbersOnly cart_from cart_range form-control", size: 4,name: "From_Value[]"%></div></div></td><td class="spacer">-</td><td><div class="form-inline"><div class="input-group"><div class="input-group-addon">$</div><%= text_field_tag 'To_Value','',class: "numbersOnly cart_to cart_range form-control",size: 4,name: "To_Value[]"%></div></div></td><td class="cart_option_percentage break" style="display:none"><div class="form-inline"><div class="input-group"><%= text_field_tag 'cart_percentage','',class: "cart_option_percentage numbersOnly form-control",size: 4,name: "cart_percentage[]"%><div class="input-group-addon">%</div></div></div></td><td class="cart_option_dollar break"><div class="form-inline"><div class="input-group"><div class="input-group-addon">$</div><%= text_field_tag 'cart_dollar','',class: "cart_option_dollar numbersOnly form-control",size: 4,name: "cart_dollar[]"%></div></div></td><td class="delete"><div><%= link_to "&times;".html_safe,"#",class: "delete_span close"%></div></td></tr>').appendTo('.cart-tier-body');
+  }else{
+    $('<tr><td><div class="form-inline"><div class="input-group"><div class="input-group-addon">$</div><%= text_field_tag 'From_Value','',class: "numbersOnly cart_from cart_range form-control", size: 4,name: "From_Value[]"%></div></div></td><td class="spacer">-</td><td><div class="form-inline"><div class="input-group"><div class="input-group-addon">$</div><%= text_field_tag 'To_Value','',class: "numbersOnly cart_to cart_range form-control",size: 4,name: "To_Value[]"%></div></div></td><td class="cart_option_percentage break" style="display:none"><div class="form-inline"><div class="input-group"><%= text_field_tag 'cart_percentage','',class: "cart_option_percentage numbersOnly form-control",size: 4,name: "cart_percentage[]"%><div class="input-group-addon">%</div></div></div></td><td class="cart_option_dollar break" style="display:none"><div class="form-inline"><div class="input-group"><div class="input-group-addon">$</div><%= text_field_tag 'cart_dollar','',class: "cart_option_dollar numbersOnly form-control",size: 4,name: "cart_dollar[]"%></div></div></td><td class="delete"><div><%= link_to "&times;".html_safe,"#",class: "delete_span close"%></div></td></tr>').appendTo('.cart-tier-body');
+  }
+
+  $("#edit-discount").find('a[class^="delete_span"]').each(function(){
+    $(this).click(function(){
+      $(this).parent().parent().parent().remove();
+    });
+  });
+});
+
+$("#edit-discount #off_each_selected_item_cart_A").click(function(){
+  $("#edit-discount .cart_option_dollar").show();
+  $("#edit-discount .cart_option_percentage").hide();
+  $("#edit-discount #discount-cart-add-row").show();
+  $("#edit-discount .delete_span").show();
+});
+$("#edit-discount #percent_off_each_item_of_cart_E").click(function(){
+  $("#edit-discount .cart_option_dollar").hide();
+  $("#edit-discount .cart_option_percentage").show();
+  $("#edit-discount #discount-cart-add-row").show();
+  $("#edit-discount .delete_span").show();
+});
+$("#edit-discount #percent_off_each_item_of_cart_D").click(function(){
+  $("#edit-discount .cart_option_dollar").hide();
+  $("#edit-discount .cart_option_percentage").hide();
+  $("#edit-discount #discount-cart-add-row").hide();
+  $("#edit-discount .delete_span").hide();
+  $("#edit-discount .cart-tier-body").find("tr:gt(0)").remove();
+});
+$("#edit-discount #discount-package-add").click(function(){
+  var v = [];
+  var item_name = [];
+  while(v.length > 0) {
+    v.pop();
+  }
+  var count=$("#edit-discount #package-item-selected > div").length+1;
+  $('#edit-discount input[id^="package_item_id"]').each(function(){
+    if ($(this).is(':checked')){
+      v.push($(this).val());
+    }
+  });
+  $.each(v,function(i,val){
+    item_name.push($("#"+val).parent().find('.boundsName').text()+" - "+$('#'+val).children('.item_name').text()+" "+$("#"+val).parent().find('.itemGroupName').text()+" "+$("#"+val).children('.item_price').text());
+  });
+  $("#edit-discount #package-item-selected").append('<div id="packageItem-'+count+'" class="collection"><div class="heading"><span class="title">'+$("#edit-discount #discount_package_add_qty").val()+' total from</span></div></div>');
+  $("#edit-discount #packageItem-"+count).append('<ul></ul>');
+  $.each(item_name,function(i,name){
+    // $("#33").parent().find('.boundsName').text();
+    $("#edit-discount #packageItem-"+count+" ul").append('<li>'+name+'</li>');
+  });
+  $.each([v,item_name],function(){
+    $.each(this,function(i,v1){
+      console.log(v1);
+    });
+  });
+  $('#edit-discount input[id^="package_item_id"]').each(function(){
+    $(this).prop('checked',false);
+    $(this).parent('.checkbox').removeClass('checked-box');
+  });
+  $.each(v,function(i,val){
+    // console.log($("#"+val).parent().parent().find('.bounds_name').text());
+    console.log($("#"+val).parent().prev().find('div:last').text());
+    console.log($("#"+val).parent().prev());
+  });
+  var input = document.createElement("input");
+  input.setAttribute("type", "hidden");
+  input.setAttribute("name", "packageItem-child-"+count);
+  input.setAttribute("value", v);
+  document.getElementById("packageItem-"+count).appendChild(input);
+  var add_quantity = document.createElement("input");
+  add_quantity.setAttribute("type", "hidden");
+  add_quantity.setAttribute("name", "qty-packageItem-child-"+count);
+  add_quantity.setAttribute("value", $("#edit-discount #discount_package_add_qty").val());
+  document.getElementById("packageItem-"+count).appendChild(add_quantity);
+});

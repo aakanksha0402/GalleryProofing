@@ -1,0 +1,37 @@
+  <%= hidden_field_tag "ids"%>
+  <div class="form-group">
+    <%=label_tag "Status"%>
+    <%=select_tag  :status, "<option>Active</option><option>Inactive</option><option>Pre-registered</option><option>Archived</option>".html_safe,{include_blank: "-Don't Change-",id: "Status",class: "selectpicker",remote: true}%>
+  </div>
+  <div class="form-group">
+    <%=label_tag "Gallery Access"%>
+    <%= select_tag :gallery_access_privacy,'<option selected="selected">Public No Password</option><option>Public Password</option><option>Private No Password</option><option>Private Password</option>'.html_safe,class: "selectpicker"%>
+  </div>
+  <div class="form-group">
+    <%=label_tag "Gallery Expiration"%>
+    <%= text_field_tag :expiration_date%>
+  </div>
+  <div class="form-group">
+    <%=label_tag "Price Sheet"%>
+    <%= select_tag :price,nil,class: "selectpicker"%>
+  </div>
+
+  <div class="form-group">
+    <%=label_tag "Visitors Information"%>
+    <%= text_area_tag "Info"%>
+  </div>
+  <div class="form-group">
+    <%=label_tag "Automated Emails"%>
+    <%= select_tag :automated_emails,nil,class: "selectpicker"%>
+  </div>
+  <div class="form-group">
+    <%=label_tag "Color Set"%>
+    <%= select_tag :color,nil,class: "selectpicker"%>
+  </div>
+  <div class="form-group">
+    <%=label_tag "Delete Gallery"%>
+    <%= check_box_tag :delete%>
+  </div>
+  <div class="form-group">
+    <%= submit_tag "Save"%>
+  </div>

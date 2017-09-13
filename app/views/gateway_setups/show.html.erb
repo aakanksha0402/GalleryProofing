@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @gateway_setup.name %>
+</p>
+
+<p>
+  <strong>Public key:</strong>
+  <%= @gateway_setup.public_key %>
+</p>
+
+<p>
+  <strong>Private key:</strong>
+  <%= @gateway_setup.private_key %>
+</p>
+
+<p>
+  <strong>Environment:</strong>
+  <%= @gateway_setup.environment %>
+</p>
+
+<p>
+  <strong>Merchant:</strong>
+  <%= @gateway_setup.merchant_id %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @gateway_setup.user %>
+</p>
+
+<%= link_to 'Edit', edit_gateway_setup_path(@gateway_setup) %> |
+<%= link_to 'Back', gateway_setups_path %>

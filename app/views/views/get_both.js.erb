@@ -1,0 +1,18 @@
+$("#label_email").remove();
+$("#email").remove();
+$("#label_password").remove();
+$("#password").remove();
+
+<% if @show_email%>
+$('<label for="email" id="label_email">E-Mail</label><input type="email" name="email" id="email" value="" required="required" class="form-control" required="required">').appendTo(divEmail);
+<% else %>
+$("#label_email").remove();
+$("#email").remove();
+<% end %>
+
+<% if @show_password%>
+$('<label for="password" id="label_password">Password</label><input type="password" name="password" id="password" value="" class="form-control" required="required">').appendTo(divPassword);
+<% else %>
+$("#label_password").remove();
+$("#password").remove();
+<% end %>

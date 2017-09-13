@@ -1,0 +1,327 @@
+<% content_for :head, "GalleryProofing | Pricing List"%>
+<% content_for :body_class, "gallery-index" %>
+
+<% if @not_authorized == true %>
+<%= render partial: "/dashboards/no_authorization" %>
+<% else %>
+        <!-- top -->
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              <!-- title -->
+              <div class="page-title">
+                <div class="row">
+                  <div class="col-md-6 col-sm-5 col-xs-5">
+                    <h2>
+                    <div class="tag-line-set">
+                      <div id="pageTitleHeaderText">Pricing</div>
+                      <div id="TitleHeaderText-more">Set and manage your prices</div>
+                    </div>
+                    </h2>
+                  </div>
+                  <div class="col-md-6 col-sm-7 col-xs-7">
+                    <div class="btn-group on-page-help-container">
+                      <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-question"></span>
+                      </a>
+                      <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                        <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                        <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                        <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                        <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                        <li><a href="#" ><span class="email"><i class="fa fa-envelope"></i></span>Email Us</a></li>
+                      </ul>
+                    </div>
+                    <div class="right-buttons text-right">
+                      <%= link_to 'Add Pricesheet', "" ,  id: "Pricesheet", 'data-toggle': "modal", 'data-target': "#add-Pricesheet",  class: "btn btn-primary" %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /title -->
+            </div>
+          </div>
+        </div>
+        <!-- /top -->
+        <!-- main -->
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              <%if @pricings.count ==0%>
+              <!-- main -->
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-lg-12">
+                   <p class="empty-state lead-1 before-cta">Price sheets control the price point and what print and digital products are available in your client’s gallery.</p>
+                   <p class="empty-state trail before-cta">We know that you may have questions about how best to set up your price sheets, so we’ve got some help for you here:<a href="#">https://kb.galleryproofing.com/help/article/link/price-sheet</a></p>
+                  </div>
+                </div>
+              </div>
+              <!-- /main -->
+              <%else%>
+            <% @pricings.each do |pricing| %>
+              <div class="grid-item">
+                <div class="sp-tile sub-title">
+                  <a href="<%=show_group_groups_path(id: pricing.id)%>">
+                    <div class="img-rounded-top full-width default text-center">
+                      <span class="text-center-head">Self-Fulfilled</span>
+                      <div class="status-flag status-flag-warning" style="display:none;">Pre-Registration</div>
+                      <div class="status-flag status-flag-info" style="display:none;">Inactive</div>
+                      <div class="status-flag status-flag-error" style="display: none;">Archived</div>
+                      <div class="status-flag status-flag-primary flag-selected">Selected</div>
+                    </div>
+                    <div class="card-content">
+                      <div class="card-title" title="Test"><%= pricing.name %></div>
+                      <!--  <span class="event-photo-count">5 Photos</span>
+                      <div class="meta-block clearfix">
+                        <div class="date-left">01-Mar-2016</div>
+                      </div> -->
+                    </div>
+                  </a>
+                  <div class="push-pop">
+                    <div class="dropup">
+                      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Quick Actions
+                      <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <li><%= link_to "Duplicate", "#",'data-toggle': "modal",'data-target': "#Pricing-Duplicate_#{pricing.id}" %></li>
+                        <li><%= link_to "Delete","#delete-Pricesheet_#{pricing.id}" , 'data-toggle': "modal"%></li>
+                      </ul>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal -->
+              <div id='<%="delete-Pricesheet_#{pricing.id}"%>' class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog">
+
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <h4 class="modal-title">Confirm Deletion</h4>
+                    </div>
+                    <%= form_for pricing,url: pricing_path(pricing.id),method: :delete do |f|%>
+                    <div class="modal-body">
+                      <%= hidden_field_tag :id,pricing.id%>
+                      <% if @custom_gallery_layout.where(pricing_id: pricing.id).count == 0 %>
+                        <p>Please confirm that you would like to delete this price sheet.</p>
+                      <% else %>
+                        <p>Please confirm that you would like to delete this price sheet.</p>
+
+                            <p>We have detected that this price sheet is currently being used by the following galleries.</p>
+                          <ul>
+                            <% @galleries.each do |gallery| %>
+                              <% @custom_gallery_layout.each do |custom_layout|%>
+                                <% if custom_layout.gallery_id == gallery.id %>
+                                  <li><%= gallery.name %></li>
+                                <% end %>
+                              <% end %>
+                            <% end %>
+                          </ul>
+
+                            <p>Note: If you would like to move the above galleries to a new price sheet select it below. If you do not select a price sheet the shopping cart for the galleries will be turned off.</p>
+
+                            <p>Assign Price Sheet</p>
+                            <select class="selectpicker form-control" name="new_pricesheet" id="new_pricesheet">
+                              <option value="">- Do Not Assign -</option>
+                              <% @pricings.each do |all_pricing| %>
+                                <% if all_pricing.id != pricing.id %>
+                                  <option value='<%="#{all_pricing.id}"%>'><%= all_pricing.name %></option>
+                                <% end %>
+                              <% end %>
+                            </select>
+                      <% end %>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-sm btn-link" data-dismiss="modal">Close</button>
+                      <%= f.submit "Delete",class: "btn btn-sm btn-danger"%>
+                    </div>
+                    <% end %>
+                  </div>
+
+                </div>
+              </div>
+              <!--  /mModal -->
+              <!-- Modal -->
+              <div class="modal" id='<%="Pricing-Duplicate_#{pricing.id}"%>' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="myModalLabel">Duplicate Pricesheet</h4>
+                    </div>
+                    <%= form_for Pricing.new,url: duplicate_pricesheet_pricings_path(id: pricing.id) do |f|%>
+                      <div class="modal-body">
+                          <p>Please give the duplicated pricesheet a name.</p>
+                          <div class="form-group">
+                            <label>New Name:</label>
+                            <input type="text" name="duplicate_name" class="form-control"></input>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <%= f.submit "Duplicate",class: "btn btn-primary" %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              <!-- /mMdal -->
+              <% end %>
+            <% end %>
+            </div>
+          </div>
+        </div>
+        <!-- /main -->
+<!-- Modal -->
+<div class="modal" id="Delete-item" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Confirm Deletion</h4>
+      </div>
+      <div class="modal-body">
+        <form >
+          <p>Please confirm that you would like to delete this price sheet.</p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-sm btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+<!-- Modal -->
+<div class="modal" id="add-Pricesheet" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create a New Pricesheet</h4>
+      </div>
+      <%= form_for @pricing,id: "pricing_form"  do |f| %>
+      <div class="modal-body">
+          <% if @pricing.errors.any? %>
+            <div id="error_explanation">
+              <h2><%= pluralize(@pricing.errors.count, "error") %> prohibited this pricing from being saved:</h2>
+
+              <ul>
+              <% @pricing.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div class="form-group">
+            <%= f.label :name %><br>
+            <%= f.text_field :name,class: 'form-control'%>
+            <p id="pricingnameError" style="display: none; color: red;">Please enter a name for this new pricesheet.</p>
+          </div>
+          <%= hidden_field_tag :id,params[:id]%>
+          <div class="form-group set-up-down">
+            <%= f.label :pricing_style_id %><br>
+            <%= f.select 'pricing_style_id', options_from_collection_for_select(@labs_pricing_style, :id, :name),{:include_blank => '-Choose Starting Price Sheet-'},class: 'selectpicker'%>
+            <p id="pricingstyleError" style="display: none; color: red;">Please enter a pricing style for this new pricesheet.</p>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-link" data-dismiss="modal">Cancel</button>
+        <%= f.submit class: 'btn btn-sm btn-primary' %>
+      </div>
+      <% end %>
+  </div>
+</div>
+</div>
+<!-- /mMdal -->
+
+<!-- Modal -->
+<div class="modal" id="modal-filter" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title" id="myModalLabel">Search Contacts</h4>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="form-group">
+          <label>Contact Name or Email</label>
+          <input type="text"class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Gallery</label>
+          <select class="form-control input-lg">
+            <option>Filter by Gallery</option>
+            <option>Test</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tag</label>
+          <select class="form-control input-lg">
+            <option>Filter by Tag</option>
+            <option>sfd</option>
+            <option>Vendor</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary">Search</button>
+    </div>
+  </div>
+</div>
+</div>
+<!-- /mMdal -->
+
+
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".checkbox input").click(function(){
+      if($(this).is(':checked')){
+        $(this).parent('.checkbox').addClass('checked-box');
+      }else{
+        $(this).parent('.checkbox').removeClass('checked-box');
+      }
+    })
+    $('#selAll').click(function(){
+      if($(this).is(':checked')){
+        $('.checkbox').addClass('checked-box');
+      }else{
+        $('.checkbox').removeClass('checked-box');
+      }
+    })
+  });
+</script>
+<% end %>
+
+<script>
+  <% if flash[:errorforpricingstyle].present? %>
+    $("#add-Pricesheet").modal('show');
+    $("#pricing_pricing_style_id").css("border-color","red");
+    $("#pricingstyleError").css("display", "block");
+  <% end %>
+  <% if flash[:errorforall].present? %>
+    $("#add-Pricesheet").modal('show');
+    $("#pricing_pricing_style_id").css("border","1px");
+    $("#pricing_pricing_style_id").css("border-style","solid");
+    $("#pricing_pricing_style_id").css("border-color","red");
+    $("#pricing_name").css("border-color","red");
+    $("#pricingstyleError").css("display", "block");
+    $("#pricingnameError").css("display", "block");
+  <% end %>
+  <% if flash[:errorforname].present? %>
+    $("#add-Pricesheet").modal('show');
+    $("#pricing_name").css("border-color","red");
+    $("#pricingstyleError").css("display", "block");
+  <% end %>
+</script>

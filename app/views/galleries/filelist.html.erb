@@ -1,0 +1,110 @@
+<% content_for :head, "GalleryProofing | Galleries | File List"%>
+<% content_for :body_class, "contact-index" %>
+<% content_for :photo_class, "active"%>
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <div id="backarrow">
+              <%=link_to galleries_galleryhome_path(id: params[:id]) do%><span class="fa circle fa-arrow-left back-btn"></span><%end%>
+            </div>
+          <div>
+            <h2>
+              <div id="pageTitleHeaderText"><%= @gallery.name%> - File List</div>
+            </h2>
+            </div
+>          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><a href="#" >Email Us</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+<!-- main -->
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <span class="file-count">Total Files: <%= @photos_count %></span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="table-responsive has-dropdown color-fonts-schem">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="">Filesize</th>
+              <th>Filename</th>
+              <th width="7%"></th>
+              <th width="12%"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @gallery_photos.each do |photo|%>
+            <tr>
+              <td><%= sprintf("%0.2f",(photo.image_file_size).to_f/1024)%> KB</td>
+              <td><%= photo.image_file_name%></td>
+              <td><a  href="<%= photo.image.url %>" data-lightbox="example-set" >View Large</a></td>
+              <td><%= link_to "Download Original", galleries_download_path(photo_id:  photo.id) %></td>
+            </tr>
+            <div class="modal fade" id='<%="viewlarge-modal_#{photo.id}"%>' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style = " height: auto; width: auto">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+
+                  <div class="modal-body">
+                    <%= image_tag photo.image.url%>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <% end %>
+            <% @album_photos.each do |album_photo|%>
+            <tr>
+              <td><%= sprintf("%0.2f",(album_photo.image_file_size).to_f/1024)%> KB</td>
+              <td><%= album_photo.image_file_name%></td>
+              <td><%= link_to "View Large","#", 'data-toggle': "modal", 'data-target': "#viewlarge-modal_#{album_photo.id}"%></td>
+              <td><%= link_to "Download Original", galleries_download_path(photo_id:  album_photo.id) %></td>
+            </tr>
+            <!-- Modal -->
+                <div class="modal" id='<%="viewlarge-modal_#{album_photo.id}"%>' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style = " height: auto; width: auto"  data-backdrop="static" data-keyboard="false">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+
+                      <div class="modal-body">
+                        <%= image_tag album_photo.image.url%>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <!-- /mMdal -->
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- /main -->

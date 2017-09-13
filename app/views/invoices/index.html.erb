@@ -1,0 +1,444 @@
+<p id="notice"><%= notice %></p>
+
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+                <div id="pageTitleHeaderText">Invoices</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><a href="#" >Email Us</a></li>
+              </ul>
+            </div>
+            <div class="right-buttons text-right">
+              <%= link_to "New Invoice",new_invoice_path(id: params[:id]),class: "btn btn-primary"%>
+            </div>
+
+         <!--    <div class="right-buttons text-right">
+              <a class="btn btn-primary" id="btn-newtemp" href="newTemplate.html" data-toggle="modal" data-target="#newtemp-filter" >New Template</a>
+              <a class="btn btn-default" id="btn-newauto" href="newAutomation.html" data-toggle="modal" data-target="#newauto-filter" >New Automation Series</a>
+            </div -->
+
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+
+<!-- main -->
+<div class="container-fluid">
+      <div class="row">
+          <div class="col-lg-12">
+            <ul class="nav nav-pills in-pills">
+                <li class="type active"><%= link_to "Invoices",invoices_path(id: current_user.id) %></li>
+                <li class="type "><%= link_to "Line Items",invoice_line_items_path(id: current_user.id) %></li>
+                <li class="type "><%= link_to "Templates",invoice_template_index_path(id: current_user.id) %></li>
+            </ul>
+          </div>
+      </div>
+</div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="tab-content clearfix">
+                <div class="tab-pane active" id="Invoices_in">
+                  <% if @invoices.count == 0 %>
+                    <%= render "no_invoice" %>
+                  <% else %>
+                  <div class="container-fluid">
+                       <div class="row">
+                         <div class="col-lg-12">
+                           <!-- <a href="#" id="filter" data-toggle="modal" data-target="#modal-filter" class="btn btn-sm btn-default margin-bottom">Search &amp; Filter</a> -->
+                           <%= link_to "Search & Filter","#", 'data-toggle': "modal",'data-target': "#invoice-modal-filter",class: "btn btn-sm btn-default margin-bottom" %>
+                         </div>
+                       </div>
+                       <%if params[:client_name_email].present? || params[:item_name_desc].present? || params[:invoice_no].present? || params[:invoice_status_id].present? %>
+                         <ul class="search-terms">
+                             <% if params[:client_name_email].present? %>
+                               <li id="client_name_email_param"><%= link_to "#" do %><span class="close-tag" ><%= params[:client_name_email] %>  x</span><% end %></li>
+                             <% end %>
+                             <% if params[:item_name_desc].present? %>
+                               <li id="item_name_desc_param"><%= link_to "#" do %><span class="close-tag" ><%= params[:item_name_desc] %>  x</span><% end %></li>
+                             <% end %>
+                             <% if params[:invoice_no].present? %>
+                               <li id="invoice_no_param"><%= link_to "#" do %><span class="close-tag" ><%= params[:invoice_no] %>  x</span><% end %></li>
+                             <% end %>
+                             <% if params[:invoice_status_id].present? %>
+                               <li id="invoice_status_id_param"><%= link_to "#" do %><span class="close-tag" ><%= params[:invoice_status_id] %>  x</span><% end %></li>
+                             <% end %>
+
+                             <%unless params[:client_name_email].nil? && params[:item_name_desc].nil? && params[:invoice_no].nil? && params[:invoice_status_id].nil? %>
+                               <li><%= link_to "Clear All", invoices_path %></li>
+                             <% end %>
+                           </ul>
+                         <% end %>
+                     <div class="row">
+                       <div class="col-lg-12">
+                         <div class="table-responsive has-dropdown">
+                           <table class="table">
+                             <thead>
+                               <tr>
+                                 <th><a href="#">Invoice #</a></th>
+                                 <th><a href="#">Customer</a></th>
+                                 <th class="Grand-name">Grand Total </th>
+                                 <th class="Grand-name">Remaining Balance</th>
+                                 <th class="Grand-name">Total Amount Received</th>
+                                 <th><a href="#">Final Payment Due</a></th>
+                                 <th><a href="#">Status</a></th>
+                                 <th><a href"#">Created<span class="caret"></span></a></th>
+                                 <th></th>
+                               </tr>
+                             </thead>
+                             <tbody>
+                               <% @invoices.each do |invoice| %>
+                                 <% @contacts.each do |contact| %>
+                                   <% @status.each do |status| %>
+                                     <% if invoice.client_contact_id == contact.id && invoice.status_id == status.id %>
+                                       <tr class='clickable-row' data-href="<%= edit_invoice_path(id: invoice.id)%>">
+                                        <td><%= invoice.id %></td>
+                                        <td><%= contact.firstname %> <%= contact.lastname %></td>
+                                        <td>$ <%= invoice.grand_total %></td>
+                                        <td>$ <%= invoice.add_payments.present? ? invoice.grand_total - invoice.add_payments.sum('amount') : invoice.grand_total %></td>
+                                        <td>$ <%= invoice.add_payments.present? ? invoice.add_payments.sum('amount') : 0.00 %></td>
+                                        <% if (Date.today - invoice.final_due_date).to_i <= 7  && Date.today < invoice.final_due_date %>
+                                          <td class="text-warning"><%= invoice.final_due_date.strftime('%d-%b-%Y') %></td>
+                                        <% elsif Date.today > invoice.final_due_date %>
+                                          <td class="text-danger"><%= invoice.final_due_date.strftime('%d-%b-%Y') %></td>
+                                        <% else %>
+                                          <td>hello<%= invoice.final_due_date.strftime('%d-%b-%Y') %></td>
+                                        <% end %>
+                                        <td>
+                                          <span class='<%="invoice-status-#{status.id}"%>'><%= status.status %></span>
+                                        </td>
+                                        <td><%= invoice.created_at.strftime('%d-%b-%Y') %></td>
+                                        <td class="quick-actions">
+                                          <div class="dropdown text-right">
+                                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                              Quick Actions
+                                              <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                              <%#= invoice.status_id %>
+                                              <%= hidden_field_tag "invoice_client_email",invoice.client_contact.email%>
+                                              <% if invoice.status_id != 2 && invoice.status_id != 4 %>
+                                                <li><a href="#">Add Payment</a></li>
+                                              <% end %>
+                                              <li><%= link_to "Email Client","#",id: "email_client", onclick: "open_email(#{invoice.id},#{invoice.client_contact_id})" %></li>
+
+                                              <!-- <li><%= link_to "Email Client","#invoice_email",id: "email_client",'data-email': invoice.client_contact.email,'data-toggle': "modal" %></li> -->
+                                              <% if invoice.status_id != 2 && invoice.status_id != 4 %>
+                                                <li><%= link_to "Cancel Invoice","#", 'data-toggle': "modal", 'data-target': "#cancel_invoice_#{invoice.id}" %> </li>
+                                              <% end %>
+                                            </ul>
+                                            <!-- <script>
+                                              $("#email_client").click(function(){
+                                                  alert($(this).data('email'));
+                                                // $("#invoice_email #email").text($("#invoice_client_email").val());
+                                                // $("#client_email_id").val($("#invoice_client_email").val());
+                                              });
+                                            </script> -->
+                                          </div>
+                                        </td>
+                                       </tr>
+                                       <!-- Modal -->
+                                        <div id='<%="cancel_invoice_#{invoice.id}"%>' class="modal description-modal" role="dialog" data-backdrop="static" data-keyboard="false">
+                                          <div class="modal-dialog">
+
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">Are you sure you want to cancel this invoice?</h4>
+                                              </div>
+                                              <div class="modal-body">
+                                                  <p>When an invoice is canceled:</p>
+                                                  <ul>
+                                                      <li>Payments cannot be added by you or received by your clients online</li>
+                                                      <li>The invoice will be visible, but it cannot be changed in any manner</li>
+                                                      <li>If you cancel this invoice, you are responsible for handling any refunds or any other transactions with your client</li>
+                                                  </ul>
+                                                  <p>Once canceled, this action cannot be undone!</p>
+                                              </div>
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                <%= link_to "Cancel Invoice", invoice_path(id: invoice.id),method: :delete,class: "btn btn-danger" %>
+                                              </div>
+                                            </div>
+
+                                          </div>
+                                        </div>
+                                        <!-- /mModal -->
+                                     <% end %>
+                                   <% end %>
+                                 <% end %>
+                               <% end %>
+                             </tbody>
+                           </table>
+                         </div>
+                       </div>
+                     </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+<!-- /main -->
+
+
+<!-- Search Modal -->
+<div class="modal fade" id="invoice-modal-filter" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Search Invoices</h4>
+      </div>
+      <%= form_tag(invoices_path(id: current_brand.id), :method => "get", id: "invoice-search-form") do %>
+      <div class="modal-body">
+        <%= render "invoice_search"%>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Search</button> -->
+        <%= submit_tag "Search", name: nil, class: "btn btn-primary"%>
+        <%#= link_to "Search","#",id: "search_invoice",class: "btn btn-primary" %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- /Search Modal -->
+
+
+<!-- Invoice Email Modal -->
+<div class="modal fade" id="invoice_email" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Email Link to this Gallery</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
+
+            <%= form_for @invoice_email,url: send_invoice_invoices_path(id: params[:id]) do |f|%>
+            <div class="row">
+              <%= hidden_field_tag "client_email_id"%>
+              <%= hidden_field_tag "invoice_id" %>
+              <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                <%=f.label :email_id,"Client Email"%>
+                <span id="email"></span>
+                <%#=f.text_field :email_id,class: "form-control", name: "recipient"%>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                <%=f.label :email_template_id,"Template"%>
+                <%= f.collection_select :email_template_id, current_brand.email_templates.all, :id,:name, {prompt: "Select Email Template" },{class: "form-control input-lg email-add-1 selectpicker"} %>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                <%=f.label :subject,"Subject"%>
+                <%=f.text_field :subject,value: "Your invoice payment is past due!",class: "form-control"%>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                <%=f.label :headline,"HeadLine"%>
+                <%=f.text_field :headline,value: "Your invoice is ready.",class: "form-control"%>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                <%= f.label :button_text %>
+                <!-- <p class="form-input-description">Clicking button will open gallery</p> -->
+                <div class="row">
+                  <div class="col-lg-8 col-md-7 col-sm-8 col-xs-12">
+                    <%= f.text_field :button_text,value: "VIEW GALLERY", class: "form-control" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12 form-group">
+                <%= f.label :message %>
+                <%= f.text_area :message,value: "Hi!
+
+
+                The final payment for your invoice from techbit was due on 28-Jul-2016.
+
+                Please click the button above for details and payment options.
+
+
+
+                Thanks,
+                #{current_brand.brand_name}", class: "form-control" %>
+              </div>
+            </div>
+            <div class="actions pull-left">
+              <%=link_to "Cancel",invoices_path(id: current_brand.id),class: "btn btn-default"%>
+              <%=f.submit "Send",class: "btn btn-primary"%>
+            </div>
+          </div>
+          <% end %>
+
+          <div class="col-md-7">
+            <label>Email Preview</label>
+            <table cellpadding="0" cellspacing="0" border="0" id="backgroundTable" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; margin: 0; padding: 0; width: 100% !important; line-height: 28px; background-color: #EEEEEE; border: none; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; color: #414141; font-size: 18px;">
+              <tbody>
+                <tr>
+                  <td align="center" valign="top" class="bounds" style="border-collapse: collapse; color: #414141; margin: 0; padding: 14px 0px; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                    <table cellpadding="0" cellspacing="0" class="column" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; margin: 0; max-width: 600px; border: none;">
+                      <tbody>
+                        <!-- Above the white content area -->
+                        <tr>
+                          <td class="half-height-mobile" style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; line-height: 7px;">&nbsp;
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                            <table cellspacing="0" cellpadding="0" class="content" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; background-color: #FFF; border-radius: 5px; text-align: left; width: 90%; margin: 0 auto;">
+                              <tbody>
+                                <tr>
+                                  <td align="center" valign="top" style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                                    <p class="content-logo" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-top: 60px; margin-bottom: 30px;">
+                                      <a href="#" target="_blank" style="color: #4FBEE3; text-decoration: none;">
+                                        <span style="color: #414141; font-weight: 400; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; line-height: 15px; display: block; max-width: 240px;"><%= current_brand.brand_name %></span>
+                                      </a>
+                                    </p>
+                                    <p class="content-icon" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 30px; line-height: 0;"> <%= image_tag('/assets/rectangle-img.png')%> </p>
+                                    <h1 id="preview_subject" class="content-headline" style="color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; font-weight: 300; font-size: 24px; line-height: 29px;">i87i9o</h1>
+                                    <p class="content-button" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-top: 48px; margin-bottom: 18px;"><a id= "preview_button" href="http://techbit.shootproof.com/app/171844" target="_blank" style="color: #FFF; text-decoration: none; border-radius: 5px; background-color: #414141; text-transform: uppercase; font-size: 12px; line-height: 14px; padding: 18px;">button</a></p>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="width-container studio-to-client" style="border-collapse: collapse; color: #414141; margin: 0; padding: 30px 20px 0 20px; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                                    <div class="content">
+                                      <p id= "preview_body" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 28px;">
+                                        Hi!
+
+                                        Your gallery is ready to be viewed.
+
+                                        Thanks,
+                                        <%=current_brand.brand_name%>
+                                      </p>
+                                      <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 28px;">
+                                        Thanks,<br>
+                                        Blah Blah
+                                      </p>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style="line-height: 30px; border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">&nbsp;</td>
+                                </tr>
+                              </tbody></table>
+                              <table width="100%" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                <tbody><tr>
+                                  <td style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                  <td align="center" class="width-container footer" style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; text-align: center;">
+                                    <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+
+                                    </p>
+                                    <p class="copyright" style="margin: 0; color: #CCCCCC; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; padding-top: 18px; font-weight: 300; font-size: 12px; line-height: 18px;">Copyright © 2016 techbit<br><span class="address"><a href="#" style="color: #CCCCCC !important; text-decoration: none !important; cursor: text;"><br><br>India</a></span>
+                                    </p>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">&nbsp;</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- /mMdal -->
+
+
+<script>
+  function removeURLParameter(url, parameter) {
+    //prefer to use l.search if you have a location/link object
+    var urlparts= url.split('?');
+    if (urlparts.length>=2) {
+
+      var prefix= encodeURIComponent(parameter.substring(1))+'=';
+      var pars= urlparts[1].split(/[&;]/g);
+
+      //reverse iteration as may be destructive
+      for (var i= pars.length; i-- > 0;) {
+        //idiom for string.startsWith
+        if (pars[i].indexOf(parameter.substring(1)) !== -1) {
+          pars.splice(i, 1);
+        }
+      }
+      url= urlparts[0]+'?'+pars.join('&');
+      return url;
+    } else {
+      return url;
+    }
+  }
+  $(document).ready(function(){
+    $("#client_name_email_param").click(function(){
+      location.href=removeURLParameter(location.href,((($(this).text()).slice(0,-3)).replace(/ /g,"*")).replace(/ /g,"+"))
+    });
+    $("#item_name_desc_param").click(function(){
+      location.href=removeURLParameter(location.href,((($(this).text()).slice(0,-3))).replace(/ /g,"+"))
+    });
+    $("#invoice_no_param").click(function(){
+      location.href=removeURLParameter(location.href,((($(this).text()).slice(0,-3)).replace(/ /g,"*")).replace(/ /g,"+"))
+    });
+    $("#invoice_status_id_param").click(function(){
+      location.href=removeURLParameter(location.href,((($(this).text()).slice(0,-3)).replace(/ /g,"*")).replace(/ /g,"+"))
+    });
+  });
+
+  function open_email(invoice_id,client_id){
+    // alert("yo"+id);
+    $.ajax({
+      type: "get",
+      url: "/invoices/invoice_email",
+      data: {client_id: client_id,invoice_id: invoice_id}
+    });
+  }
+</script>

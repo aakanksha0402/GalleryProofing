@@ -1,0 +1,320 @@
+<% if @gallery.status == 'Inactive' %>
+  <%= content_for :body_class, "inactive-index" %>
+
+  <!--nav-->
+  <nav class="navbar navbar-default client-nav client-nav-dark">
+    <div class="container-fluid">
+      <div classs="row">
+        <div class="col-lg-12 text-center">
+          <div class="tabing-client" id="mainNavigation">
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <!--nav-over-->
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12 text-center">
+        <% if @color_set.gallery_logo.present?%>
+          <div class="inner-logo-img">
+            <%= image_tag @color_set.gallery_logo.url(:small) %>
+          </div>
+        <%else%>
+          <div class="inner-logo-img">
+            <%= @brand.brand_name %>
+          </div>
+        <% end %>
+        <p class="text-style-down">This gallery is currently inactive.</p>
+        <p class="text-style-down">Please contact <%= @brand.brand_name %> for more information.</p>
+      </div>
+      </div>
+    </div>
+
+<% else %>
+  <% if @gallery.cover_url.present? || @gallery.gallery_photo_id.present? %>
+    <% if @custom_gallery_layout.introduction_page_layout == 'LimeLight' %>
+      <%= content_for :body_class, "Limelight-index Marquee-index Marquee-img" %>
+      <%= content_for :body_image, @pic %>
+
+      <div class="container-fluid background-shad">
+        <div class="row">
+          <div class="col-lg-6 pull-left">
+            <div class="testing">
+              <span class="test-style"><%= @gallery.name %></span>
+            </div>
+            <div class="logo-Client">
+              <h5 class="logo-style"><%= @brand.brand_name %></h5>
+            </div>
+          </div>
+          <div class="col-lg-6 pull-right">
+            <div class="gallry-btn">
+                <% if @custom_gallery_layout.gallery_access_privacy == "public_password" || @custom_gallery_layout.gallery_access_privacy == "private_password" || @custom_gallery_layout.email_require == true %>
+                <%= link_to "Open Gallery", "#full-cons", "data-toggle": "modal" ,class: "btn btn-primary"%>
+              <% else %>
+                <%= link_to "Open Gallery", view_home_path ,class: "btn btn-primary"%>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% elsif @custom_gallery_layout.introduction_page_layout == 'Marquee' %>
+      <%= content_for :body_class, "Marquee-index Marquee-img" %>
+      <%= content_for :body_image, @pic %>
+
+      <div class="container-fluid backgrond-light">
+          <div class="row">
+            <div class="col-lg-12 text-center">
+              <% if @color_set.gallery_logo.present?%>
+                <div class="logo-top-title">
+                    <%= image_tag @color_set.gallery_logo.url(:small) %>
+                </div>
+              <%else%>
+                <div class="logo-Client">
+                  <h5 class="logo-style"><%= @brand.brand_name %></h5>
+                </div>
+              <% end %>
+
+              <div class="testing">
+                <span class="test-style"><%= @gallery.name %></span>
+              </div>
+
+              <div class="gallry-btn">
+                  <% if @custom_gallery_layout.gallery_access_privacy == "public_password" || @custom_gallery_layout.gallery_access_privacy == "private_password" || @custom_gallery_layout.email_require == true %>
+                  <%= link_to "Open Gallery", "#full-cons", "data-toggle": "modal" ,class: "btn btn-primary"%>
+                <% else %>
+                  <%= link_to "Open Gallery", view_home_path ,class: "btn btn-primary"%>
+                <% end %>
+              </div>
+            </div>
+          </div>
+      </div>
+    <% elsif @custom_gallery_layout.introduction_page_layout == 'Detail' %>
+      <%= content_for :body_class, "detail-index" %>
+      <div class="container-fluid" style="height: 100%;">
+        <div class="row" style="height: 100%;">
+          <div class="col-lg-5" style="height: 100%;  padding-left: 0;">
+            <div class="background-detail" style="background-image: url(<%= @pic %>)"></div>
+          </div>
+          <div class="col-lg-7 text-center">
+            <div class="container-fluid">
+              <div class="row client-page">
+                <div class="col-lg-12 text-center">
+                  <% if @color_set.gallery_logo.present?%>
+                  <div class="logo-top-title">
+                    <%= image_tag @color_set.gallery_logo.url(:small) %>
+                  </div>
+                  <%else%>
+                  <div class="logo-Client">
+                    <h5 class="logo-style"><%= @brand.brand_name %></h5>
+                  </div>
+                  <% end %>
+                </div>
+                <div class="col-xs-12 text-center">
+                  <h1 class="galleryTitle">STYLE</h1>
+                  <div class="btn-style text-center">
+                    <  <% if @custom_gallery_layout.gallery_access_privacy == "public_password" || @custom_gallery_layout.gallery_access_privacy == "private_password" || @custom_gallery_layout.email_require == true %>
+                      <%= link_to "Open Gallery", "#full-cons", "data-toggle": "modal" ,class: "btn btn-primary"%>
+                    <% else %>
+                      <%= link_to "Open Gallery", view_home_path ,class: "btn btn-primary"%>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% elsif @custom_gallery_layout.introduction_page_layout == 'Accent' %>
+      <% content_for :body_class, "gallery_default" %>
+      <div class="container-fluid">
+        <div class="row client-page">
+          <div class="col-lg-12 text-center">
+            <% if @color_set.gallery_logo.present?%>
+              <div class="logo-top-title">
+                  <%= image_tag @color_set.gallery_logo.url(:small) %>
+              </div>
+            <%else%>
+              <div class="logo-Client">
+                <h5 class="logo-style"><%= @brand.brand_name %></h5>
+              </div>
+            <% end %>
+          </div>
+          <div class="col-xs-12">
+            <div class="galleryCoverPhoto" style="background-image: url(<%= @pic %>)"></div>
+          </div>
+          <div class="col-xs-12 text-center">
+            <h1 class="galleryTitle"><%= @gallery.name %></h1>
+            <div class="btn-style text-center">
+                <% if @custom_gallery_layout.gallery_access_privacy == "public_password" || @custom_gallery_layout.gallery_access_privacy == "private_password" || @custom_gallery_layout.email_require == true %>
+                <%= link_to "Open Gallery", "#full-cons", "data-toggle": "modal" ,class: "btn btn-primary"%>
+              <% else %>
+                <%= link_to "Open Gallery", view_home_path ,class: "btn btn-primary"%>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% elsif @custom_gallery_layout.introduction_page_layout == 'HeadLine' %>
+      <%content_for :body_class, "headline-index" %>
+      <div class="container-fluid">
+          <div class="row client-page">
+            <div class="col-lg-12 text-center">
+              <% if @color_set.gallery_logo.present?%>
+                <div class="logo-top-title">
+                    <%= image_tag @color_set.gallery_logo.url(:small) %>
+                </div>
+              <%else%>
+                <div class="logo-Client">
+                  <h5 class="logo-style"><%= @brand.brand_name %></h5>
+                </div>
+              <% end %>
+              <div class="col-xs-12 text-center">
+                <h1 class="galleryTitle"><%= @gallery.name %></h1>
+                <div class="btn-style text-center">
+                    <% if @custom_gallery_layout.gallery_access_privacy == "public_password" || @custom_gallery_layout.gallery_access_privacy == "private_password" || @custom_gallery_layout.email_require == true %>
+                    <%= link_to "Open Gallery", "#full-cons", "data-toggle": "modal" ,class: "btn btn-primary"%>
+                  <% else %>
+                    <%= link_to "Open Gallery", view_home_path ,class: "btn btn-primary"%>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    <% end %>
+  <% else%>
+    <%content_for :body_class, "headline-index" %>
+    <div class="container-fluid">
+        <div class="row client-page">
+          <div class="col-lg-12 text-center">
+            <% if @color_set.gallery_logo.present?%>
+              <div class="logo-top-title">
+                <%= image_tag @color_set.gallery_logo.url(:small) %>
+              </div>
+            <%else%>
+              <div class="logo-Client">
+                <h5 class="logo-style"><%= @brand.brand_name %></h5>
+              </div>
+            <% end %>
+            <div class="col-xs-12 text-center">
+              <h1 class="galleryTitle"><%= @gallery.name %></h1>
+              <div class="btn-style text-center">
+                <% if @custom_gallery_layout.gallery_access_privacy == "public_password" || @custom_gallery_layout.gallery_access_privacy == "private_password" || @custom_gallery_layout.email_require == true %>
+                  <%= link_to "Open Gallery", "#full-cons", "data-toggle": "modal" ,class: "btn btn-primary"%>
+                <% else %>
+                  <%= link_to "Open Gallery", view_home_path ,class: "btn btn-primary"%>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  <% end %>
+
+  <!-- /main -->
+
+  <div class="modal" id="full-cons" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" id="One">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <%#= form_tag gallery_password_path, remote: true do %>
+        <%= form_tag views_gallery_password_path(gallery: params[:gallery], brand: params[:brand]), remote: true do %>
+        <%#= hidden_field_tag :gallery, params[:gallery] %>
+        <div class="modal-body text-center">
+          <div class="row">
+            <div class="col-xs-3 col-xs-offset-5">
+              <% if @custom_gallery_layout.gallery_access_privacy == "public_password" || @custom_gallery_layout.gallery_access_privacy == "private_password" %>
+                <div class="form-group">
+                  <%= label_tag :password, "PASSWORD" %>
+                  <%= password_field_tag :password, nil, class: "form-control"%>
+                  <p id="error_for_password" style= "color:red;"></p>
+                </div>
+              <% end %>
+              <% if @custom_gallery_layout.email_require == true%>
+                <div class="form-group">
+                  <%= label_tag :email, "EMAIL ADDRESS" %>
+                  <%= email_field_tag :email, nil, class: "form-control", required: true%>
+                  <p id="error_for_email" style= "color:red;"></p>
+                </div>
+              <% end %>
+              <div class="btn-style text-center">
+                <%= submit_tag "Open Gallery", class: "btn btn-primary", disabled: true, id: "check_password" %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% end %>
+      </div>
+      <div class="modal-content" id="Two" style="display:none">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <%#= form_tag gallery_password_path, remote: true do %>
+        <%= form_tag views_access_code_path(gallery: params[:gallery], brand: params[:brand]), remote: true do %>
+        <%#= hidden_field_tag :gallery, params[:gallery] %>
+        <div class="modal-body text-center">
+          <div class="row">
+            <div class="col-xs-3 col-xs-offset-5">
+              <% if  @gallery.privilege.present? %>
+                <% if  @gallery.privilege.gallery_access_code.present? %>
+                  <div class="form-group">
+                    <%= label_tag :access_code, "To enable your admin privileges, enter the access code:" %>
+                    <%= text_field_tag :access_code , nil , class:"form-control", required: true%>
+                    <p id="error_for_acess_code" style= "color:red;"></p>
+                  </div>
+                <% end %>
+              <% end %>
+            <% end %>
+              <div class="btn-style text-center">
+                <%= submit_tag "Open Gallery", class: "btn btn-primary", id: "check_password" %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  $(document).ready(function(){
+    $('#password').keyup(function(){
+      $('#password').val().length == 0 ? $('#check_password').attr('disabled', true) : $('#check_password').attr('disabled', false)
+    });
+    $('#email').keyup(function(){
+      $('#email').val().length == 0 ? $('#check_password').attr('disabled', true) : $('#check_password').attr('disabled', false)
+    });
+
+
+  });
+  </script>
+
+  <style>
+  #password.form-control, #email.form-control {
+      width: 220px;
+      display: inline-block;
+      background-image: none;
+      background-color: <%= session[:text] %>;
+  }
+   #email.form-control:hover {
+      border-color: <%= session[:primary_color] %>
+  }
+  .btn.btn-primary {
+      background-color: <%= session[:text] %>;
+      border-color: <%= session[:primary_color] %>;
+      color: <%= session[:primary_color] %>;
+      border-radius: 2px;
+      min-width: 160px;
+      padding: 8px 19px;
+      font-size: 16px;
+  }
+  .btn.btn-primary:hover{
+      background-color: <%= session[:primary_color] %> !important;
+      border-color: <%= session[:primary_color] %> !important;
+      color: #000000 !important;
+  }
+  </style>

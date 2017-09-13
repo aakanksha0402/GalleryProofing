@@ -1,0 +1,23 @@
+<% content_for :head, "GalleryProofing | Style"%>
+<% content_for :body_class, "gallery_default-style" %>
+
+<div class="wrapper"> 
+ <div class="logo-small-logo text-center">
+ <% if @color_logo.gallery_logo.present? %>
+ <img src=<%= @color_logo.gallery_logo.url %> alt="logo">
+ <% else %>
+ 	<h1> <%= @brand.brand_name %></h1>
+ <% end %>
+ </div>
+<div class="title text-center col-md-12">
+<h1> <%= @gallery.name %></h1>
+<div class="row">
+<div class="gallary-img col-md-12">
+<img class="img-responsive" src=<%= @pic %> alt="gallary_img_1"> 
+</div>
+</div>
+<div class="view-gallary-btn">
+<%= link_to "View Gallery", view_gallery_url(brand: params[:brand],gallery: params[:gallery]),target: "_blank", class: "btn btn-default" %>
+</div>
+</div>
+</div>

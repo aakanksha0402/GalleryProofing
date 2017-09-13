@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @default_trigger_type.name %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @default_trigger_type.active %>
+</p>
+
+<%= link_to 'Edit', edit_default_trigger_type_path(@default_trigger_type) %> |
+<%= link_to 'Back', default_trigger_types_path %>

@@ -1,0 +1,48 @@
+<% if @updated == true %>
+  location.reload();
+<% elsif @updated == false %>
+  var $brand_name = $('#brand-detail').find('.row .col-lg-6 .brand_name');
+  $brand_name.find('p').remove();
+  var $website_url = $('#brand-detail').find('.row .col-lg-6 .website_url');
+  $website_url.find('p').remove();
+  var $email = $('#brand-detail').find('.row .col-lg-6 .brand_email' );
+  $email.find('p').remove();
+  var $phone_number = $('#brand-detail').find('.row .col-lg-6 .phone_number' );
+  $phone_number.find('p').remove();
+  var $address1 = $('#brand-detail').find('.row .col-lg-6 .address1' );
+  $address1.find('p').remove();
+  var $city = $('#brand-detail').find('.row .col-lg-6 .city' );
+  $city.find('p').remove();
+  var $pincode = $('#brand-detail').find('.row .col-lg-6 .pincode');
+  $pincode.find('p').remove();
+
+  var $state = $('#brand-detail').find('.row .col-lg-6 .state');
+  $state.find('p').remove();
+
+<% if @brand.errors[:brand_name].present? %>
+  $brand_name.append('<p style="color:red" ><% error = @brand.errors.messages[:brand_name] %><%= error[0] %></p>');
+<% end %>
+<% if @brand.errors[:website_url].present? %>
+  $website_url.append('<p  style="color:red" ><% error = @brand.errors.messages[:website_url] %><%= error[0] %></p>');
+<% end %>
+<% if @brand.errors[:email].present? %>
+  $email.append('<p  style="color:red" ><% error = @brand.errors.messages[:email] %><%= error[0] %></p>');
+<% end %>
+<% if @brand.errors[:phone_number].present? %>
+  $phone_number.append('<p  style="color:red" ><% error = @brand.errors.messages[:phone_number] %><%= error[0] %></p>');
+<% end %>
+<% if @brand.errors[:address1].present? %>
+  $address1.append('<p  style="color:red" ><% error = @brand.errors.messages[:address1] %><%= error[0] %></p>');
+<% end %>
+<% if @brand.errors[:city].present? %>
+  $city.append('<p  style="color:red" ><% error = @brand.errors.messages[:city] %><%= error[0] %></p>');
+<% end %>
+<% if @brand.errors[:pincode].present? %>
+  $pincode.append('<p  style="color:red" ><% error = @brand.errors.messages[:pincode] %><%= error[0] %></p>');
+<% end %>
+<% if @brand.errors[:state].present? %>
+  $state.append('<p  style="color:red" ><% error = @brand.errors.messages[:state] %><%= error[0] %></p>');
+<% end %>
+
+// $('#New-Line').find('.modal-body .line_item_price').append('<p>Please enter the description for Line Item.</p>');
+<% end %>

@@ -1,0 +1,9 @@
+<% if @watermark.errors.any? %>
+  $('#watermark_div').find('p').remove();
+  $('#watermark_div').append('<% @watermark.errors[:name].each do |error| %>' +
+                              '<p style="color:red;" >Name <%= error %><p>' +
+                              '<% end %>');
+  $('#watermark_name').css('border-color', 'red');
+<% else %>
+  location.href = "/watermarks/<%= @watermark.id %>/edit?create=create"
+<% end %>

@@ -1,0 +1,22 @@
+<h1>Order Status Change</h1>
+<p>Are you sure that you want to update the status of this order from <%= @order.checkout_status.status %> to  ?</p>
+<%= form_for @order,url: edit_order_path(@order)  do |f| %>
+  <% if @order.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h2>
+
+      <ul>
+      <% @order.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="field">
+    <%= f.label "Received" %><br>
+     <%= f.select :checkout_status_id, CheckoutStatus.all %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,20 @@
+<%= form_for(resource, as: resource_name, url: main_page_path(resource_name), method: :patch) do |f| %>
+  <%= devise_error_messages! %>
+
+  <div class="field">
+    <%= f.label :firstname %><br />
+    <%= f.text_field :firstname, autofocus: true, style: 'color:black' %>
+  </div>
+
+  <div class="field">
+    <%= f.label :lastname %><br/>
+    <!-- <% if @minimum_password_length %>
+    <em>(<%= @minimum_password_length %> characters minimum)</em>
+    <% end %><br /> -->
+    <%= f.text_field :lastname, autocomplete: "off",style: 'color:black' %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Submit",style: 'color:black' %>
+  </div>
+<% end %>

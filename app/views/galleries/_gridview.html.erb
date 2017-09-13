@@ -1,0 +1,73 @@
+<% if @count != 0 %>
+<%= form_tag galleries_update_multiple_path do%>
+<% @galleries.each do |gallery| %>
+<div class="grid-item">
+  <div class="sp-tile">
+    <%= link_to galleries_galleryhome_path(id: gallery.id) do%>
+    <div class="img-rounded-top full-width default" style="background-image:url(/assets/icon_gallery_cover.svg)">
+      <% if gallery.cover_url.exists?%>
+        <div class="icon-img"><%= image_tag gallery.cover_url.url,size: "240x240"%></div>
+      <% elsif gallery.gallery_photo_id %>
+        <% @photos.each do |photo| %>
+          <% if photo.id == gallery.gallery_photo_id %>
+            <div class="icon-img"><%= image_tag photo.image.url,size: "240x240"%></div>
+          <% end %>
+        <% end %>
+      <% else %>
+        <div class="icon-img"></div>
+      <% end %>
+      <div class="hover-block">
+        <span>View</span>
+      </div>
+      <div class="checkbox inside-check">
+        <%= check_box_tag "gallery_ids[]",gallery.id%>
+      </div>
+      <div class="status-flag status-flag-warning" style="display:none;">Pre-Registration</div>
+      <div class="status-flag status-flag-info" style="display:none;">Inactive</div>
+      <div class="status-flag status-flag-error" style="display: none;">Archived</div>
+      <div class="status-flag status-flag-primary flag-selected">Selected</div>
+    </div>
+    <div class="card-content">
+      <div class="card-title" title="Test"><%= gallery.name%></div>
+      <span class="event-photo-count">
+        <% @sum = gallery.photos.where(is_delete: false).count %>
+        <% gallery.albums.includes(:photos).each do |album| %>
+          <% @sum += album.photos.where(is_delete: false).count %>
+        <% end %>
+        <%= @sum %> Photos
+      </span>
+      <div class="meta-block clearfix">
+        <div class="date-left">
+          <%if gallery.shoot_date.present?%>
+            <%= gallery.shoot_date.strftime("%d-%b-%Y") %>
+          <% end %>
+        </div>
+        </div>
+    </div>
+    <% end %>
+    <div class="push-pop">
+      <div class="dropup">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Quick Actions
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+          <li><a href="/reports/gallery_visitors">Gallery Visitors</a></li>
+          <li><%= link_to "Client View", view_gallery_url(brand: @current_subdomain,gallery: gallery.id),target: "_blank" %></li>
+          <li><%= link_to "Email Link","#Share1_#{gallery.id}",'data-toggle': "modal"%></li>
+          <li><%= link_to "Settings",edit_custom_gallery_layout_path(id: gallery.id)%></li>
+          <!-- <li><a href="#">Archive</a></li> -->
+          <% unless @not_authorized_to_delete == true%>
+          <li><%= link_to "Delete",gallery_path(id: gallery.id),method: :delete%></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% end %>
+<% end %>
+<% else %>
+  There are no records found. Try again?
+<% end %>

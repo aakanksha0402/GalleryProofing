@@ -1,0 +1,54 @@
+<p id="notice"><%= notice %></p>
+<%= @brand.errors.any? %>
+  <% @brand.errors.messages.each do |message| %>
+  <li>
+    <%= message %>
+  </li>
+
+<% end %>
+
+
+<p>
+  <strong>Brand name:</strong>
+  <%= @brand.brand_name %>
+</p>
+
+<p>
+  <strong>Website url:</strong>
+  <%= @brand.website_url %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @brand.email %>
+</p>
+
+<p>
+  <strong>Address1:</strong>
+  <%= @brand.address1 %>
+</p>
+
+<p>
+  <strong>Address2:</strong>
+  <%= @brand.address2 %>
+</p>
+
+<p>
+  <strong>City:</strong>
+  <%= @brand.city %>
+</p>
+
+<p>
+  <strong>Country:</strong>
+  <%= @brand.primary_country %>
+</p>
+
+<p>
+  <strong>Pincode:</strong>
+  <%= @brand.pincode %>
+</p>
+
+<p>
+  <strong>Phone number:</strong>
+  <%= @brand.phone_number %>
+</p>

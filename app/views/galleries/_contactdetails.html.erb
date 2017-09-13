@@ -1,0 +1,58 @@
+  <div class="heading">
+    <div class="row">
+      <div class="col-sm-6">
+        <h1><%= @gallery.contact.firstname %> <%= @gallery.contact.lastname%></h1>
+        <p><span class="email"><%= @gallery.contact.email %></span><span class="phone"><% if @gallery.contact.phone_number.present? %> <%= @gallery.contact.phone_number %> <% end %> </span></p>
+      </div>
+      <div class="col-sm-6">
+        <div class="text-right buttons-right"> <a href="<%= edit_contact_path(@gallery.contact_id) %>" class="btn btn-link btn-xs" >View Contact</a> <%= link_to "Edit Privileges", contact_settings_galleries_path(id: @gallery.id, contact_id: @gallery.contact_id),class: "btn btn-link btn-xs" %> </div>
+      </div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="section">
+      <div class="row">
+        <div class="col-lg-12">
+          <h2>Access</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="priv-title">Access Code</div>
+          <% if @gallery.privilege.gallery_access_code.present? %>
+            <span class="value"><%= @gallery.privilege.gallery_access_code %></span>
+          <% else %>
+            <span>You must <%= link_to "set an access code",contact_settings_galleries_path(id: @gallery.id, contact_id: @gallery.contact_id), class: "access-code-error" %>.</span> </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <h2>Privileges</h2>
+          <p>This contact can:</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="priv-title">Favorite Photos</div>
+          <span class="value">Yes</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="priv-title">Hide Photos</div>
+          <span class="value">No</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="priv-title">Label Photos</div>
+          <span class="value">No</span>
+          <ul class="list-unstyled tags">
+            <% @gallery.labels.each do |label| %>
+            <li><%= label.name %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>

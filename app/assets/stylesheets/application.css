@@ -1,0 +1,193 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+
+ *= require lightbox.min
+ *= require_tree .
+ *= require dropzone/dropzone
+ *= require_self
+ */
+
+
+
+ .img-wrap {
+     position: relative;
+     display: inline-block;
+ }
+ .img-wrap .close-tag {
+     position: relative;
+     color: #000;
+     font-weight: bold;
+     cursor: pointer;
+     opacity: .2;
+     text-align: center;
+     font-size: 22px;
+     line-height: 10px;
+     border-radius: 50%;
+ }
+ .modal-dialog{
+    position: relative;
+    display: table; //This is important
+    overflow-y: auto;
+    overflow-x: auto;
+    width: auto;
+    min-width: 300px;
+}
+
+.btn-file > input {
+  position: absolute;
+ top: 0;
+ right: 0;
+ min-width: 100%;
+ min-height: 100%;
+ font-size: 100px;
+ text-align: right;
+ filter: alpha(opacity=0);
+ opacity: 0;
+ outline: none;
+ background: white;
+ cursor: inherit;
+ display: block;
+}
+.btn-file {
+    overflow: hidden;
+    position: relative;
+    vertical-align: middle;
+}
+#backarrow{
+  float:left;
+  margin-top:5px;
+}
+
+#Share, #invoice_email .modal-dialog{
+  margin: 0px;
+  height:100%;
+  width:100%;
+}
+.modal-dialog#New1{
+  margin: 0px;
+  height:100%;
+  width:100%;
+}
+
+.sp-tile .img-rounded-top  {
+    height: 175px;
+    overflow: hidden;
+    background-position: center  !important;
+    background-repeat: no-repeat;
+    background-size: 80px !important;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+#sy, #gap , #Search, #search-t, #tags-t, #gallery-t, #brand-t, #client_name_email_param, #item_name_desc_param, #invoice_no_param, #invoice_status_param{
+  background-color:#4FBEE3;
+  border-radius: 2px;
+  padding:5px;
+  color: #fff;
+}
+
+p.lead{
+  color: #63808A;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.album{
+  color: #889EA6;
+}
+
+.email-template-no
+{
+  display: none;
+}
+
+.text-left
+{
+  text-align: left;
+}
+ .name{
+   margin-left:30px;
+ }
+ .margin-bottom{
+   margin-bottom: calc(2em + 3px);
+ }
+
+ .pricing-discount .td .note {
+    color: #B1BFC4;
+    padding: 3px;
+    margin-left: 10px;
+}
+
+.pricing-discount .td .note-highlight {
+    color: #B1BFC4;
+    background-color: #DAE1E3;
+    padding: 3px;
+    margin-left: 10px;
+}
+.pricing-discount div.manage_discount #package-item-selected .collection {
+    padding: 10px;
+    border: 1px solid #B1BFC4;
+    margin-bottom: 20px;
+}
+.pricing-discount div.manage_discount .heading {
+    font-weight: 100;
+    margin-bottom: 10px;
+}
+.pricing-discount div.manage_discount #package-item-selected {
+    padding-top: 13px;
+}
+#edit-discount .modal-dialog {
+    width: 900px;
+}
+
+.has_error{
+  border: 1px solid red !important;
+}
+#order_file_names .modal-footer {
+    text-align: center;
+}
+
+.lb-dataContainer {
+    display: none !important;
+}
+.gallery-edit .priv-title {
+    display: inline-block;
+    float: left;
+    width: 160px;
+    margin-bottom: 10px;
+}
+.gallery-edit  .value {
+    font-weight: 300;
+    color: #889EA6;
+}
+.gallery-edit .phone {
+    color: #889EA6;
+}
+.form-error {
+    display: block;
+    position: relative;
+    color: #EF5E5E;
+    padding: 7px 0;
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+.btn-default.btn-xs.favourite-btn {
+    padding: 3px 25px;
+    margin-top: 10px;
+}
+.alert-error{
+  color: #EF5E5E;
+}
+.link {
+    color: #A5A5A5;
+  }

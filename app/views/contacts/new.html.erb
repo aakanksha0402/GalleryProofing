@@ -1,0 +1,186 @@
+<% content_for :head, "GalleryProofing | Add Contact"%>
+<% content_for :studio_class, "active"%>
+
+<% if @not_authorized == true %>
+  <div class="container-fluid">
+    <%= render partial: '/dashboards/no_authorization' %>
+  </div>
+<% else %>
+  <%= form_for(@contact) do |f| %>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <!-- title -->
+          <div class="page-title">
+            <div class="row">
+              <div class="col-md-6 col-sm-5 col-xs-5">
+                <h2><div id="pageTitleHeaderText">New Contact</div></h2>
+              </div>
+              <div class="col-md-6 col-sm-7 col-xs-7">
+                <div class="right-buttons text-right">
+                  <%= link_to "Cancel", contacts_path ,class: "btn btn-default" %>
+                  <%= f.submit "Save", class: "btn btn-primary" %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /title -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-9">
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="form-group panel-in-set-1">
+                <%= f.hidden_field :brand_id, value: current_brand.id %>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <%= f.label :firstname %>
+                <%= f.text_field :firstname, class: "form-control" %>
+                <div style = "color:red;">
+                  <% if @contact.errors.messages[:firstname].present? %>
+                  <% error = @contact.errors.messages[:firstname] %>
+                  <%= error[0] %>
+                  <script>
+                  $('#contact_firstname').css('border-color', 'red');
+                  </script>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <%= f.label :lastname %>
+                <%= f.text_field :lastname, class: "form-control" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-9">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <%= f.label :email %>
+                <%= f.text_field :email, class: "form-control" %>
+                <div style = "color:red;">
+                  <% if @contact.errors.messages[:email].present? %>
+                  <% error = @contact.errors.messages[:email] %>
+                  <%= error[0] %>
+                  <script>
+                  $('#contact_email').css('border-color', 'red');
+                  </script>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <%= f.label :phone_number %>
+                <%= f.text_field :phone_number, class: "form-control" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-9">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-group">
+                <%= f.label :address1 %>
+                <%= f.text_field :address1, class: "form-control", placeholder: "Street Address Line 1"%>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <%= f.label :address2 %>
+                <%= f.text_field :address2, class: "form-control", placeholder: "form-control address-line-2" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-9">
+          <div class="row">
+            <div class="col-lg-3">
+              <div class="form-group">
+                <%= f.label :city %>
+                <%= f.text_field :city, class: "form-control", palceholder: "City" %>
+              </div>
+            </div>
+            <div class="col-lg-3">
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group">
+                <%= f.label :pincode, "Zip-code" %>
+                <%= f.text_field :pincode, class: "form-control", palceholder: "Postal Code" %>
+                <div style = "color:red;">
+                  <% if @contact.errors.messages[:pincode].present? %>
+                  <% error = @contact.errors.messages[:pincode] %>
+                  <%= error[0] %>
+                  <script>
+                  $('#contact_pincode').css('border-color', 'red');
+                  </script>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <%= f.label :country_id %>
+              <div class="form-group">
+                <%= f.collection_select(:country_id, Country.all, :id, :name, {selected: current_brand.primary_country}, class: "form-control input-lg selectpicker", "data-live-search": true, "data-size": 5) %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="form-group is-vendor">
+            <%= f.label :vendor, "Is contact a vendor?" %>
+            <%= f.check_box :vendor,include_hidden: false, name: "my-checkbox" %>
+            <span></span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-2">
+          <div class="businees-name">
+            <%= link_to "+ Add Business Name", "#",remote: true %>
+            <div class="add-business-name">
+              <div class="form-group">
+                <%= f.label :buisinessname %>
+                <%= f.text_field :buisinessname, class: "form-control" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="businees-name">
+            <%= link_to "+ Add Tags", "#",remote: true %>
+            <div class="add-business-name">
+              <div class="form-group">
+                <%= f.label :tags %>
+                <%= f.text_field :tag_list, class: "form-control", "data-role": "tagsinput" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

@@ -1,0 +1,16 @@
+<div class="form-group">
+ <%= label_tag :client_name_email,"Cilent(name, email)"%>
+ <%= text_field_tag :client_name_email, params[:client_name_email], class: "form-control" %>
+</div>
+<div class="form-group">
+ <%= label_tag :item_name_desc,"Invoice Item (name, description)"%>
+ <%= text_field_tag :item_name_desc, params[:item_name_desc], class: "form-control" %>
+</div>
+<div class="form-group">
+ <%= label_tag :invoice_no,"Invoice #"%>
+ <%= text_field_tag :invoice_no, params[:item_name_desc], class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= label_tag :invoice_status, "Invoice Status"%>
+  <%= select_tag "invoice_status_id",options_from_collection_for_select(Status.all, :id, :status),include_blank: "- Select Status -",class: "selectpicker form-control" %>
+</div>

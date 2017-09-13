@@ -1,0 +1,43 @@
+<h1>Editing Category</h1>
+<%= form_for(@category) do |f| %>
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <img id="seeImage" src="" alt="your image" style="height:100ps;width:100px;" />
+  <div class="field">
+    <%= f.label :category_cover_pic %><br>
+    <%= f.file_field :category_cover_pic %>
+  </div>
+<% end %>
+<%= link_to 'Show', @category %> |
+<%= link_to 'Back', categories_path %>
+
+<script>
+$(document).ready(function(){
+  $("#category_name").keyup(function(e){
+    var category_name = $("#category_name").val();
+    var category_id = '<%= j params['id'] %>';
+    $.ajax({
+      type: "get",
+      url: "/categories/name",
+      data: {d: category_name, id: category_id }
+    });
+  });
+});
+
+function showImage(input) {
+  if (input.files) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      $('#seeImage').attr('src', e.target.result);
+    }
+    reader.readAsDataURL(input.files[0]);
+    $( "#edit_category_<%= params[:id] %>" ).submit();
+  }
+}
+$("#category_category_cover_pic").change(function(){
+  // alert(this);
+  showImage(this);
+});
+</script>

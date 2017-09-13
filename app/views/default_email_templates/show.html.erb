@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Email type:</strong>
+  <%= @default_email_template.email_type %>
+</p>
+
+<p>
+  <strong>Email subject:</strong>
+  <%= @default_email_template.email_subject %>
+</p>
+
+<p>
+  <strong>Headline:</strong>
+  <%= @default_email_template.headline %>
+</p>
+
+<p>
+  <strong>Button text:</strong>
+  <%= @default_email_template.button_text %>
+</p>
+
+<p>
+  <strong>Email body:</strong>
+  <%= @default_email_template.email_body %>
+</p>
+
+<p>
+  <strong>Text Afetr Select</strong>
+  <%= @default_email_template.text_after_select %>
+</p>
+
+<p>
+  <strong>Text For Button:</strong>
+  <%= @default_email_template.text_for_button %>
+</p>
+
+
+<%= link_to 'Edit', edit_default_email_template_path(@default_email_template) %> |
+<%= link_to 'Back', default_email_templates_path %>

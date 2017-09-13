@@ -1,0 +1,15 @@
+
+<% if @created == true %>
+  window.location = '/mobileapps/' + <%= @mobileapp.id %> +'/edit'
+
+  // location.reload();
+  <% elsif @created == false %>
+      var $name = $('#mobile_app_create').find('.modal-body .mobile_app_name');
+      $name.find('p').remove();
+
+      <% if @mobileapp.errors[:name].present? %>
+          $name.append('<p style="color:red" ><% error = @mobileapp.errors.messages[:name] %><%= error[0] %></p>');
+          $('#mobileapp_name').css('border-color', 'red');
+
+      <% end %>
+<% end %>

@@ -1,0 +1,241 @@
+<!-- top -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <!-- title -->
+          <div class="page-title">
+            <div class="row">
+              <div class="col-md-6 col-sm-5 col-xs-5">
+                <h2>
+                    <div id="pageTitleHeaderText">Mobile Apps</div>
+                </h2>
+                <h5 id="pageTitleSubHeaderText">
+                  <a href=<%= plans_billings_planbilling_path %>>Get Unlimited</a><br>2 of 5<span class="icon-side fa fa-question-circle"></span></h5>
+              </div>
+              <div class="col-md-6 col-sm-7 col-xs-7">
+                <div class="btn-group on-page-help-container">
+                  <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                    <span class="fa fa-question"></span>
+                  </a>
+                  <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                    <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                    <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                    <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                    <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                    <li><a href="#" >Email Us</a></li>
+                  </ul>
+                </div>
+                <div class="right-buttons text-right">
+                  <a id="gallary" data-toggle="modal" data-target="#mobile_app_create"  class="btn btn-primary" href="#">Create Mobile App</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /title -->
+        </div>
+      </div>
+    </div>
+    <!-- /top -->
+
+    <!-- main -->
+    <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-9">
+
+              <a href="#" id="filter" data-toggle="modal" data-target="#search-mobile-app" class="btn btn-sm btn-default margin-bottom btn-link">Search &amp; Filter</a>
+              <%if params[:app_name].present? || params[:gallery_find].present?  %>
+                <ul class="search-terms">
+                  <% if params[:app_name].present? && params[:gallery_find].present? %>
+                    <li id="Search"><%= link_to mobileapps_path(gallery_find: params[:gallery_find] ) do %><span class="close-tag" >Mobile App Name:<%= params[:app_name] %>  x</span><% end %> </li>
+                    <li id="Search"><%= link_to mobileapps_path(app_name: params[:app_name]) do %><span class="close-tag" >Gallery:<%= @gallery_name.name %>  x</span><% end %></li>
+                  <% elsif params[:app_name].present? %>
+                  <li id="Search"><%= link_to mobileapps_path do %><span class="close-tag" >Mobile App Name:<%= params[:app_name] %>  x</span><% end %> </li>
+                  <% elsif params[:gallery_find] %>
+                    <li id="Search"><%= link_to mobileapps_path do %><span class="close-tag" >Gallery:<%= @gallery_name.name %>  x</span><% end %></li>
+                  <% end %>
+                  <li><%= link_to "Clear All", mobileapps_path %></li>
+                </ul>
+            <% end %>
+            </div>
+            <div class="col-lg-3  text-right">
+                  <div class="input-group views">
+                    <span class="input-group-btn">
+                      <a href="#" class="btn btn-default <%= @view_type == true ? 'selected' : '' %> " id="btn-gridview"><span class="fa  fa-th-large"></span></a>
+                    </span>
+                    <span class="input-group-btn">
+                      <a href="#" class="btn btn-default <%= @view_type == false ? 'selected' : '' %> " id="btn-listview"><span class="fa fa-th-list"></span></a>
+                    </span>
+                  </div><!-- /input-group -->
+
+            </div>
+
+          </div>
+
+          <% if @mobileapps.present? %>
+          <div class="row">
+            <div class="col-lg-12">
+              <% if @view_type == false %>
+              <div id="listview" class="table-responsive has-dropdown">
+                  <%= render partial: "listview"%>
+                </a>
+              </div>
+              <% else %>
+                <div id="gridview" class="grid-view">
+                  <%= render partial: "gridview"%>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <% else %>
+            <p class="empty-state lead">We didn’t find any results based on that search/filter. Try again?</p>
+          <% end %>
+    </div>
+    </div>
+    <!-- /main -->
+    <!-- Share Modal -->
+
+	  <div class="modal fade" id="Share" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+
+	  </div>
+	 <!-- /mMdal -->
+    <!-- Modal -->
+    <div class="modal fade" id="mobile_app_create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">New Mobile App</h4>
+          </div>
+          <div class="modal-body">
+            <%= form_for(@mobileapp, remote: true) do |f| %>
+              <div class="form-group mobile_app_name set_color">
+                <label>Mobile App Name</label>
+                <%= f.text_field :name,  class: 'form-control' %>
+                <%= f.hidden_field :brand_id, :value => current_brand.id %>
+                <%= f.hidden_field :color_logo_id, :value => 1 %>
+                <%= f.hidden_field :contact_info, :value => "true" %>
+                <%= f.hidden_field :social_sharing, :value => "true" %>
+                <%= f.hidden_field :layout, :value => "true" %>
+                <%= f.hidden_field :language, :value => "English (US)" %>
+
+
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+            <%= submit_tag "Create App", :class => "btn btn-primary" %>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <!-- /mMdal -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="search-mobile-app" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">New Mobile App</h4>
+          </div>
+          <div class="modal-body">
+            <%= form_tag(mobileapps_path, :method => "get", id: "mobileapp-search-form") do %>
+                 <div class="form-group">
+                    <label>Mobile App Name</label>
+                    <%= text_field_tag :app_name, params[:app_name], class: "form-control" %>
+               </div>
+                <div class="form-group">
+                    <label>Gallery</label>
+                    <%= select_tag :gallery_find,options_for_select(@gallery.collect { |g| [g.name,g.id]}),{:include_blank => '-Any-',class: "selectpicker","data-live-search"=>"true"} %>
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+            <%= submit_tag "Search", name: nil, class: "btn btn-primary"%>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <!-- /mMdal -->
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $(".checkbox input").click(function(){
+          if($(this).is(':checked')){
+            $(this).parent('.checkbox').addClass('checked-box');
+          }
+          else{
+           $(this).parent('.checkbox').removeClass('checked-box');
+          }
+        })
+        $('#selAll').click(function(){
+          if($(this).is(':checked')){
+            $('.checkbox.first-row').addClass('checked-box');
+          }
+          else{
+           $('.checkbox.first-row').removeClass('checked-box');
+          }
+        })
+      });
+    </script>
+    <script type="text/javascript">
+      $(".grid-item .checkbox input").click(function(){
+        if($(this).is(':checked')){
+            $(this).parent('.checkbox').addClass('ck');
+            $(this).parents('.default').children('.flag-selected').addClass('dis-block');
+          }
+          else{
+            $(this).parent('.checkbox').removeClass('ck');
+            $(this).parents('.default').children('.flag-selected').removeClass('dis-block');
+          }
+      });
+    </script>
+
+    <script type="text/javascript">
+      // $('.push-pop .btn.dropdown-toggle').click(function(){
+      //   $(this).parents('.grid-item').children('.sp-tile').children('.img-rounded-top').children('.checkbox.inside-check').css({'display':'block','opacity':'1'});
+      // });
+    </script>
+    <script type="text/javascript">
+      $(".checkbox input").click(function(){
+        if($(this).is(':checked')){
+            $('.btn-bulkaction').css('display',"inline-block");
+        }
+        else{
+           $('.btn-bulkaction').css('display',"none");
+        }
+      });
+    </script>
+    <script type="text/javascript">
+      $('#btn-gridview').click(function(){
+        $.ajax({
+          type: 'GET',
+          url: '/mobileapps/change_view_type',
+          data: {view_type: true }
+        });
+      });
+      $('#btn-listview').click(function(){
+        $.ajax({
+          type: 'GET',
+          url: '/mobileapps/change_view_type',
+          data: {view_type: false}
+        });
+      });
+    </script>
+
+     <script type="text/javascript">
+          $(function() {
+            $('#datetimepicker1').datetimepicker({
+              language: 'pt-BR'
+            });
+            $('#datetimepicker1').on('changeDate', function(ev){
+                $('#datetimepicker1').datetimepicker('hide');
+            });
+          });
+        </script>
+
+         <script type="text/javascript">
+            $("[name='my-checkbox']").bootstrapSwitch();
+        </script>

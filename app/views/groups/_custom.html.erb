@@ -1,0 +1,34 @@
+<tr class="item">
+  <td class="name no-left-padding">
+    <%=text_field_tag 'sub_item_name', display_list_item.sub_item_name,id: "sub_item_name_#{display_list_item.id}",class: "form-control",onfocusout: "updateCustomItem('#{display_list_item.id}');"%>
+  </td>
+  <td class="desc text-center">
+    &nbsp;
+  </td>
+
+  <td class="price">
+    <div class="input-group">
+      <div class="input-group-addon">$</div>
+      <%= text_field_tag 'price',display_list_item.price,class: "form-control money-only text-right" %>
+    </div>
+  </td>
+  <td class="charge-shipping text-center">
+    <%if display_list_item.shipping_charge_apply == true%>
+      <div class="checkbox checked-box">
+    <% else %>
+      <div class="checkbox">
+   <% end %>
+      <%= check_box_tag 'shipping_charge_apply',display_list_item.shipping_charge_apply %>
+      <label></label>
+    </div>
+  </td>
+  <td class="shipping">
+      <div class="input-group">
+          <div class="input-group-addon">$</div>
+          <%= text_field_tag 'shipping_charge',display_list_item.shipping_charge,class: "form-control money-only text-right"%>
+      </div>
+  </td>
+  <td class="remove text-right">
+    <span data-toggle="modal" data-target="#Item-Deletion" class="desc-container fa close-btn" onclick="$('#delete_item_id').val(<%="#{display_list_item.id}"%>);">✕</span>
+  </td>
+</tr>

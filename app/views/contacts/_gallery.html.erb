@@ -1,0 +1,9 @@
+<p>Linked Galleries:</p>
+<% if @galleries_of_contacts.count != 0 %>
+  <% @galleries_of_contacts.each do |gallery| %>
+  <li><%= link_to gallery.name, gallery_path(gallery.id) %></li>
+<% end %>
+<% else %>
+No Linked galleries
+<%= link_to 'Create Gallery', galleries_addgallery_path(link: params[:id]) %>
+<% end %>

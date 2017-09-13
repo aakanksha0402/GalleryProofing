@@ -1,0 +1,256 @@
+<% content_for :body_class, "contactsettings" %>
+<%= form_for @privilege, url: save_privilege_galleries_path,method: :patch do |f| %>
+<%= f.hidden_field :gallery_id,value: params[:id] %>
+<%= hidden_field_tag "contact_id", params[:contact_id] %>
+<%#= @privilege.errors.messages[:gallery_access_code].present? %>
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+              <div id="pageTitleHeaderText">Linked Contact Privileges</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+
+            <div class="btn-group on-page-help-container">
+              <div class="right-buttons text-right">
+                <%= f.submit "Save", class: "btn btn-primary",style: "margin-right: 20px" %>
+                <%= link_to "Cancel",galleries_galleryhome_path(id: params[:id],contact_id: params[:contact_id]) ,class: "btn btn-link" %>
+              </div>
+            </div>
+
+            <div class="right-buttons text-right">
+              <a class="btn btn-primary" id="btn-newtemp" href="newTemplate.html" data-toggle="modal" data-target="#newtemp-filter" >New Template</a>
+              <a class="btn btn-default" id="btn-newauto" href="newAutomation.html" data-toggle="modal" data-target="#newauto-filter" >New Automation Series</a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+<!-- main -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <form id="contactSettings" method="post" action="">
+        <div class="panel">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-sm-6"><span class="contact-name">XYZ ABC</span></div>
+              <div class="col-sm-6 text-right">
+                <a href="#" data-target="#Remove_contact" data-toggle="modal" class="btn btn-xs btn-link js-unlink-contact">Remove Linked Contact</a>
+              </div>
+              <!-- Modal creation for remove link contact -->
+
+              <div class="modal" id="Remove_contact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="myModalLabel">Remove Linked Contact</h4>
+                    </div>
+                    <div class="modal-body">
+                      <p>Are you sure?</p>
+                      <p>Removing this Linked Contact will delete all info for Hidden and Labeled photos for this visitor.</p>
+                      <p>This cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <!-- <button type="button" class="btn btn-sm btn-danger">Yes, Delete</button> -->
+                      <%= link_to "Yes, Delete",galleries_remove_link_contact_url(id: params[:id],contact_id: params[:contact_id]), class: "btn btn-danger", id: "delete_label" %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--  modal-->
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-5">
+                <div class="section">
+                  <div class="heading">Access</div>
+                  <p class="info">Create an Access Code that the Linked Contact will use to Hide and Label photos.</p>
+                  <div class="section-body">
+                    <div class="form-group">
+
+                      <ul class="form-error list-unstyled">
+                        <li>
+                          <% if flash[:error].present? %>
+                            <% error = @privilege.errors.messages[:gallery_access_code] %>
+                            <%= error[0] %>
+                          <% end %>
+                        </li>
+                      </ul>
+
+                      <div class="access-code-label">
+                        <label for="admin_mode_pin" class="optional">Access Code</label>
+                        <p class="info">* Required</p>
+                      </div>
+                      <div class="access-code-field">
+                        <%= f.text_field :gallery_access_code, class: "form-control"%>
+                        <p class="info">6 character minimum</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="section">
+                  <div class="heading">Privileges</div>
+                  <p class="info">You can enable the following admin privileges for your Linked Contact. These privileges will not be available to other gallery visitors.</p>
+                  <div class="section-body">
+                    <div class="on-off">
+                      <div class="form-group">
+                        <label class="optional">Favorite Photos</label>
+                        <ul class="radio_list">
+                          <li>Yes</li>
+                        </ul>
+                      </div>
+                      <div class="form-group on-off">
+                        <label>Hide Photos</label>
+                        <div class="radiocon">
+                          <div class="myradio">
+                            <label>
+                              <span></span>
+                              <%= radio_button_tag "hide_photo_privilege", true %>Yes
+                            </label>
+                          </div>
+                          <div class="myradio">
+                            <label>
+                              <span></span>
+                              <%= radio_button_tag "hide_photo_privilege", false %>No
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group on-off">
+                        <label>Label Photos</label>
+                        <div class="radiocon">
+                          <div class="myradio">
+                            <label>
+                              <span></span>
+                              <%= radio_button_tag "label_photo_privilege", true %>Yes
+                            </label>
+                          </div>
+                          <div class="myradio">
+                            <label>
+                              <span></span>
+                              <%= radio_button_tag "label_photo_privilege", false %>No
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <ul id="tagList" class="list-unstyled ui-sortable">
+                        <%= hidden_field_tag "tags_ids1",@labels.ids.join(",") %>
+                      <% @labels.each do |label|%>
+                        <%#= label.name %>
+                        <li class="tag sortable">
+                          <div class="handle ui-sortable-handle"></div>
+                          <%= text_field_tag "tags[]", label.name, class: "handle ui-sortable-handle",  placeholder: "New Label Name",id: "tag_#{label.id}", "data-id": label.id %>
+                          <%= link_to "Remove","#",id: "RemoveLabel",class: "remove", remote: true %>
+                        </li>
+                      <% end %>
+                    </ul>
+                      <ul class="list-unstyled ui-sortable main-start-labal">
+                        <li class="tag">
+                          <div class="handle empty"></div>
+                          <div class="handle hidden"></div>
+                          <%= text_field_tag "new_tags[]",nil,class: "handle ui-sortable-handle",disabled: true, placeholder: "New Label Name" %>
+                          <a  class="add-btn">Add</a>
+                          <div class="remove hidden" data-toggle="modal" data-target="#Item-Delete">Remove</div>
+                        </li>
+                      </ul>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>
+
+<!-- Modal -->
+<div class="modal" id="Item-Delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Remove Label</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure? Any selections currently using this label will be lost.</p>
+        <p>This cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-sm btn-danger">Yes, Delete</button> -->
+        <%= link_to "Yes, Delete","#", class: "btn btn-danger", id: "delete_label" %>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+<script type="text/javascript">
+$(document).ready(function(){
+  var present = <%= @privilege.present? %>;
+  console.log(present);
+  if (present == true){
+    $(".radiocon").find("#hide_photo_privilege_"+<%= @privilege.hide_photo_privilege %>).parent().parent().addClass('selected');
+    $(".radiocon").find("#hide_photo_privilege_"+<%= @privilege.hide_photo_privilege %>).prop('checked',true);
+    $(".radiocon").find("#label_photo_privilege_"+<%= @privilege.label_photo_privilege %>).parent().parent().addClass('selected');
+    $(".radiocon").find("#label_photo_privilege_"+<%= @privilege.label_photo_privilege %>).prop('checked',true);
+  }else{
+    $(".radiocon").find("#hide_photo_privilege_false").parent().parent().addClass('selected');
+    $(".radiocon").find("#hide_photo_privilege_false").prop('checked',true);
+    $(".radiocon").find("#label_photo_privilege_false").parent().parent().addClass('selected');
+    $(".radiocon").find("#label_photo_privilege_false").prop('checked',true);
+  }
+  $(".add-btn").click(function(){
+    var b = '<li class="tag"><div class="handle empty"></div><div class="handle hidden"></div><%= text_field_tag "new_tags[]",nil,class: "handle ui-sortable-handle", placeholder: "New Label Name" %><a  class="remove-btn">Remove</a><div class="remove hidden" data-toggle="modal" data-target="#Item-Delete">Remove</div></li>'
+    var a = "<li class='tag sortable'><div class='handle ui-sortable-handle'></div><input type='text' class='form-control'><div class='remove' data-toggle='modal' data-target='#Item-Delete'>Remove</div></li> ";
+    $("#tagList").append(b);
+  });
+});
+</script>
+<script type="text/javascript">
+$(".myradio").click(function() {
+  $(this).parent(".radiocon").find('.selected').removeClass('selected');
+  $(this).addClass('selected');
+  $(this).find('input[type="radio"]').prop('checked',true);
+});
+</script>
+<!-- <script>
+  $(document).ready(function(){
+    $('input[id^=tag_]').each(function(){
+      console.log($(this).data('id'));
+      if ($("#tags_ids1").val() != ""){
+        $("#tags_ids1").val($("#tags_ids1").val() +","+ $(this).data('id'));
+      }else{
+        $("#tags_ids1").val($("#tags").val() + $(this).data('id'));
+      }
+    })
+  });
+</script> -->
+<script>
+  $('a[id^="RemoveLabel"]').click(function(){
+    alert($(this).parent().find('input[type="text"]').data("id"));
+    $.ajax({
+      type: "get",
+      url: "/galleries/remove_label",
+      data: {label_id: $(this).parent().find('input[type="text"]').data("id"),id: <%= params[:id] %>, contact_id: <%= params[:contact_id] %>}
+    }).success(alert("hello"));
+  });
+</script>

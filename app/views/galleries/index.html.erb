@@ -1,0 +1,639 @@
+<%#= current_user.id %>
+<%= puts "-------------#{@gallery.id}===================" %>
+<% content_for :head, "GalleryProofing | Galleries"%>
+<% content_for :body_class, "gallery-index" %>
+<% content_for :photo_class, "active"%>
+<% if @not_authorized == true %>
+<%= render partial: "/dashboards/no_authorization" %>
+<% else %>
+<% if notice.present?%>
+<div id="notice1"><div style="float:left" id="notice"><%= notice %></div></div>
+<%else%>
+<p></p>
+<% end %>
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+              <div id="pageTitleHeaderText">Galleries</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><%= link_to "#", target: "_blank" do %>
+                  <span class="email"><i class="fa fa-envelope"></i></span>Email-Us
+                  <% end %></li>
+                </ul>
+              </div>
+              <div class="right-buttons text-right">
+                <% unless @not_authorized_to_add == true %>
+                <%= link_to 'New Gallery', "#add-gallary" ,  id: "gallary", 'data-toggle': "modal",  'data-backdrop': "static",  class: "btn btn-primary" %>
+                <% end %>
+                <% unless @not_authorized_to_view_default_settings == true %>
+                <%= link_to 'Default Settings', gallery_layouts_path, class: "btn btn-default" %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /title -->
+      </div>
+    </div>
+  </div>
+  <!-- /top -->
+  <!-- main -->
+  <% @total_images=0 %>
+  <% @galleries.each do |g| %>
+  <% @total_images += g.gallery_photos.count %>
+  <% end %>
+  <% if @galleries.count == 0 && !params[:status].present? && params[:search].nil? && params[:gallery_access_privacy].nil? && params[:shoot_year].nil?  %>
+  <!-- main -->
+  <%= render "no_galleries" %>
+  <!-- /main -->
+  <%else%>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <div class="plan-usage">
+          Using <%= @total_images %> of 1,500 photos
+        <%= link_to "Upgrade plan" , plans_billings_planbilling_path %>
+        </div>
+      </div>
+    </div>
+    <%= form_tag galleries_bulkaction_path(ids: "gallery_ids"),method: :get do %>
+    <div class="row gallery-filter">
+      <div class="col-lg-9">
+        <!-- <select class="form-control input-lg"> -->
+        <div style="float:left">
+          <div style="float:left">
+            <%= select_tag "option", options_for_select('<option>All Open</option><option value = "Active" class="sub-option">Active</option><option value = "Inactive" class="sub-option">Inactive</option><option value = "Pre-registered" class="sub-option">Pre-registered</option><option value = "Archived" >Archived</option>'.html_safe),class: "selectpicker form-control",id: "Status",remote: true%>
+          </div>
+        </div>
+        <div>
+          <%= link_to "Search & Filter","#modal-filter",id: "filter", 'data-toggle': "modal", class: "btn btn-sm btn-default margin-bottom btn-link", "data-backdrop": "static" %>
+        </div>
+        <br>
+        <%if params[:search].present? || params[:gallery_access_privacy].present? || params[:shoot_year].present? %>
+        <ul class="search-terms">
+          <% if params[:search].present? %>
+          <li id="Search"><%= link_to "#" do %><span class="close-tag" >Gallery Name: <%=  params[:search] %>  <span>X</span></span><% end %></li>
+          <% end %>
+          <% if params[:gallery_access_privacy].present? %>
+          <li id="gap"><%= link_to "#" do %><span class="close-tag" >Gallery Access: <%= params[:gallery_access_privacy] %>  <span>X</span></span><% end %></li>
+          <% end %>
+          <% if params[:shoot_year].present? %>
+          <li id="sy"><%= link_to "#" do %><span class="close-tag" >Shoot Date Year: <%= params[:shoot_year] %>   <span>X</span> </span> <% end %></li>
+          <% end %>
+
+          <%unless params[:search].nil? && params[:gallery_access_privacy].nil? && params[:shoot_year].nil? %>
+          <li><%= link_to "Clear All", galleries_path %></li>
+          <% end %>
+        </ul>
+        <% end %>
+        <!-- <a href="#" id="filter" data-toggle="modal" data-target="#modal-filter" class="btn btn-sm btn-default margin-bottom btn-link">Search &amp; Filter</a> -->
+      </div>
+      <div class="col-lg-3  text-right">
+        <%= link_to "Bulk Actions","#bluck-event",'data-toggle': "modal",id: "myBtn",class: "btn btn-default btn-bulkaction"%>
+        <!-- <%= submit_tag "Bulk Actions",class: "btn btn-default btn-bulkaction",remote: true%> -->
+        <div class="input-group views">
+          <span class="input-group-btn">
+            <a href="#" class="btn btn-default <%= @view_type == true ? 'selected' : 'jmiuj' %>" id="btn-gridview"><span class="fa fa-th-large"></span></a>
+          </span>
+          <span class="input-group-btn">
+            <a href="#" class="btn btn-default <%= @view_type == false ? "selected" : "nu" %>" id="btn-listview"><span class="fa fa-th-list"></span></a>
+          </span>
+        </div>
+        <!-- /input-group -->
+      </div>
+    </div>
+    <div class="row">
+      <% if @galleries.present? %>
+      <div class="col-lg-12">
+        <% if @view_type == false %>
+          <div id="listview" class="table-responsive has-dropdown">
+              <!-- Display Gallery Records as listView -->
+            <%= render partial: "listview" %>
+          </div>
+        <% else %>
+          <div id="gridview" class="grid-view">
+            <!-- Display Gallery Records as GridView -->
+            <%= render partial: "gridview" %>
+          </div>
+        <% end %>
+      </div>
+      <% else %>
+        <p class="empty-state lead">We didn’t find any results based on that search/filter. Try again?</p>
+      <% end %>
+    </div>
+    <% end %>
+  </div>
+  <% end %>
+  <!-- /main -->
+
+
+  <!-- Share Modal -->
+
+  <%@galleries.each do |gallery|%>
+  <div class="modal" id="Share1_<%= gallery.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" "data-backdrop": "static">
+
+    <div class="modal-dialog" id="New1" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Email Link to this Gallery</h4>
+        </div>
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
+
+              <%= form_for @gallery_share,url: galleries_share_details_path(id: gallery.id), :html => {:id => "share_gallery_form_#{gallery.id}"} do |f|%>
+              <%@buttontext="ViewGallery"%>
+              <%@subject="Your Gallery is Ready!"%>
+              <%@gallery_cover_url=gallery.cover_url.url%>
+              <%= f.hidden_field :gallery_id,value: gallery.id%>
+              <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group", id="recipient_div_<%= gallery.id%>" >
+                  <%=f.label :recipient,"To"%>
+                  <%=f.text_field :recipient,class: "form-control", name: "recipient", id: "gallery_share_recipient_#{ gallery.id }" %>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="templateDescription">
+                    <p>Use the Gallery Link template to share a gallery with your clients (i.e. - your gallery is ready!)</p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                  <%=f.label :email_template_id,"Template"%>
+                  <%= f.collection_select :email_template_id, current_brand.email_templates.all, :id,:name, {prompt: "Select Email Template" },{class: "form-control input-lg email-add-1 selectpicker"} %>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group", id = "subject_div_<%= gallery.id %>" >
+                  <%=f.label :subject,"Subject"%>
+                  <%=f.text_field :subject,value: "Your Gallery is Ready!",class: "form-control", id: "gallery_share_subject_#{gallery.id}"%>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                  <%=f.label :headline,"HeadLine"%>
+                  <%=f.text_field :headline,value: gallery.name,class: "form-control"%>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                  <%= f.label :button_text %>
+                  <p class="form-input-description">Clicking button will open gallery</p>
+                  <div class="row">
+                    <div class="col-lg-8 col-md-7 col-sm-8 col-xs-12">
+                      <%= f.text_field :buttontext,value: "VIEW GALLERY", class: "form-control" %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12 form-group">
+                  <%= f.label :message %>
+                  <%= f.text_area :message,value: "Hi!
+
+                  Your gallery is ready to be viewed.
+
+                  Thanks,
+                  #{current_brand.brand_name}", class: "form-control" %>
+                </div>
+              </div>
+              <div class="actions pull-left">
+                <%=link_to "Cancel",galleries_galleryhome_path(id: params[:id]),class: "btn btn-default"%>
+                <%=f.submit "Send",class: "btn btn-primary"%>
+              </div>
+              <% end %>
+            </div>
+
+
+            <div class="col-md-7">
+              <label>Email Preview</label>
+              <%=render "preview",gallery: gallery%>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% end %>
+  <!-- /mMdal -->
+
+
+  <!-- Bulk Action Modal -->
+  <div class="modal fade" id="bluck-event" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop = "static" >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Bulk Actions</h4>
+        </div>
+        <%= form_for @gallery_new,url: galleries_update_multiple_path(status: params[:gallery_ids]) do |f|%>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-12">
+              <p>You have selected 1 galleries, which actions would you like to apply? Please note, actions taken cannot be undone!</p>
+            </div>
+
+            <%= hidden_field_tag :ids%>
+            <%=params[:ids]%>
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <%=label_tag "Status"%>
+                  <%=select_tag  :status, "<option>Active</option><option>Inactive</option><option>Pre-registered</option><option>Archived</option>".html_safe,{include_blank: "-Don't Change-",id: "Status",class: "selectpicker",remote: true}%>
+                </div>
+                <%=f.fields_for :custom_gallery_layouts do |ff|%>
+                <div class="form-group">
+                  <%=label_tag "Gallery Access"%>
+                  <%=ff.select :gallery_access_privacy,'<option selected="selected">Public No Password</option><option>Public Password</option><option>Private No Password</option><option>Private Password</option>'.html_safe,{},class: "selectpicker"%>
+                </div>
+                <!-- <div class="form-group"> -->
+                  <!-- <label>Category</label> -->
+                  <%#= ff.collection_select :category_id,@categories,:id,:name %>
+                  <%#= ff.select :category_id,options_from_collection_for_select(@categories, 'id','name'),{include_blank: "Select any one option"}, class: "selectpicker" %>
+                <!-- </div> -->
+                <% end %>
+
+                <div class="form-group">
+                  <%= f.label :expiration_date,"Expiration Date"%><br>
+                  <div id="expireDatePicker" class="input-append date">
+                    <%= f.text_field :expiration_date,value: "#{Date.today.to_s}"%>
+                    <span class="add-on">
+                      <span class="celender"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                    </span>
+                  </div>
+                </div>
+                <%=f.fields_for :custom_gallery_layouts do |ff|%>
+                <div class="form-group">
+                  <%=label_tag "Price Sheet"%>
+                  <%= ff.select :pricing_id, options_from_collection_for_select(current_user.pricings.all, :id, :name),{include_blank: "Select any one option"},class: "selectpicker" %>
+                  <%#= select_tag :price,nil,class: "selectpicker"%>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <%=label_tag "Visitors Information"%>
+                  <div class="redactor-box">
+                    <ul class="redactor-toolbar">
+                      <li><a class="fa fa-bold" href="#" rel="bold" tabindex="-1"data-toggle="tooltip" data-placement="bottom" title="Bold"></a></li>
+                      <li><a class="fa fa-italic" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="Italic"></a></li>
+                      <li><a class="fa fa-underline" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="Underline"></a></li>
+                      <li><a class="fa fa-link" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="Link"></a></li>
+                      <li><a class="fa fa-align-left" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="alignment"></a></li>
+                      <li><a class="fa fa-list-ul" href="#" rel="bold" tabindex="-1" data-toggle="tooltip" data-placement="bottom" title="unorderedlist"></a></li>
+                      <li><a class="fa fa-list-ol" href="#" rel="bold" tabindex="-1"  data-toggle="tooltip" data-placement="bottom" title="orderedlist"></a></li>
+                    </ul>
+                    <div contenteditable="true" class="redactor-editor editor-set-print" dir="ltr"></div>
+                  </div>
+                </div>
+                <!-- <div class="form-group"> -->
+                  <%#=label_tag "Automated Emails"%>
+                  <%#= select_tag :automated_emails,nil,class: "selectpicker"%>
+                <!-- </div> -->
+                <div class="form-group">
+                  <%=label_tag "Color Set"%>
+                  <%#= select_tag :color,nil,class: "selectpicker"%>
+                  <%= ff.select :color_logo_id, options_from_collection_for_select(current_brand.color_logos.all, :id, :name),{include_blank: "Select any one option"},class: "selectpicker" %>
+                </div>
+                <% end %>
+
+                <div class="form-group is-vendor">
+                  <%= check_box_tag :'my-checkbox',true,false,include_hidden: true ,id: "BulkEventDelete"%>
+                  <%= label_tag :delete, "Do Not Delete" %>
+                  <%= hidden_field_tag :delete%>
+                </div>
+              </div>
+            </div>
+            <% end %>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <%= submit_tag "Apply Changes",class: "btn btn-primary"%>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /mMdal -->
+  <!-- Add Gallery Modal -->
+  <div class="modal" id="add-gallary" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Add a Gallery</h4>
+        </div>
+        <div class="modal-body">
+          <%=render "addgallery"%>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /mMdal -->
+  <!-- Search Modal -->
+  <div class="modal" id="modal-filter" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false" >
+
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Search <% if params[:status].present? %> <%= params[:status].capitalize %> <% else %> Open <% end %> Galleries</h4>
+        </div>
+        <%= form_tag(galleries_path, :method => "get", id: "gallery-search-form") do %>
+        <div class="modal-body">
+          <%= render "search"%>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <!-- <button type="button" class="btn btn-primary">Search</button> -->
+          <%= submit_tag "Search", name: nil, class: "btn btn-primary"%>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <!-- /mMdal -->
+  <script type="text/javascript">
+  $('#btn-gridview').click(function(){
+    // $('#gridview').css('display','block');
+    // $('#listview').css('display','none');
+    // $(this).addClass('selected');
+    // $('#btn-listview').removeClass('selected');
+    $.ajax({
+      type: 'GET',
+      url: '/galleries/change_view_type',
+      data: { view_type: true}
+    });
+
+  });
+  $('#btn-listview').click(function(){
+    // $('#gridview').css('display','none');
+    // $('#listview').css('display','block');
+    $.ajax({
+      type: 'GET',
+      url: '/galleries/change_view_type',
+      data: { view_type: false}
+    });
+  });
+  </script>
+  <script type="text/javascript">
+  $(function() {
+    $('#datetimepicker1').datetimepicker({
+      language: 'pt-BR'
+    });
+    $('#datetimepicker1').on('changeDate', function(ev){
+      $('#datetimepicker1').datetimepicker('hide');
+    });
+
+    $('#expireDatePicker').datetimepicker({
+      language: 'pt-BR'
+    });
+    $('#expireDatePicker').on('changeDate', function(ev){
+      $('#expireDatePicker').datetimepicker('hide');
+    });
+  });
+  </script>
+  <script>
+  $(function($) {
+    $("#Status").change(function() {
+      // alert($(this).val());
+      var selected_id = $("#Status").val();
+      $.ajax({
+        type: "GET",
+        url: "/galleries?status=" + selected_id,
+        success: function(data){
+          if(selected_id == "All Open"){
+            location.href = "/galleries"
+          }
+          else {
+            location.href = "/galleries?status=" + selected_id
+          }
+          $("#Status").setItem(selected_id)
+        }
+      });
+    });
+  });
+  $(document).ready(function(){
+    $("#Status").val("<%= params[:status]%>");
+  });
+  </script>
+  <script>
+  $(".grid-item .checkbox input").click(function(){
+    if($(this).is(':checked')){
+      $(this).parent('.checkbox').addClass('ck');
+      $(this).parents('.default').children('.flag-selected').addClass('dis-block');
+    }
+    else{
+      $(this).parent('.checkbox').removeClass('ck');
+      $(this).parents('.default').children('.flag-selected').removeClass('dis-block');
+    }
+  });
+  </script>
+  <script type="text/javascript">
+  $(document).ready(function(){
+    $(".checkbox input").click(function(){
+      if($(this).is(':checked')){
+        $(this).parent('.checkbox').addClass('checked-box');
+      }
+      else{
+        $(this).parent('.checkbox').removeClass('checked-box');
+      }
+    })
+    $('#selAll').click(function(){
+      if($(this).is(':checked')){
+        $('.checkbox').addClass('checked-box');
+      }
+      else{
+        $('.checkbox').removeClass('checked-box');
+      }
+    })
+  });
+  </script>
+  <script type="text/javascript">
+  $(".checkbox input").change(function(){
+    if($('.checkbox input:checked').size()>0){
+
+      $('.btn-bulkaction').css('display',"inline-block");
+    }
+    else{
+      $('.btn-bulkaction').css('display',"none");
+    }
+  });
+  </script>
+  <script>
+  $(".btn-bulkaction").click(function(){
+  })
+  </script>
+  <script>
+  $(document).ready(function(){
+    var v=[];
+    $(".checkbox input").click(function(){
+      if($(this).is(':checked')){
+        if($(this).val()=="on"){
+          v=[];
+          $('input[class^="check1"]').each(function(){
+            v.push($(this).val());
+            $(this).prop("checked",true);
+            $('#ids').val(v.join(","));
+          });
+        }
+        else{
+          v.push($(this).val());
+          $('#ids').val(v.join(", "));
+        }
+      }
+      else {
+        $(this).parent('.checkbox').removeClass('checked-box');
+        if($(this).val()=="on"){
+          v=[]
+          $('#ids').val(v.join(","));
+        }
+        else{
+          var v1=v.indexOf($(this).val());
+          if(v1 > -1){
+            v.splice(v1,1)
+          }
+          $('#ids').val(v.join(","));
+        }
+      }
+    });
+  });
+  </script>
+
+  <script>
+  function removeURLParameter(url, parameter) {
+    //prefer to use l.search if you have a location/link object
+    var urlparts= url.split('?');
+    if (urlparts.length>=2) {
+
+      var prefix= encodeURIComponent(parameter.substring(1))+'=';
+      var pars= urlparts[1].split(/[&;]/g);
+
+      //reverse iteration as may be destructive
+      for (var i= pars.length; i-- > 0;) {
+        //idiom for string.startsWith
+        if (pars[i].indexOf(parameter.substring(1)) !== -1) {
+          pars.splice(i, 1);
+        }
+      }
+      url= urlparts[0]+'?'+pars.join('&');
+      return url;
+    } else {
+      return url;
+    }
+  }
+  $(document).ready(function(){
+    $("#Search").click(function(){
+      location.href = removeURLParameter(location.href,((($(this).text()).slice(0,-3)).replace(/ /g,"*")).replace(/ /g,"+"))
+    });
+    $("#gap").click(function(){
+      location.href=removeURLParameter(location.href,((($(this).text()).slice(0,-3))).replace(/ /g,"+"))
+    });
+    $("#sy").click(function(){
+      location.href=removeURLParameter(location.href,((($(this).text()).slice(0,-3)).replace(/ /g,"*")).replace(/ /g,"+"))
+    });
+  });
+  </script>
+  <script>
+  <% if flash[:errorforname].present? %>
+  $("#add-gallary").modal('show');
+  $("#gallery_name").css("border-color","red");
+  $("#nameError").css("display", "block");
+  <% end %>
+  </script>
+  <script>
+  $("[name='my-checkbox2']").bootstrapSwitch();
+  $("[name='my-checkbox2']").on('switchChange.bootstrapSwitch',function(){
+    // alert($(this).bootstrapSwitch('state'));
+  });
+  </script>
+  <script>
+  $(document).ready(function(){
+    $("#delete").val($("#BulkEventDelete").prop('checked'));
+    $("#BulkEventDelete").on('switchChange.bootstrapSwitch',function(){
+      // alert($(this).prop('checked'));
+      $("#delete").val($(this).prop('checked'));
+    });
+  });
+  </script>
+  <% end %>
+
+  <script>
+  $(document).ready(function()
+  {
+    '<%@galleries.each do |gallery|%>'
+      $("#share_gallery_form_<%= gallery.id %>").submit(function(e)
+      {
+          var email_regex =  new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+
+
+          if($('#gallery_share_recipient_<%= gallery.id %>').val() == '' ||  email_regex.test($('#gallery_share_recipient_<%= gallery.id %>').val()) == false )
+          {
+                if($('#p_div').length)
+                {
+
+                }
+                else
+                {
+                  $('#recipient_div_<%= gallery.id %>').append('<p style="color:red;" id="p_div" >Please enter an email address.<p>');
+                  $('#gallery_share_recipient_<%= gallery.id %>').css('border-color', 'red');
+                }
+
+             e.preventDefault(e);
+          }
+          if($('#gallery_share_subject_<%= gallery.id %>').val() == '')
+          {
+            if($('#s_div').length)
+            {
+
+            }
+            else
+            {
+              $('#subject_div_<%= gallery.id %>').append('<p style="color:red;" id="s_div" >Please enter the subject for this email.<p>');
+               $('#gallery_share_subject_<%= gallery.id %>').css('border-color', 'red');
+            }
+             e.preventDefault(e);
+          }
+      });
+      '<% end %>'
+  });
+
+  </script>
+  <script>
+    $(document).ready(function(){
+      $("#delete").val($("#BulkEventDelete").prop('checked'));
+      $("#BulkEventDelete").on('switchChange.bootstrapSwitch',function(){
+
+        if($("#BulkEventDelete").prop('checked') == true)
+        {
+            $(this).parents(".is-vendor").find("label").text("Yes, Delete Galleries");
+            // $("#delete").val($(this).prop('checked'));
+        }
+        else
+        {
+          $(this).parents(".is-vendor").find("label").text("Do Not Delete");
+        }
+
+      });
+    });
+  </script>

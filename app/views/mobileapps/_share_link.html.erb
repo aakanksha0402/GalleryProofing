@@ -1,0 +1,112 @@
+<div class="modal-dialog" id="New1" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Email Mobile App Link</h4>
+        </div>
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
+
+              <%= form_for @mobileapp_share,url: save_share_link_path(id: @mobileapp.id,from: params[:from]) do |f|%>
+              <%= f.hidden_field :mobileapp_id,value: @mobileapp.id%>
+              <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                  <%=f.label :recipient,"To"%>
+                  <%=f.text_field :recipient,class: "form-control", :required => true%>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                  <%=f.label :email_template_id,"Template"%>
+                  <%= f.collection_select :email_template_id, current_brand.email_templates.all, :id,:name, {prompt: "Select Email Template",:selected => @default_template.id },{class: "form-control input-lg change-select"} %>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                  <%=f.label :subject,"Subject"%>
+                  <%=f.text_field :subject,value: @default_template.email_subject,class: "form-control subject-change"%>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                  <%=f.label :headline,"HeadLine"%>
+                  <%=f.text_field :headline,value: @default_template.headline,class: "form-control headline-change"%>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                  <%= f.label :button_text %>
+                  <p class="form-input-description">Clicking button will download app
+
+                  </p>
+                  <div class="row">
+                    <div class="col-lg-8 col-md-7 col-sm-8 col-xs-12">
+                      <%= f.text_field :buttontext,value: @default_template.button_text, class: "form-control button-change" %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12 form-group">
+                  <%= f.label :message %>
+                  <%= f.text_area :message,value: ActionView::Base.full_sanitizer.sanitize(@default_template.email_body), class: "form-control message-change" %>
+                </div>
+              </div>
+              <div class="actions pull-left">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancle</button>
+                <%=f.submit "Send",class: "btn btn-primary"%>
+              </div>
+              <% end %>
+            </div>
+
+
+            <div class="col-md-7">
+              <label>Email Preview</label>
+              <%=render "email_preview"%>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+  $(document).ready(function() {
+  return tinymce.init({
+    selector: "textarea",
+  });
+  });
+</script>
+
+<script type="text/javascript">
+  $('.change-select').on('change', function(){
+    $.ajax({ type: "GET",
+        url: "/mobileapps/share_link",
+        data: { default_template_id: $('option:selected', this).val(),id: <%= @mobileapp.id %> },
+        dataType : "script"
+    }).done(function(data) {
+        console.log(data);
+    });
+});
+  $('.subject-change').on('change', function(){
+    $.ajax({ type: "GET",
+        url: "/mobileapps/share_link",
+        data: { default_template_id: $('.change-select').val(),id: <%= @mobileapp.id %>,subject_change: $(this).val() },
+        dataType : "script"
+    }).done(function(data) {
+        console.log(data);
+    });
+});
+  $('.headline-change ,.button-change , .message-change').on('change', function(){
+    $.ajax({ type: "GET",
+        url: "/mobileapps/share_link",
+        data: { default_template_id: $('.change-select').val(),id: <%= @mobileapp.id %>,headline_change: $('.headline-change').val(),subject_change: $('.subject-change').val(),buttontext: $('.button-change').val(),message: $('.message-change').val() },
+        dataType : "script"
+    }).done(function(data) {
+        console.log(data);
+    });
+});
+</script>

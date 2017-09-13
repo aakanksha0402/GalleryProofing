@@ -1,0 +1,223 @@
+<% content_for :head, "GalleryProofing | Plan and Billing" %>
+<% content_for :body_class, "account-planbilling" %>
+<% if @not_authorized == true || @not_authorized_to_edit == true %>
+<%= render partial: "/dashboards/no_authorization" %>
+<% else %>
+<p id="notice"><%= notice %></p>
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+              <div id="pageTitleHeaderText">Plan & Billing</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><%= link_to "#", target: "_blank" do %>
+                  <span class="email"><i class="fa fa-envelope"></i></span>Email-Us
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <ul class="nav nav-pills in-pills">
+        <li id = "plans" class="active"><%= link_to "Plan Info" %></li>
+        <li id = "credit" class="type "><%= link_to "Credit Card", plans_billings_creditcard_path %></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="tab-content clearfix">
+        <div class="tab-pane active" id="PlanInfo_in">
+
+          <!-- in-side -->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6 col-lg-4">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <h1>Photo Plan</h1>
+                    <p>Select a plan to fit your needs. You can upgrade or downgrade at anytime</p>
+                    <div class="table table-auto-width">
+                      <div class="table-head">
+                        <div class="tr">
+                          <div class="th">Photos</div>
+                          <div class="th">Mobile Apps</div>
+                          <div class="th">Invoicing</div>
+                          <div class="th">Monthly</div>
+                          <div class="th">Yearly</div>
+                        </div>
+                      </div>
+                      <div class="table-body">
+                        <% @data_plans.zip(@dp).each do |data_plan, dp| %>
+                        <div class="tr">
+                          <div class="td"><%= data_plan.photos_number %></div>
+                          <div class="td"><%= data_plan.mobile_apps_number %></div>
+                          <div class="td"><%= data_plan.invoices_number %></div>
+                          <div class="td text-center">
+                            <% if data_plan.id == @plan_and_billing.data_plan_id %>
+                              <span class="current-plan bold">Your Plan</span>
+                            <% else %>
+                              <%= link_to "#select-plan-#{data_plan.id}","data-toggle": "modal", class: "btn btn-primary select-plan change-studio-plan" do %>
+                              <span class="currency-symbol">$</span><span class="price"><%= data_plan.plan_price == "0" ? "Free" : data_plan.plan_price %></span><span class="period">/mo</span>
+                            <% end %>
+                            <div class="modal fade" id="select-plan-<%= data_plan.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content" style="text-align: left">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Confirm Photo Plan Change</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <% @plan_type = data_plan.id == 1 ? "0" : data_plan.plan_price %>
+                                    <% @period = data_plan.data_period == "Monthly" ? "month" : "year" %>
+                                    <p>Are you sure that you want to change your plan from having <span class="bold"><%= @current_plan.photos_number %></span> photos at <span class="bold">$<%= @current_plan.plan_price%>.00</span> <%= @current_plan.data_period %> to having <span class="bold"><%= data_plan.photos_number %></span> photos at <span class="bold">$<%= @plan_type %>.00 per <%= @period %>?</span></p>
+                                    <p>Please note that no refunds will be made back to your card if you change your mind. A ShootProof credit is all that can be issued.</p>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                    <%# if @plan_and_billing.billing_date <= Date.today() && data_plan.plan_price != "Free" %>
+                                      <%#= link_to "Yes,Confirm Change",plans_billings_changeplan_path(photo_plan_id: data_plan.id),class: "btn btn-primary" %>
+                                    <%# else %>
+                                      <%= link_to "Yes,Confirm Change",plans_billings_changeplan_path(photo_plan_id: data_plan.id),class: "btn btn-primary", method: :post, data: { disable_with: "Please wait..." } %>
+                                    <%# end %>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <% end %>
+                          </div>
+                          <% if dp.nil? || dp.plan_price == "" %>
+                            <div class="td text-center"></div>
+                          <% else %>
+                            <div class="td text-center">
+                              <% if dp.id == @plan_and_billing.data_plan_id %>
+                                <span class="current-plan bold">Your Plan</span>
+                              <% else %>
+                                <%= link_to "#select-yearly-plan-#{dp.id}", "data-toggle": "modal", class: "btn btn-primary select-plan change-studio-plan" do %>
+                                  <span class="currency-symbol">$</span><span class="price"><%= dp.plan_price %></span><span class="period">/yr</span>
+                                  <% end %>
+                              <div class="modal fade" id="select-yearly-plan-<%= dp.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content" style="text-align: left">
+                                    <div class="modal-header">
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                      <h4 class="modal-title" id="myModalLabel">Confirm Photo Plan Change</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                      <% @plan_type = dp.id == 1 ? "0" : dp.plan_price %>
+                                      <% @period = dp.data_period == "Monthly" ? "month" : "year" %>
+                                      <p>Are you sure that you want to change your plan from having <span class="bold"><%= @current_plan.photos_number %></span> photos at <span class="bold">$<%= @current_plan.plan_price%>.00</span> <%= @current_plan.data_period%> to having <span class="bold"><%= dp.photos_number %></span> photos at <span class="bold">$<%= @plan_type %>.00 per <%= @period %>?</span></p>
+                                      <p>Please note that no refunds will be made back to your card if you change your mind. A ShootProof credit is all that can be issued.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                      <%# if @plan_and_billing.billing_date <= Date.today() %>
+                                        <%#= link_to "Yes,Confirm Change",plans_billings_creditcard_path(photo_plan_id: dp.id),class: "btn btn-primary" %>
+                                      <%# else %>
+                                        <%= link_to "Yes,Confirm Change",plans_billings_changeplan_path(photo_plan_id: dp.id),class: "btn btn-primary", method: :post %>
+                                      <%# end %>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            <% end %>
+                          </div>
+                          <% end %>
+                        </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="volume-photography">
+                  Volume Photography? <%= mail_to "support@galleryproofing.com", "Contact Us" %>.
+                </div>
+              </div>
+              <div class=" col-md-offset-2 col-lg-offset-2 col-md-8 col-lg-6">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <h1>Music Plan</h1>
+                    <p>You have not selected a music plan.<%= link_to "Click here to browse music plans.", songs_path %></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <h2>History & Billing</h2>
+                  <div class="plan-bill">
+                    <div class="bold">Upcoming Bill:</div>
+                    <ul>
+                      <% if @plan_and_billing.billing_date <= Date.today() %>
+                        <li><%= Date.today.strftime("%d-%b-%Y") %>: $<%= @current_plan.plan_price %>.00 Photo Plan <%= @current_plan.photos_number %></li>
+                      <% else %>
+                        <li><%= @plan_and_billing.billing_date.strftime("%b %d, %Y") %>: $<%= @current_plan.plan_price %>.00 Photo Plan <%= @current_plan.photos_number %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+                  <% if @transactions.any? %>
+                    <div class="table-responsive has-dropdown">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Credit</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% @transactions.each do |transaction| %>
+                            <tr>
+                              <td><%= transaction.created_at.strftime("%d-%b-%Y") %></td>
+                              <td><%= transaction.description %></td>
+                              <td>$<%= transaction.amount %></td>
+                              <td><%= transaction.message %></td>
+                              <td>$<%= transaction.credit %></td>
+                              <td><%= link_to "Print", plans_billings_print_invoice_path(bill_id: transaction.id), target: "_blank", width: 300, height: 300 %></td>
+                            </tr>
+                          <% end %>
+                        </tbody>
+                      </table>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <div class="bottom-white-space"></div>
+          </div>
+            <!-- /in-side -->
+        </div>
+    </div>
+  </div>
+  <!-- /main -->
+<% end %>

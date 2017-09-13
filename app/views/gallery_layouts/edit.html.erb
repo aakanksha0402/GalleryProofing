@@ -1,0 +1,209 @@
+<% if @not_authorized == true %>
+  <%= render partial: "/dashboards/no_authorization" %>
+<% else %>
+<%= render 'form'%>
+
+<script type="text/javascript">
+$(".myradio").click(function() {
+  $(this).parent(".radiocon").find('.selected').removeClass('selected');
+  $(this).addClass('selected');
+});
+$(".myradio1").click(function() {
+  $(this).parent(".radiocon1").find('.selected').removeClass('selected');
+  $(this).addClass('selected');
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $(".checkbox input").click(function(){
+    if($(this).is(':checked')){
+      $(this).parent('.checkbox').addClass('checked-box');
+    }
+    else{
+      $(this).parent('.checkbox').removeClass('checked-box');
+    }
+  })
+});
+
+</script>
+<script type="text/javascript">
+$(function() {
+  $('#datetimepicker2').datetimepicker({
+    language: 'pt-BR'
+  });
+  $('#datetimepicker2').on('changeDate', function(ev){
+        $('#datetimepicker2').datetimepicker('hide');
+    });
+});
+</script>
+<script type="text/javascript">
+$(function() {
+  $('#datetimepicker3').datetimepicker({
+    language: 'pt-BR'
+  });
+  $('#datetimepicker3').on('changeDate', function(ev){
+        $('#datetimepicker3').datetimepicker('hide');
+    });
+});
+</script>
+<script type="text/javascript">
+$(function() {
+  $('#datetimepicker4').datetimepicker({
+    language: 'pt-BR'
+  });
+  $('#datetimepicker4').on('changeDate', function(ev){
+        $('#datetimepicker4').datetimepicker('hide');
+    });
+});
+</script>
+<script type="text/javascript">
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+<script type="text/javascript">
+// $(window).on("scroll touchmove", function (){
+// $('.page-title').toggleClass('setting-fixed', $(document).scrollTop() > 50);
+// $('#navbar-example').addClass('side-menu-sticky');
+// });
+</script>
+<script type="text/javascript">
+$(window).on("scroll touchmove", function (){
+  if($(document).scrollTop() > 50){
+    $('.page-title').addClass('setting-fixed');
+    $('#navbar-example').addClass('side-menu-sticky');
+  }
+  else{
+    $('.page-title').removeClass('setting-fixed');
+    $('#navbar-example').removeClass('side-menu-sticky');
+  }
+});
+</script>
+<script type="text/javascript">
+$('body').scrollspy({ target: '#navbar-example' })
+</script>
+
+<script type="text/javascript">
+$('input[name="rdinterested"]').click(function(){
+  if($(this).attr('id')=='gallery_layout_introduction_page_layout_limelight'){
+    $('.gallery-settings div#TypeDemo').removeClass();
+    $('.gallery-settings div#TypeDemo').addClass('full-bottom');
+  }
+  else if($(this).attr('id')=='gallery_layout_introduction_page_layout_marquee'){
+    $('.gallery-settings div#TypeDemo').removeClass();
+    $('.gallery-settings div#TypeDemo').addClass('full-center');
+  }
+  else if($(this).attr('id')=='gallery_layout_introduction_page_layout_detail'){
+    $('.gallery-settings div#TypeDemo').removeClass();
+    $('.gallery-settings div#TypeDemo').addClass('split');
+  }
+});
+</script>
+<script>
+$(document).ready(function(){
+  var val = document.getElementById('Archive').value;
+  if (val == 'Do Not Archive'){
+    $("#gallery_layout_archiving").val("");
+  }else{
+    $("#gallery_layout_archiving").val($("#Archive").val());
+  }
+
+  <%if @gallery_layout.email_require == true%>
+    $("#email_require").addClass('checked-box');
+  <% end %>
+  <%if @gallery_layout.preregistration == true%>
+    $("#preregistration").addClass('checked-box');
+  <% end %>
+  <%if @gallery_layout.cropping == true%>
+    $("#cropping").addClass('checked-box');
+  <% end %>
+  <%if @gallery_layout.black_and_white_filtering == true%>
+    $("#black_and_white_filtering").addClass('checked-box');
+  <% end %>
+  <%if @gallery_layout.social_sharing_link == true%>
+    $("#social_sharing_link").addClass('checked-box');
+  <% end %>
+  <%if @gallery_layout.add_photo_to_cart == true%>
+    $("#add_photo_to_cart").addClass('checked-box');
+  <% end %>
+  <%if @gallery_layout.pay_later == true%>
+    $("#pay_later").addClass('checked-box');
+  <% end %>
+  <%if @gallery_layout.digital_download == true%>
+    $("#digital_download").addClass('checked-box');
+  <% end %>
+  <%if @gallery_layout.entire_gallery_download == true%>
+    $("#entire_gallery_download").addClass('checked-box');
+  <% end %>
+  <%if @gallery_layout.hide_photos == true%>
+    $("#hide_photos").addClass('checked-box');
+  <% end %>
+
+
+
+  <%if @gallery_layout.introduction_page_layout == 'LimeLight' %>
+    $("#LimeLight").addClass('selected');
+  <%elsif @gallery_layout.introduction_page_layout == "Marquee"%>
+    $("#Marquee").addClass('selected');
+  <%elsif @gallery_layout.introduction_page_layout == "Detail"%>
+    $("#Detail").addClass('selected');
+  <%elsif @gallery_layout.introduction_page_layout == "Accent"%>
+    $("#Accent").addClass('selected');
+  <%else%>
+    $("#HeadLine").addClass('selected');
+  <%end%>
+
+  <% if @gallery_layout.photo_page_layout == "Cascade"%>
+    $("#Cascade").addClass('selected');
+  <%else%>
+    $("#Subway").addClass('selected');
+  <%end%>
+});
+</script>
+<script>
+$("#Archive").change(function(){
+  var val = document.getElementById('Archive').value;
+  if (val == 'Do Not Archive'){
+    $("#gallery_layout_archiving").val("");
+  }else{
+    $('#gallery_layout_archiving').val(val);
+  }
+});
+</script>
+<script>
+$("#gallery_access_privacy").change(function(){
+  var v = $("#gallery_access_privacy").val();
+  if (v.indexOf("No") > -1){
+    $("#gallery_layout_password").attr("disabled",true);
+  }else{
+    $("#gallery_layout_password").attr("disabled",false);
+  }
+});
+</script>
+<script>
+$(document).ready(function(){
+
+  if("#digital_download").hasClass("checked-box"){
+    // alert("Have");
+    $("#entire_gallery_download_label").attr("disabled",true);
+    $("#entire_gallery_download_check_box").attr("disabled",true);
+  }else {
+    // alert("Don't Have");
+    $("#entire_gallery_download_label").attr("disabled",false);
+    $("#entire_gallery_download_check_box").attr("disabled",false);
+  }
+});
+</script>
+<script>
+  $("#custom_gallery_layout_digital_download").change(function(){
+    if($(this).is(':checked')){
+      $("#entire_gallery_download_check_box").attr("disabled",false);
+      $("#entire_gallery_download_label").attr("disabled",false);
+    }
+    else{
+      $("#entire_gallery_download_check_box").attr("disabled",true);
+      $("#entire_gallery_download_label").attr("disabled",true);
+    }
+  });
+</script>
+<% end %>

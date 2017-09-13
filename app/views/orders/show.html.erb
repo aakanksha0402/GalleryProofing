@@ -1,0 +1,61 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @order.email %>
+</p>
+
+<p>
+  <strong>First name:</strong>
+  <%= @order.shipping_first_name %>
+</p>
+
+<p>
+  <strong>Last name:</strong>
+  <%= @order.shipping_last_name %>
+</p>
+
+<p>
+  <strong>Address:</strong>
+  <%= @order.shipping_addr1 %>
+</p>
+
+<p>
+  <strong>City:</strong>
+  <%= @order.shipping_city %>
+</p>
+
+<p>
+  <strong>Country:</strong>
+  <%= @order.shipping_country_id %>
+</p>
+
+<p>
+  <strong>Pin:</strong>
+  <%= @order.shipping_postal_code %>
+</p>
+
+<p>
+  <strong>Phone no:</strong>
+  <%= @order.phone_number %>
+</p>
+
+<p>
+  <strong>Notes to studio:</strong>
+  <%= @order.notes_to_studio %>
+</p>
+
+
+
+<p>
+  <strong>Studio internal notes:</strong>
+  <%= @order.studio_internal_notes %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @order.checkout_status_id %>
+</p>
+
+<%= link_to 'Edit', edit_order_path(@order) %> |
+<%= link_to 'Back', orders_path %>

@@ -1,0 +1,7 @@
+$('#brand_state_province_id').remove();
+<% if @get_states.present?%>
+  $('#label_for_state').css('display','block');
+  $('#state_provinces').append('<%=j select_tag "brand_state_province_id", options_from_collection_for_select(@get_states, "id", "name"), class: "form-group look-like-selectpicker", name: "[brand]state_province_id", prompt: "--Choose a Province--" %>');
+<% else %>
+  $('#label_for_state').css('display','none');
+<% end %>

@@ -1,0 +1,200 @@
+<p id="notice"><%= notice %></p>
+
+
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+              <div id="pageTitleHeaderText">Invoices</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><a href="#" >Email Us</a></li>
+              </ul>
+            </div>
+
+
+            <!--    <div class="right-buttons text-right">
+            <a class="btn btn-primary" id="btn-newtemp" href="newTemplate.html" data-toggle="modal" data-target="#newtemp-filter" >New Template</a>
+            <a class="btn btn-default" id="btn-newauto" href="newAutomation.html" data-toggle="modal" data-target="#newauto-filter" >New Automation Series</a>
+          </div -->
+
+        </div>
+      </div>
+    </div>
+    <!-- /title -->
+  </div>
+</div>
+</div>
+<!-- /top -->
+
+<!-- main -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <ul class="nav nav-pills in-pills">
+        <li class="type"><%= link_to "Invoices",invoices_path(id: current_user.id) %></li>
+        <li class="type"><%= link_to "Line Items",invoice_line_items_path(id: current_user.id) %></li>
+        <li class="type active"><%= link_to "Templates",invoice_template_index_path(id: current_user.id) %></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<div class="tab-pane" id="Templates_in">
+
+
+  <!-- in-side -->
+  <% if !@templates.present? %>
+    <%= render "no_template" %>
+  <% else %>
+    <div class="container-fluid">
+       <div class="row">
+          <div class="col-lg-12 templates-container">
+            <div class="table-responsive">
+              <div class="table">
+                <div class="table-head">
+                  <div class="tr">
+                    <div class="th"><a href="?sort_by=name">Template Name</a></div>
+                    <div class="th"><a href="?sort_by=num_invoice_template_items"># of Items</a></div>
+                    <div class="th"><a href="?sort_by=created">Date Created</a></div>
+                    <div class="th"><span>Actions</span></div>
+                  </div>
+                </div>
+                <div class="table-body">
+                  <% @templates.each do |template| %>
+                      <%= link_to new_invoice_path(template_id: template.id),class: "tr clickable-row",id: "new_line" do %>
+                      <div class="td"><%= template.template_name %></div>
+                      <div class="td items-display">
+                        <button type="button" class="js-view-invoice-template-items" data-invoice-template-id='<%="#{template.id}"%>' remote="true">Show 1 Item</button>
+                      </div>
+                      <div class="td"><%= template.created_at.strftime('%d-%b-%Y') %></div>
+                      <div class="td">
+                        <div class="btn-group">
+                          <button type="button" class="js-delete-invoice-template" data-invoice-template-id='<%="#{template.id}"%>' data-invoice-template-name="test">Delete</button>
+                        </div>
+                      </div>
+                      <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+       </div>
+     </div>
+    <% end %>
+</div>
+<!-- Modal -->
+<!-- Show Items Modal -->
+<div id="show_item_modal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false" >
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Invoice Template Items</h4>
+      </div>
+      <div class="modal-body">
+        <div class="table">
+          <div class="table-head">
+            <div class="th">Item Name</div>
+            <div class="th">Qty</div>
+            <div class="th">Price</div>
+            <div class="th">Total</div>
+          </div>
+          <div class="table-body">
+            <div class="tr">
+              <div class="td">A</div>
+              <div class="td">5</div>
+              <div class="td">$&nbsp;6.00</div>
+              <div class="td">$&nbsp;30.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- /mModal-->
+
+<!-- Modal -->
+<!-- delete template Modal -->
+<div id="delete_template_modal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Delete Invoice Template?</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete invoice template "test"?</p>
+
+        <p>The invoice template will no longer be accessible. This action cannot be undone!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <%= link_to "Yes, Delete","#", class: "btn btn-danger", id: "DeleteTemplate" %>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- /mModal-->
+
+<script>
+$(".clickable-row>td").click(function() {
+  if($(".clickable-row>td:has(#hello)")){
+    alert("hello");
+  }
+  else{
+    window.document.location = $(this).parent().data("href");
+  }
+});
+</script>
+<script>
+$(".js-view-invoice-template-items").click(function(){
+  var id = $(this).data('invoice-template-id');
+
+  $.ajax({
+    type: "get",
+    url: "/invoice_template/show_items",
+    data: {id: id}
+  }).success();
+  return false;
+});
+</script>
+<script>
+$(".js-delete-invoice-template").click(function(){
+  var id = $(this).data('invoice-template-id');
+
+  $.ajax({
+    type: "get",
+    url: "/invoice_template/delete_template",
+    data: {id: id}
+  }).success();
+  return false;
+});
+</script>

@@ -1,0 +1,40 @@
+var img_name='<%= @image_name %>'
+$(".top-icon").html('');
+'<% if @label_class== "true" %>'
+                '<% @label.each do |label| %>'
+                $(".top-icon").append('<span class="photo-icon-top photo-icon-tag "><span class="font-text" id="label-text"><%= label.label.name %></span></span>')
+                '<% end %>'
+
+  '<% end %>'
+
+  '<% if @fav_class== "true" %>'
+
+                  $('.photo-icon.photo-icon-favorite.ng-scope').show();
+
+  '<% else %>'
+
+                  $('.photo-icon.photo-icon-favorite.ng-scope').hide();
+    '<% end %>'
+
+$("#image_name").html(img_name);
+'<% if @photo_load.is_hidden == false %>'
+$("#hide").html('<%=link_to "HIDE" , '' , remote:true ,  class:"hide_unhide" %> ');
+$('.photo-icon.photo-icon-hidden.ng-scope').hide();
+'<% else %>'
+$("#hide").html('<%=link_to "UNHIDE" , '' , remote:true , class:"hide_unhide" %>');
+$('.photo-icon.photo-icon-hidden.ng-scope').show();
+'<% end %>'
+
+
+
+
+$('.hide_unhide').click(function(){
+  $.ajax({
+      type: 'GET',
+      url: '/views/hide_unhide',
+      data: {
+          id: image_id , gallery:'<%= params[:gallery]%>' ,brand:'<%= params[:brand] %>'
+      }
+  })
+   // Prevent link from following through to its given href
+});

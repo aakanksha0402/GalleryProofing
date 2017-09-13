@@ -1,0 +1,71 @@
+<% content_for :head, "GalleryProofing | Sign Up"%>
+<% content_for :body_class, "signup_index" %>
+<div class="container-fluid page page-signup">
+  <%= link_to root_path do %>
+    <div class="logo-signup">
+    </div>
+  <% end %>
+  <h2>Let’s get started</h2>
+<%= form_for(resource, as: resource_name, url: user_registration_path, :html => {:class => "form", :id => "signup"}) do |f| %>
+    <%= f.hidden_field :sub_user, value: false %>
+    <div class="form-group">
+    <%= f.label :studio_name, "Studio Name", class: "label" %>
+    <%= f.text_field :studio_name, id: 'studio_name', class: 'form-control input-lg', maxlength: '100', autocomplete: false, autofocus: true %>
+    <% if @user.errors.messages[:studio_name].present? %>
+      <% error = @user.errors.messages[:studio_name] %>
+      <script>
+      $('#studio_name').css('border-color', '#A94442');
+      </script>
+      <p style="color:#A94442;"><b><%= error[0] %></b></p>
+    <% end %>
+  </div>
+
+    <div class="form-group">
+      <%= f.label :email, "Email", class: "label" %>
+    <%= f.text_field :email, class: 'form-control input-lg', id: "email", autocomplete: false %>
+      <% if @user.errors.messages[:email].present? %>
+        <% error = @user.errors.messages[:email] %>
+        <script>
+        $('#email').css('border-color', '#A94442');
+        </script>
+        <p style="color:#A94442;"><b><%= error[0] %></b></p>
+      <% end %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password, class: "label" %>
+      <% if @minimum_password_length %>
+      <em>(<%= @minimum_password_length %> characters minimum)</em>
+      <% end %>
+      <%= f.password_field :password, autocomplete: "off",class: 'form-control input-lg', maxlength: '30', size: '40', id: "password" %>
+      <% if @user.errors.messages[:password].present? %>
+        <% error = @user.errors.messages[:password] %>
+        <script>
+        $('#password').css('border-color', '#A94442');
+        </script>
+        <p style="color:#A94442;"><b><%= error[0] %></b></p>
+      <% end %>
+    </div>
+    <div class="form-group">
+      <label for="locale" class="label">Country</label>
+      <%= f.collection_select :country_id, Country.all, :id, :name, {prompt: 'Select One'}, class: "selectpicker form-control input-lg", "data-live-search": "true", "data-size": 5 %>
+      <% if @user.errors.messages[:country_id].present? %>
+        <% error = @user.errors.messages[:country_id] %>
+        <script>
+        $('#country_id').css('border-color', '#A94442');
+        </script>
+        <p style="color:#A94442;"><b><%= error[0] %></b></p>
+      <% end %>
+    </div>
+      <%= f.submit "Start 30 Day Trial", name: "brand_name", class: "btn btn-shootproof btn-block"%>
+      <div class="form-group promo-code">
+        <label for="promo_code" class="small text-center">Have a <a href="JavaScript:void(0)" id="promoCode">promo code</a>?</label>
+        <input type="text" name="promo_code" id="promo_code" value="" class="form-control input-lg" placeholder="Enter your promo code" maxlength="20">
+      </div>
+
+    <p class="small">
+      By signing up, you agree to the <a href="#" target="_blank">Terms of Use</a>
+      and <a href="#" target="_blank">Privacy Policy</a>.
+    </p>
+<% end %>
+</div>

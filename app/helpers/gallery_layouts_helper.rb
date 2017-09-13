@@ -1,0 +1,2 @@
+module GalleryLayoutsHelper
+end

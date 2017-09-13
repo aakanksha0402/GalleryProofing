@@ -1,0 +1,108 @@
+<% if @gateway_setup.name == "standard" %>
+  <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Set up PayPal Standard</h4>
+          </div>
+          <div class="modal-body">
+            <p><a target="_blank" href="https://www.paypal.com/home">Create a PayPal Standard account</a>, and then enter the following information:</p>
+            <div class="row">
+                <div class="col-lg-12">
+                    <ol>
+                        <li>Log in to PayPal and go to Profile &gt; My Selling Tools.</li>
+                        <li>Update the Instant Payment Notification settings and click the "Choose IPN Settings" button.</li>
+                        <li id="usernameDomain">Enter the Notification URL:<br> https://abc5361.gallery_proofing.com/payment/paypal/ipn</li>
+                        <li>Then if not already selected, select Receive IPN Messages (Enabled) and save.</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                  <%= form_for(@gateway_setup) do |f| %>
+            <% if @gateway_setup.errors.any? %>
+              <div id="error_explanation">
+                <h2><%= pluralize(@gateway_setup.errors.count, "error") %> prohibited this gateway_setup from being saved:</h2>
+
+                <ul>
+                <% @gateway_setup.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+                </ul>
+              </div>
+            <% end %>
+                   <div class="form-group">
+                    <%= f.label :secure_merchant_account_id,"Secure Merchant Account ID" %>
+              <%= f.text_field :secure_merchant_account_id , class: "form-control paypal-text-box"%>
+                   </div>
+               <div class="modal-footer text-center">
+                <%= f.submit "Save",class: "btn btn-primary" %>
+               </div>
+              <% end %>
+               </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<% else %>
+  <div class="modal-dialog" role="document">
+      <div class="modal-content modal_">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <% if @gateway_setup.name == "Pro" %>
+            <h4 class="modal-title" id="myModalLabel">Set up PayPal Pro</h4>
+            </div>
+            <div class="modal-body">
+            <p><a target="_blank" href="https://www.paypal.com/webapps/mpp/paypal-payments-pro">Create a PayPal Pro account</a>, and then enter the following information:</p>
+          <% else %>
+            <h4 class="modal-title" id="myModalLabel">Set up Braintree</h4>
+            </div>
+            <div class="modal-body">
+            <p><a target="_blank" href="https://www.braintreepayments.com/braintree-pricing">Create a Braintree account</a>, and then enter the following information:</p>
+          <% end %>
+          <%= form_for(@gateway_setup) do |f| %>
+            <% if @gateway_setup.errors.any? %>
+              <div id="error_explanation">
+                <h2><%= pluralize(@gateway_setup.errors.count, "error") %> prohibited this gateway_setup from being saved:</h2>
+
+                <ul>
+                <% @gateway_setup.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+                </ul>
+              </div>
+            <% end %>
+            <% if @gateway_setup.name == "Pro" %>
+              <div class="form-group">
+                <%= f.label :user_name,"API Username" %>
+                <%= f.text_field :user_name, class: "form-control" %>
+              </div>
+              <div class="form-group">
+                <%= f.label :password, "API Password" %>
+                <%= f.text_field :password,class: "form-control" %>
+              </div>
+              <div class="form-group">
+                <%= f.label :signature, "API Signature" %>
+                <%= f.text_field :signature, class: "form-control" %>
+              </div>
+            <% else %>
+              <div class="form-group">
+                <%= f.label :merchant_id,"Merchant ID" %>
+                <%= f.text_field :merchant_id, class: "form-control" %>
+              </div>
+              <div class="form-group">
+                <%= f.label :private_key, "Private Key" %>
+                <%= f.text_field :private_key,class: "form-control" %>
+              </div>
+              <div class="form-group">
+                <%= f.label :public_key, "Public Key" %>
+                <%= f.text_field :public_key, class: "form-control" %>
+              </div>
+            <% end %>
+            <div class="modal-footer text-center">
+              <%= f.submit "Save",class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+  </div>
+<% end %>

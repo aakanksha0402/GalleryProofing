@@ -1,0 +1,56 @@
+<% content_for :head, "GalleryProofing | Download Photos" %>
+<% content_for :body_class, "gallery_default-style" %>
+
+<div class="wrapper">
+  <div class="logo-small-logo text-center"><h5><strong><%= @brand.brand_name.upcase %></h5></strong></div>
+  <div class="title text-center col-md-12">
+    <h1><%= @brand.brand_name.upcase %></h1>
+    <% if @cover %>
+      <%= image_tag @cover.url,size: "240x240" %>
+    <% end %>
+    <h1><%= @gallery.name.upcase %></h1>
+    <p>1-of-1.zip</p>
+    <!-- <button type="button" class="btn btn-default">DOWNLOAD</button> -->
+    <%= link_to "DOWNLOAD","/galleries/download_page?bundle=#{params[:bundle]}" ,class: "btn btn-default", id: "download_link" %>
+  </div>
+</div>
+
+<script>
+$('#download_link').click(function(){
+  $('#download_link').text('DOWNLOAD AGAIN');
+})
+</script>
+<!-- <script>
+$(function()
+{
+     $(this).bind("contextmenu", function(e)
+     {
+         e.preventDefault();
+     });
+ });
+ </script> -->
+ <script type="text/javascript">
+ $(document).ready(function(){
+   $('#hideNav').hide();
+ })
+ </script>
+ <style>
+  img{
+    margin-top: 30px;
+  }
+  .logo-small-logo{
+    color: <%= @gallery.custom_gallery_layout.color_logo.primary_color %> !important;
+  }
+  .gallery_default-style .title h1{
+    color: <%= @gallery.custom_gallery_layout.color_logo.primary_color %> !important;
+  }
+  .gallery_default-style .btn-default{
+    background-color: <%= @gallery.custom_gallery_layout.color_logo.primary_color %> !important;
+  }
+  body
+  {
+     <% if @gallery.custom_gallery_layout.color_logo.theme == "Dark" %>
+    background-color: rgb(36, 36, 36) !important;
+    <% end %>
+  }
+ </style>

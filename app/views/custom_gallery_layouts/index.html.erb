@@ -1,0 +1,81 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Custom Gallery Layouts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Introduction page layout</th>
+      <th>Photo page layout</th>
+      <th>Status</th>
+      <th>Custom link</th>
+      <th>Release date</th>
+      <th>Expiration date</th>
+      <th>Gallery access privacy</th>
+      <th>Password</th>
+      <th>Email require</th>
+      <th>Cropping</th>
+      <th>Preregistration</th>
+      <th>Black and white filtering</th>
+      <th>Studio link</th>
+      <th>Show filename</th>
+      <th>Social sharing link</th>
+      <th>Content</th>
+      <th>Min order</th>
+      <th>Add photo to cart</th>
+      <th>Pay later</th>
+      <th>Pickup option</th>
+      <th>Checkout message</th>
+      <th>Digital download</th>
+      <th>Entire gallery download</th>
+      <th>Hide photos</th>
+      <th>Archiving</th>
+      <th>Is default</th>
+      <th>Brand</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @custom_gallery_layouts.each do |custom_gallery_layout| %>
+      <tr>
+        <td><%= custom_gallery_layout.name %></td>
+        <td><%= custom_gallery_layout.introduction_page_layout %></td>
+        <td><%= custom_gallery_layout.photo_page_layout %></td>
+        <td><%= custom_gallery_layout.status %></td>
+        <td><%= custom_gallery_layout.custom_link %></td>
+        <td><%= custom_gallery_layout.release_date %></td>
+        <td><%= custom_gallery_layout.expiration_date %></td>
+        <td><%= custom_gallery_layout.gallery_access_privacy %></td>
+        <td><%= custom_gallery_layout.password %></td>
+        <td><%= custom_gallery_layout.email_require %></td>
+        <td><%= custom_gallery_layout.cropping %></td>
+        <td><%= custom_gallery_layout.preregistration %></td>
+        <td><%= custom_gallery_layout.black_and_white_filtering %></td>
+        <td><%= custom_gallery_layout.studio_link %></td>
+        <td><%= custom_gallery_layout.show_filename %></td>
+        <td><%= custom_gallery_layout.social_sharing_link %></td>
+        <td><%= custom_gallery_layout.content %></td>
+        <td><%= custom_gallery_layout.min_order %></td>
+        <td><%= custom_gallery_layout.add_photo_to_cart %></td>
+        <td><%= custom_gallery_layout.pay_later %></td>
+        <td><%= custom_gallery_layout.pickup_option %></td>
+        <td><%= custom_gallery_layout.checkout_message %></td>
+        <td><%= custom_gallery_layout.digital_download %></td>
+        <td><%= custom_gallery_layout.entire_gallery_download %></td>
+        <td><%= custom_gallery_layout.hide_photos %></td>
+        <td><%= custom_gallery_layout.archiving %></td>
+        <td><%= custom_gallery_layout.is_default %></td>
+        <td><%= custom_gallery_layout.brand %></td>
+        <td><%= link_to 'Show', custom_gallery_layout %></td>
+        <td><%= link_to 'Edit', edit_custom_gallery_layout_path(custom_gallery_layout) %></td>
+        <td><%= link_to 'Destroy', custom_gallery_layout, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Custom gallery layout', new_custom_gallery_layout_path %>

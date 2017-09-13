@@ -1,0 +1,65 @@
+<%= form_for(@order) do |f| %>
+  <% if @order.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h2>
+
+      <ul>
+      <% @order.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :email_id %><br>
+    <%= f.text_field :email_id %>
+  </div>
+  <div class="field">
+    <%= f.label :first_name %><br>
+    <%= f.text_field :first_name %>
+  </div>
+  <div class="field">
+    <%= f.label :last_name %><br>
+    <%= f.text_field :last_name %>
+  </div>
+  <div class="field">
+    <%= f.label :address %><br>
+    <%= f.text_area :address %>
+  </div>
+  <div class="field">
+    <%= f.label :city %><br>
+    <%= f.text_field :city %>
+  </div>
+  <div class="field">
+    <%= f.label :country %><br>
+    <%= f.text_field :country %>
+  </div>
+  <div class="field">
+    <%= f.label :pin %><br>
+    <%= f.number_field :pin %>
+  </div>
+  <div class="field">
+    <%= f.label :phone_no %><br>
+    <%= f.number_field :phone_no %>
+  </div>
+  <div class="field">
+    <%= f.label :notes_to_studio %><br>
+    <%= f.text_area :notes_to_studio %>
+  </div>
+  <div class="field">
+    <%= f.label :gallery_id %><br>
+    <%= f.text_field :gallery_id %>
+  </div>
+  <div class="field">
+    <%= f.label :studio_internal_notes %><br>
+    <%= f.text_area :studio_internal_notes %>
+  </div>
+  <div class="field">
+    <%= f.label :status %><br>
+     <%= f.select :status, [['NEW','new'],['Pending','pending'],['Shipped','shipped'],['Completed','completed'],['Canceled','canceled']] %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

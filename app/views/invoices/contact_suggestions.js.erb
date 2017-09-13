@@ -1,0 +1,27 @@
+'<% if @contacts.present? %>'
+'<%= puts "PRESENT!!!" %>'
+$("#auto_fill").show();
+$("#auto_fill").html('<ul class="list-unstyled list">'+
+                      '<% @contacts.each do |contact| %>'+
+                        '<li id=\'li_<%="#{contact.id}"%>\' name=\'<%= "#{contact.id} "%>\'><%= contact.firstname%> <%= contact.lastname%> - <%= contact.email %> - <%= contact.phone_number%></li>'+
+                      '<% end %>'+
+                        '</ul>');
+'<% else %>'
+'<%= puts "NOT PRESENT!!!" %>'
+$("#auto_fill").hide();
+$("#contact_name").on('focusout',function(){
+  $("#contact_name_search").hide();
+  $("#new_contact").show();
+  $("#new_contact #first_name").val($("#contact_name").val());
+});
+'<% end %>'
+$('li[id^="li_"]').each(function(){
+  $(this).click(function(){
+    $("#contact_id").val($(this).attr('name'));
+    $.ajax({
+      type: "get",
+      url: "/invoices/existing_contact",
+      data: {id: $("#contact_id").val()}
+    })
+  });
+});

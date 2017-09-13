@@ -1,0 +1,450 @@
+<!-- top -->
+<%= form_for(@watermark) do |f|%>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              <!-- title -->
+              <div class="page-title">
+                <div class="row">
+                  <div class="col-md-6 col-sm-5 col-xs-5">
+                  <% if params[:create] == "create" %>
+                    <%= link_to " ",@watermark,method: :delete,:class => "fa circle fa-arrow-left back-btn"   %></a>
+                  <% else %>
+                    <%= link_to watermarks_path do %><span class="fa circle fa-arrow-left back-btn"></span> <% end %></a>
+                  <% end %>
+                    <h2 class="gallery-title">
+                      <span class="name pull-left" style="margin-left:0px;"><%=@watermark.name%></span>
+                      <a href="#" data-toggle="modal" data-target="#rename-modal"><span class="fa fa-pencil circle"></span></a>
+                    </h2>
+                  </div>
+                  <div class="col-md-6 col-sm-7 col-xs-7">
+                    <div class="btn-group on-page-help-container">
+                      <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-question"></span>
+                      </a>
+                      <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                        <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                        <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                        <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                        <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                        <li><a href="#" ><span class="email"><i class="fa fa-envelope"></i></span>Email Us</a></li>
+                      </ul>
+                    </div>
+                    <div class="right-buttons text-right">
+                      <%= f.submit "Save", class: "btn btn-primary" , id: "watermark_submit"%>
+                      <% if !@watermark.is_default %>
+                      <a class="btn btn-default default-set" href="#">Set as default</a>
+                      <% end %>
+                      <%= link_to "Cancel", watermarks_path, class: "btn btn-default" %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /title -->
+            </div>
+          </div>
+        </div>
+        <!-- /top -->
+        <!-- main -->
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              <p>Your watermark will always be removed before printing and before delivering digital files to your customers.<br/> Any changes made to your watermark settings will only apply to photos uploaded after the changes are saved.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4 col-lg-5 choose-radio">
+              <div class="row">
+                <div class="col-lg-12">
+                  <h5>Choose Style</h5>
+                   <div class="radiocon">
+                      <div class="myradio select1 text-image">
+                          <label>
+                            <span></span>
+                            <%= f.radio_button :selected_as, true, :id => "Limelight" %>
+                            Text
+                          </label>
+                      </div>
+                      <div class="myradio select2 image-text">
+                          <label>
+                            <span></span>
+                            <%= f.radio_button :selected_as, false, :id => "Marquee" %>
+                            Image
+                          </label>
+                      </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row middel-set-up">
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label>Text</label>
+                    <%= f.text_field :text_name,class: "form-control",placeholder: @set_text_name %>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-group ">
+                    <label>Font</label>
+                      <%= f.select :font_set, [['Adler', 'Adler'], ['Americana', 'Americana'], ['Chopin', 'Chopin'],['Curlycue','Curlycue']],{},{class: "selectpicker brands-set","data-live-search" => "true"} %>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-group choose-radio">
+                    <label>Color</label>
+                    <div class="radiocon">
+                      <div class="myradio select3 black-white">
+                          <label>
+                            <span></span>
+                            <%= f.radio_button :color, false, :id => "Limelight"%>
+                           Black
+                          </label>
+                      </div>
+                      <div class="myradio select4 black-white">
+                          <label>
+                            <span></span>
+                            <%= f.radio_button :color, true, :id => "Marquee" %>
+                            White
+                          </label>
+                      </div>
+                  </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <label>Opacity</label>
+                  <%= f.text_field :text_opacity_value,id: 'ex1',type: 'text',
+                  data: {'slider-id' => 'ex1Slider',
+                        'slider-min' => '5',
+                        'slider-max' => '100',
+                        'slider-step' => '1',
+                        'slider-value' => @slider_value } %>
+                </div>
+                              </div>
+              <div class="row middel-set-out" style="display: none;">
+                <div class="col-lg-12">
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <label>Image</label>
+                      <div class="input-browse text-center">
+                        <div class="before_upload">
+                          <span class="fa fa-picture-o"></span>
+                          <div class="select-file"><%= f.file_field :avatar%>Choose File</div>
+                        </div>
+                        <div class="after_upload">
+                          <div class="form-group ">
+                            <div class="select-file"><%= f.file_field :avatar,id: "watermark_avatar2" , accept: "image/x-png, image/jpeg" %>Change</div>
+                            <!-- <input type="file" name="myImage" accept="image/x-png, image/gif, image/jpeg" /> -->
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group ">
+                          <label>Placement</label>
+                            <%= f.select :image_placement, [['Top, Left', 'Magick::NorthWestGravity'], ['Top, Center', 'Magick::NorthGravity'], ['Top, Right', 'Magick::NorthEastGravity'],['Middle, Left','Magick::WestGravity'],['Middle, Center','Magick::CenterGravity'],['Middle, Right', 'Magick::EastGravity'],['Bottom, Left','Magick::SouthWestGravity'],['Bottom, Center','Magick::SouthGravity'],['Bottom, Right','Magick::SouthEastGravity']],{},{class: "selectpicker brands-set","data-live-search" => "true"} %>
+                        </div>
+                    </div>
+                  </div>
+              <div class="row">
+                <div class="col-lg-12 set-handel-line">
+                  <label>Size</label>
+                  <%= f.text_field :size,id: 'ex2',type: 'text',
+                  data: {'slider-id' => 'ex1Slider',
+                        'slider-min' => '5',
+                        'slider-max' => '100',
+                        'slider-step' => '1',
+                        'slider-value' => @slider_value2 } %>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12 set-handel-line">
+                  <label>Opacity</label>
+                  <%= f.text_field :image_opacity_value,id: 'ex3',type: 'text',
+                  data: {'slider-id' => 'ex1Slider',
+                        'slider-min' => '5',
+                        'slider-max' => '100',
+                        'slider-step' => '1',
+                        'slider-value' => @slider_value3 } %>
+                  <%= f.hidden_field :is_first, :value => false%>
+                  <%= f.hidden_field :is_default %>
+                </div>
+              </div>
+            </div>
+        </div>
+            </div>
+            <div class = "text-watermark" >
+              <div class="col-sm-3 col-lg-2 col-lg-offset-1">
+                <h5>Preview</h5>
+                <div class="demo-image">
+                  <% if @watermark.selected_as %>
+                    <%= image_tag @watermark.watermark_sample_image.url %>
+                  <% else %>
+                     <img src="/assets/demo.jpg"/>
+                  <% end %>
+                </div>
+              </div>
+              <div class="col-sm-5 col-lg-4">
+                <h5>&nbsp</h5>
+                <div class="demo-image">
+                  <% if @watermark.selected_as %>
+                    <%= image_tag @watermark.watermark_image.url %>
+                  <% else %>
+                     <img src="/assets/demo (1).jpg"/>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <div class = "image-watermark" >
+              <div class="col-sm-3 col-lg-2 col-lg-offset-1">
+                <h5>Preview</h5>
+                <div class="demo-image">
+                  <% if !@watermark.selected_as %>
+                    <%= image_tag @watermark.watermark_sample_image.url %>
+                  <% else %>
+                     <img src="/assets/demo.jpg"/>
+                  <% end %>
+                </div>
+              </div>
+              <div class="col-sm-5 col-lg-4">
+                <h5>&nbsp</h5>
+                <div class="demo-image">
+                  <% if !@watermark.selected_as %>
+                    <%= image_tag @watermark.watermark_image.url %>
+                  <% else %>
+                     <img src="/assets/demo (1).jpg"/>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- /main -->
+<% end %>
+
+      <!-- Modal -->
+          <div class="modal" id="rename-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+          <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Rename</h4>
+          </div>
+          <%= form_for(@watermark, remote: true) do |f|%>
+
+            <div class="modal-body">
+              <div class="form-group">
+                <%=f.text_field :name,value: @watermark.name, class: "form-control" %>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <%= link_to "Cancel", "#", "data-dismiss": "modal", class: "btn btn-default" %>
+              <%= f.submit "Rename", class: "btn btn-sm btn-primary" %>
+            </div>
+          <%end%>
+          </div>
+          </div>
+          </div>
+<!-- /mMdal -->
+<!-- Modal -->
+          <div class="modal" id="upload-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false" >
+          <div class="modal-dialog" role="document">
+          <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Previewing Your Watermark Image</h4>
+          </div>
+          <div class="modal-body">
+            <p>Please click "save" to upload your new watermark image and preview the changes.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Okey</button>
+          </div>
+          </div>
+          </div>
+          </div>
+<!-- /mMdal -->
+      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+      <script src="/assets/jquery-1.12.1.min.js"></script>
+      <!-- Include all compiled plugins (below), or include individual files as needed -->
+      <!-- <script src="/assets/bootstrap.min.js"></script> -->
+      <!-- Latest compiled and minified JavaScript -->
+      <!-- <script src="../js/bootstrap-select.min.js"></script> -->
+
+      <script src="/assets/bootstrap-switch.js"></script>
+      <script src="/assets/bootstrap-slider.js"></script>
+
+      <script type="text/javascript">
+        $(document).ready(function(){
+          $(".checkbox input").click(function(){
+            if($(this).is(':checked')){
+          $(this).parent('.checkbox').addClass('checked-box');
+        }
+        else{
+          $(this).parent('.checkbox').removeClass('checked-box');
+        }
+      })
+        $('#selAll').click(function(){
+          if($(this).is(':checked')){
+            $('.checkbox').addClass('checked-box');
+          }
+          else{
+            $('.checkbox').removeClass('checked-box');
+          }
+          })
+        });
+      </script>
+      <script type="text/javascript">
+      $(document).ready(function(){
+        $(".checkbox input").click(function(){
+          if($(this).is(':checked')){
+            $(this).parent('.checkbox').addClass('checked-box');
+          }
+          else{
+           $(this).parent('.checkbox').removeClass('checked-box');
+          }
+        })
+      });
+
+</script>
+ <script type="text/javascript">
+    $("[name='my-checkbox']").bootstrapSwitch();
+   </script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $("#watermark_avatar2").change(function () {
+     var ext = $('#watermark_avatar2').val().split('.').pop().toLowerCase();
+    $('#watermark_submit').click(function(event){
+      if(ext != "jpg" && ext != "jpeg" && ext && ext != "png" )
+      {
+        event.preventDefault()
+        location.reload();
+      }
+    })
+
+    $('#upload-modal').modal('show');
+    $(".before_upload").hide();
+    $('.after_upload').show();
+
+ });
+  });
+
+  $(document).ready(function() {
+    $("#watermark_avatar").change(function () {
+       var ext = $('#watermark_avatar').val().split('.').pop().toLowerCase();
+      $('#watermark_submit').click(function(event){
+        if(ext != "jpg" && ext != "jpeg" && ext && ext != "png" )
+        {
+          event.preventDefault()
+          location.reload();
+        }
+      })
+
+      $('#upload-modal').modal('show');
+      $(".before_upload").hide();
+      $('.after_upload').show();
+
+   });
+});
+
+</script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    var v = '<%= @watermark.avatar_file_size %>';
+    if(v !== ''){
+        $('.after_upload').show();
+        $(".before_upload").hide();
+        } else {
+          $(".before_upload").show();
+          $('.after_upload').hide();
+        }
+});
+</script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    var v2 = '<%= @watermark.selected_as %>';
+    var v3 = '<%= @watermark.color %>';
+    if(v2){
+      $(".select1").addClass('selected');
+        $(".image-watermark").hide();
+        $(".text-watermark").show();
+        $(".middel-set-up").show();
+        $(".middel-set-out").hide();
+        } else {
+          $(".text-watermark").hide();
+          $(".image-watermark").show();
+          $(".select2").addClass('selected');
+          $(".middel-set-out").show();
+          $(".middel-set-up").hide();
+        }
+    if (v3) {
+        $(".select4").addClass('selected');
+    } else {
+        $(".select3").addClass('selected');
+    }
+});
+</script>
+   <script type="text/javascript">
+  $(document).ready(function(){
+    $("#Limelight").click(function(){
+        $(".middel-set-up").show();
+        $(".middel-set-out").hide();
+    });
+    $("#Marquee").click(function(){
+      $(".middel-set-out").show();
+      $(".middel-set-up").hide();
+    });
+});
+</script>
+<script type="text/javascript">
+     $(".text-image , .black-white,.image-text").click(function() {
+        $(this).parent(".radiocon").find('.selected').removeClass('selected');
+        $(this).addClass('selected');
+      });
+     $(".text-image").click(function() {
+        $(".image-watermark").hide();
+        $(".text-watermark").show();
+      });
+     $(".image-text").click(function() {
+        $(".text-watermark").hide();
+        $(".image-watermark").show();
+      });
+</script>
+<script type="text/javascript">
+$('#ex1').slider({
+  formatter: function(value) {
+    return + value + '%';
+  }
+});
+
+$('#ex2').slider({
+  formatter: function(value) {
+    return + value + '%';
+  }
+});
+
+$('#ex3').slider({
+  formatter: function(value) {
+    return + value + '%';
+  }
+});
+</script>
+<script type="text/javascript">
+      $(document).ready(function($) {
+          $(".default-set").click(function(){
+                  $.ajax({
+                    beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+                    url: '/watermarks/default_set',
+                    type: 'POST',
+                    data: {"is_default": true ,"watermark_id": '<%= @watermark.id %>'},
+                    success: function(){
+                      $(".lightbox").fadeIn().delay(4000).fadeOut();
+                    }
+                  });
+                  $(".default-set").hide();
+          });
+      });
+</script>

@@ -1,0 +1,90 @@
+jQuery('.random-photos-container div').remove('');
+$( ".random-photos-container" ).append('  <%@rand_record.each do |gp|%> '+
+    '<div class="photo-thumb js-toggle-thumb-selection background-landscape" name="<%=gp.id%>" ' + 'style="background-image:url(\'<%= gp.image.url %>\');" id=\'<%="text_#{gp.id}"%>\'></div>' +
+  '<% end %>');
+
+  $(document).ready(function(){
+    $(".photo-thumb").click(function(){
+      if($(this).hasClass('ui-selected-inside')){
+        $(this).removeClass('ui-selected-inside');
+        $("p#gp_id").remove();
+        $("#OK").attr("disabled",true);
+      }
+      else
+      {
+        $(".photo-thumb").removeClass('ui-selected-inside');
+        $("p#gp_id").remove();
+        $(this).addClass('ui-selected-inside');
+        $("<p><input type=\"hidden\" name=\"gp_id\" id=\"gp_id\"></p>").appendTo(this);
+        $("#gp_id").val($(this).attr("name"));
+        $("#param1").val($("#param").val());
+        $("#OK").attr("disabled",false);
+      }
+
+    })
+  })
+
+  '<%@rand_record.each do |gp|%>'
+    $('#OK').click(function() {
+      if($(this).attr("disabled",true)){
+        event.preventDefault();
+      }
+      if("<%=gp.id%>" == $("#gp_id").val()){
+        $("#Two").css("display","none");
+        $("#One").css("display","block");
+        $("#Footer-One").css("display","block");
+        $("#Modal-Footer-One").css("display","block");
+        $("#Three").css("display","none");
+        $("#Modal-Footer-Three").css("display","none");
+        $("#Cover-Modal-Title").text("Album Cover");
+        $("#back_link").css("display","block")
+        $("#back_link").click(function()
+        {
+              back_to_add_cover();
+        })
+      }
+      if("<%=gp.id%>" == $("#gp_id").val()){
+        if($(".photo-thumb").hasClass('ui-selected-inside')){
+          $("#album_changecover").attr("src",$("#text_<%=gp.id%>").css("background-image").replace('url("','').replace(window.location.origin,'').replace('")',''));
+        }
+        $("#val").val($("#gp_id").val());
+        if ($("#text").hasClass('ui-selected-inside')){
+          var selected_id = $("#gp_id").val();
+          $.ajax({
+            type: 'GET',
+            url: '/gallery_photos/' + selected_id + '.json',
+            dataType: 'json',
+            success: function(data) {
+              $("#profile-change").modal('show');
+            }
+          });
+        }
+      }
+    });
+    function back_to_add_cover()
+    {
+      $("#Cover-Modal-Title").text("Add Cover");
+      $("#One").css("display","none");
+      $("#Footer-One").css("display","none");
+      $("#Modal-Footer-One").css("display","none");
+      $("#Two").css("display","block");
+      $("#back_link").css("display","block")
+      $("#back_link").click(function()
+      {
+          back_to_gallery_cover();
+      });
+    }
+    function back_to_gallery_cover()
+    {
+      $("#Cover-Modal-Title").text("Album Cover");
+       $("#One").css("display","block");
+       $("#Footer-One").css("display","block");
+       $("#Modal-Footer-One").css("display","block");
+       $("#Two").css("display","none");
+       $("#back_link").css("display","block")
+       $("#back_link").click(function()
+       {
+           back_to_add_cover();
+       });
+    }
+  '<% end %>'

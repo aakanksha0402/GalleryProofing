@@ -1,0 +1,18 @@
+$('#p_firstname').remove();
+$('#p_lastname').remove();
+
+<% if @updated == false %>
+  <% if @user.errors[:firstname].present? %>
+    $('.modal-body').find('.row').find('.col-xs-6').find('.form-group.firstname').append('<p id="p_firstname" style="color:red;">Please enter your First Name</p>');
+  <% end %>
+  $('.modal-body').find('.row').find('.col-xs-6').find('.form-group.firstname').find('#user_firstname').css('border-color', 'red');
+
+  <% if @user.errors[:lastname].present? %>
+    $('.modal-body').find('.row').find('.col-xs-6').find('.form-group.lastname').append('<p id="p_lastname" style="color:red;">Please enter your Last Name</p>');
+  <% end %>
+  $('.modal-body').find('.row').find('.col-xs-6').find('.form-group.lastname').find('#user_lastname').css('border-color', 'red');
+<% elsif @updated == true %>
+  $('#new-user').removeClass('show');
+  $('#new-user').removeClass('in');
+  $('#new-user').modal('hide');
+<% end %>

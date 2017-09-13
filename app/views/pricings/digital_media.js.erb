@@ -1,0 +1,234 @@
+alert("hello world");
+$('#tab_in_group').append('<div class="container-fluid">'+
+          '<div class="row">'+
+             '<!--buttons-->'+
+               '<div class="row">'+
+                 '<div class="col-lg-12">'+
+                   '<div class="right-buttons text-right">'+
+                       '<a class="btn btn-default slef-more" href="#">Add Self Fulfilled</a>'+
+                       '<button type="button" class="btn btn-primary slef-more-1">Add galleryproofing-fulfilled</button>'+
+                   '</div>'+
+                 '</div>'+
+               '</div>'+
+             '<!--buttons-->'+
+             '<div class="col-lg-12">'+
+
+               '<div class="custom-item-1 item-set-tab" style="display: none;">'+
+                   '<table class="items full-width new-item" data-digital="1">'+
+                       '<thead>'+
+                           '<tr>'+
+                               '<th class="col-item upper">Item</th>'+
+                               '<th class="col-description">&nbsp;</th>'+
+                               '<th class="col-price text-right upper">Price</th>'+
+                               '<th class="col-charge-shipping text-center upper">Charge<br>Shipping</th>'+
+                               '<th class="col-shipping text-center upper">Shipping</th>'+
+                               '<th class="col-delete">&nbsp;</th>'+
+                           '</tr>'+
+                       '</thead>'+
+                       '<tbody>'+
+                         '<tr class="item">'+
+                             '<td class="name no-left-padding">'+
+                                 '<input type="text" name="name" class="form-control" maxlength="50">'+
+                             '</td>'+
+                             '<td class="desc">&nbsp;</td>'+
+                             '<td class="price">'+
+                                 '<div class="input-group">'+
+                                     '<div class="input-group-addon">₹</div>'+
+                                     '<input type="text" name="price" class="form-control money-only text-right">'+
+                                 '</div>'+
+                             '</td>'+
+                             '<td class="charge-shipping text-center">'+
+                              '<div class="checkbox">'+
+                                 '<input type="checkbox">'+
+                                 '<label></label>'+
+                               '</div>'+
+                             '</td>'+
+                             '<td class="shipping">'+
+                                 '<div class="input-group">'+
+                                     '<div class="input-group-addon">₹</div>'+
+                                     '<input size="5" type="text" class="form-control money-only text-right" name="shipping_charge">' +
+                                 '</div>'+
+                             '</td>'+
+                             '<td class="remove">&nbsp;</td>'+
+                         '</tr>'+
+                   '</tbody>'+
+             '</table>'+
+                 '<div class="button-row text-right">'+
+                     '<a href="#" class="btn btn-primary btn-sm js-save-and-close" data-close="1">Add &amp; Close</a>'+
+                     '<a href="#" class="btn btn-default btn-sm js-save-and-new" data-close="0">Add &amp; New</a>'+
+                     '<a href="#" class="btn btn-default btn-sm js-cancel" data-cancel-selector=".custom-item">Cancel</a>'+
+            '</div>'+
+         '</div>'+
+
+         '<div class="custom-auto-item item-set-tab" style="display: none;">'+
+           '<table class="auto-digital-items full-width new-auto-item">'+
+               '<thead>'+
+                   '<tr>'+
+                       '<th class="upper">Item Overview</th>'+
+                       '<th class="upper">For Sale</th>'+
+                       '<th class="text-right upper">Price</th>'+
+                       '<th></th>'+
+                   '</tr>'+
+               '</thead>'+
+               '<tbody> '+
+               '<tr class="item first">'+
+                       '<td>'+
+                        '<div class="form-inline">'+
+                               '<div class="pull-left">'+
+                                   '<div class="form-group">'+
+                                      'Item Name:'+
+                                       '<input type="text" name="name" class="form-control" size="30" maxlength="250">'+
+                                   '</div>'+
+                               '</div>'+
+                           '</div>'+
+                       '</td>'+
+                       '<td class="border-bottom">' +
+                         '<div class="checkbox">' +
+                               '<input type="checkbox">' +
+                               '<label>Individual Photos</label>' +
+                         '</div>      ' +
+                       '</td>' +
+                       '</td>' +
+                       '<td class="border-bottom disabled">' +
+                           '<div class="input-group">' +
+                               '<div class="input-group-addon">₹</div>' +
+                               '<input type="text" class="form-control text-right money-only" name="price" maxlength="8" value="0.00" disabled="">' +
+                           '</div>' +
+                       '</td>' +
+                       '<td class="remove border-bottom"></td>' +
+                   '</tr>' +
+                   '<tr class="item second">' +
+                     '<td>' +
+                         '<div class="form-inline">' +
+                             '<div class="form-group">' +
+                                 'Resolution:' +
+                                 '<input type="text" name="pixels" size="5" maxlength="5" class="numbers-only form-control" value=""> pixels longest side' +
+                             '</div>' +
+                         '</div>' +
+                     '</td>' +
+                     '<td class="border-bottom">' +
+                       '<div class="checkbox">' +
+                               '<input type="checkbox">' +
+                               '<label>All Photos in Album</label>' +
+                         '</div>     ' +
+                     '</td>' +
+                     '<td class="border-bottom">' +
+                         '<div class="input-group disabled">' +
+                             '<div class="input-group-addon">₹</div>' +
+                             '<input type="text" class="form-control text-right money-only" name="price" value="0.00" maxlength="8" disabled="">' +
+                         '</div>' +
+                     '</td>' +
+                     '<td class="remove border-bottom"></td>' +
+                 '</tr>' +
+                 '<tr class="item third">' +
+                     '<td class="desc border-bottom"></td>' +
+'                     <td class="border-bottom">' +
+                        '<div class="checkbox">' +
+                               '<input type="checkbox">' +
+                               '<label>All Photos in Gallery</label>' +
+'                         </div>      ' +
+'                     </td>' +
+'                     <td class="border-bottom">' +
+                         '<div class="input-group disabled">' +
+                             '<div class="input-group-addon">₹</div>' +
+                             '<input type="text" class="form-control text-right money-only" name="price" value="0.00" maxlength="8" disabled="">' +
+                         '</div>' +
+                     '</td>' +
+                     '<td class="remove border-bottom"></td>' +
+                 '</tr>' +
+         '</tbody>' +
+       '</table>' +
+           '<div class="button-row text-right">' +
+               '<a href="#" class="btn btn-primary btn-sm js-auto-save-and-close" data-close="1">Add &amp; Close</a>' +
+               '<a href="#" class="btn btn-default btn-sm js-auto-save-and-new" data-close="0">Add &amp; New</a>' +
+               '<a href="#" class="btn btn-default btn-sm js-cancel" data-cancel-selector=".custom-auto-item">Cancel</a>' +
+           '</div>' +
+     '</div>' +
+               '<p class="text-edit-set">Note: Items in this group are digital files that will be emailed to your client automatically upon payment. Watermarks applied by ShootProof will be removed. Copyright and licensing arrangements should be made between you and your client.</p>' +
+                 '<table class="auto-digital-items full-width margin-bottom js-contains-switchable-items-in-pricesheet">' +
+                 '<thead>' +
+                   '<tr>' +
+                     '<th class="upper">Item Overview</th>' +
+                     '<th class="upper">For Sale</th>' +
+                     '<th class="text-right upper">Price</th>' +
+                     '<th></th>' +
+                   '</tr>' +
+                 '</thead>' +
+                 '<tbody>' +
+                    '<tr>' +
+                      '<td class="crop-heading" colspan="4">Digital files automatically delivered by ShootProof upon purchase.</td>' +
+                    '</tr>' +
+                    '<tr class="item first" data-item-id="12811361" data-parent-item-id="12811361">' +
+                       '<td>' +
+                         '<div class="form-inline">' +
+                           '<div class="pull-left">' +
+                             '<div class="form-group">' +
+                               'Item Name:' +
+                               '<input type="text" name="name" class="form-control" size="30" maxlength="250" value="Full Resolution">' +
+                             '</div>' +
+                           '</div>' +
+                         '</div>' +
+                       '</td>' +
+                         '<td class="border-bottom">' +
+                             '<div class="checkbox">' +
+                               '<input type="checkbox">' +
+                               '<label> Individual Photos</label>' +
+                             '</div>' +
+                        '</td>' +
+                        '<td class="border-bottom disabled">' +
+                           '<div class="input-group">' +
+                             '<div class="input-group-addon">₹</div>' +
+                               '<input type="text" class="form-control text-right money-only" name="price" maxlength="8" value="0.00" disabled="                            ">' +
+                           '</div>' +
+                      '</td>' +
+                       '<td class="remove border-bottom"></td>' +
+                    '</tr>' +
+                    '<tr class="item second" data-item-id="12811363" data-parent-item-id="12811361">' +
+                       '<td>' +
+                         '<div class="form-inline">' +
+                           '<div class="form-group">' +
+                             'Resolution:' +
+                             '<input type="hidden" name="pixels" value="0">' +
+                             'Original Size' +
+                           '</div>' +
+                         '</div>' +
+                       '</td>' +
+                       '<td class="border-bottom">' +
+                           '<div class="checkbox">' +
+                               '<input type="checkbox">' +
+                               '<label> All Photos in Album</label>' +
+                           '</div>' +
+                       '</td>' +
+                       '<td class="border-bottom">' +
+'                         <div class="input-group disabled">' +
+                           '<div class="input-group-addon">₹</div>' +
+                           '<input type="text" class="form-control text-right money-only" name="price" value="0.00" maxlength="8" disabled="">' +
+                         '</div>' +
+                       '</td>' +
+                         '<td class="remove border-bottom"></td>' +
+                    '</tr>' +
+                    '<tr class="item third" data-item-id="12811362" data-parent-item-id="12811361">' +
+                       '<td class="desc border-bottom">' +
+                        'Description:' +
+                        '<span data-toggle="modal" data-target="#Item-Description" class="desc-container fa fa-plus-circle"></span>' +
+                       '</td>' +
+                       '<td class="border-bottom">' +
+'                       <div class="checkbox">' +
+                               '<input type="checkbox">' +
+                               '<label> All Photos in Gallery</label>' +
+                           '</div>' +
+                       '</td>' +
+                       '<td class="border-bottom">' +
+                         '<div class="input-group disabled">' +
+                           '<div class="input-group-addon">₹</div>' +
+                           '<input type="text" class="form-control text-right money-only" name="price" value="0.00" maxlength="8" disabled="">' +
+                         '</div>' +
+                       '</td>' +
+                       '<td class="remove border-bottom">' +
+                       '</td>' +
+                    '</tr>' +
+                 '</tbody>' +
+                 '</table>' +
+             '</div>' +
+         '</div>' +
+'</div>');

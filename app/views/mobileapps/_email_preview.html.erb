@@ -1,0 +1,69 @@
+<div border="0" id="backgroundTable" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; margin: 0; padding: 0; width: 100% !important; line-height: 28px; background-color: #EEEEEE; border: none; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; color: #414141; font-size: 18px;">
+  <div>
+    <div>
+      <div align="center" valign="top" class="bounds" style="border-collapse: collapse; color: #414141; margin: 0; padding: 14px 0px; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+        <div  class="column" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; margin: 0; max-width: 600px; border: none;">
+          <div>
+            <!-- Above the white content area -->
+            <div>
+              <div class="half-height-mobile" style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; line-height: 7px;">&nbsp;
+              </div>
+            </div>
+            <div>
+              <div style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                <div cellspacing="0" cellpadding="0" class="content" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; background-color: #FFF; border-radius: 5px; text-align: left; width: 90%; margin: 0 auto;">
+                  <div>
+                    <div>
+                      <div align="center" valign="top" style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                        <p class="content-logo" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-top: 60px; margin-bottom: 30px;">
+                          <a href="#" target="_blank" style="color: #4FBEE3; text-decoration: none;">
+                            <span style="color: #414141; font-weight: 400; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; line-height: 15px; display: block; max-width: 240px;"><%= @default_template.present? ? current_brand.brand_name : @current_brand %></span></span>
+                          </a>
+                        </p>
+                        <p class="content-icon" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 30px; line-height: 0;"><%=image_tag @default_template.present? ? @mobileapp.logo.url : attachments.inline[@mobileapp.logo.original_filename].url %></p>
+                        <h1 id="preview_subject" class="content-headline" style="color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; font-weight: 300; font-size: 24px; line-height: 29px;"><%= @default_template.present? ? @default_template.headline : @mobileapp_share.headline %></h1>
+                        <p class="content-button" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-top: 48px; margin-bottom: 18px;"><a id= "preview_button" href=<%= @default_template.present? ? "http://techbit.shootproof.com/app/171844" : show_app_url(:brand_id => @brand_id, :mobileapp_id => @mobileapp.id) %>   target="_blank" style="color: #FFF; text-decoration: none; border-radius: 5px; background-color: #414141; text-transform: uppercase; font-size: 12px; line-height: 14px; padding: 18px;"><%= @default_template.present? ? @default_template.button_text : @mobileapp_share.buttontext %></a></p>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="width-container studio-to-client" style="border-collapse: collapse; color: #414141; margin: 0; padding: 30px 20px 0 20px; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                        <div class="content">
+                          <p id= "preview_body" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 28px;">
+                            <%= @default_template.present? ? @default_template.email_body.html_safe : @mobileapp_share.message.html_safe %>
+                          </p>
+
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div style="line-height: 30px; border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">&nbsp;</div>
+                    </div>
+                  </div>
+                </div>
+                <div width="100%" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                  <div>
+                    <div>
+                      <div style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">&nbsp;</div>
+                    </div>
+                    <div>
+                      <div align="center" class="width-container footer" style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; text-align: center;">
+                        <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+
+                        </p>
+                        <p class="copyright" style="margin: 0; color: #CCCCCC; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; padding-top: 18px; font-weight: 300; font-size: 12px; line-height: 18px;">Copyright © 2016 techbit<br><span class="address"><a href="#" style="color: #CCCCCC !important; text-decoration: none !important; cursor: text;"><br><br>India</a></span>
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <div style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">&nbsp;</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

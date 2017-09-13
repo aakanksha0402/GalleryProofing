@@ -1,0 +1,9 @@
+<% if @password_required == true %>
+$('#error').remove();
+$('#divPassword').append('<p id="error" style= "color:red;">Gallery Password is Required.</p>');
+<% elsif @invalid_password == true %>
+$('#error').remove();
+$('#divPassword').append('<p id="error" style= "color:red;">Gallery Password is Invalid.</p>');
+<% elsif @test_pass == true %>
+window.location.href = "http://localhost:3000/<%= params[:brand] %>/gallery/<%= @gallery.id %>"
+<% end %>

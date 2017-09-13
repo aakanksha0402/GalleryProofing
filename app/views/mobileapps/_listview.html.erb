@@ -1,0 +1,47 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th align="center" width="70"></th>
+      <th>Gallery Name</th>
+      <th>Created<span class="caret"></span></th>
+      <th>Photos</th>
+      <th>Installs</th>
+      <th>Views</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @mobileapps.each do |mobile| %>
+    <tr class='clickable-row' data-href= <%= edit_mobileapp_path(mobile) %> >
+      <td align="center">
+        <% if mobile.logo? %>
+          <div class="icon-img" style="background-image:url(<%= mobile.logo.url %>);background-size:cover;"></div>
+        <% elsif mobile.photo_id? %>
+          <div class="icon-img" style="background-image:url(<%= mobile.photos.find(mobile.photo_id).image.url %>);background-size:cover;"></div>
+          <!-- <div class="icon-preview"></div> -->
+        <% else %>
+            <div class="icon-img"></div>
+        <% end %>
+      </td>
+      <td><%= mobile.name %></td>
+      <td><%= mobile.created_at.strftime("%d-%b-%Y") %></td>
+      <td><%= mobile.photos.count %></td>
+      <td>0</td>
+      <td>0</td>
+      <td class="quick-actions">
+      <div class="dropdown text-right">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          Quick Actions
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li><a href="#">Add Photo</a></li>
+          <li><%= link_to 'Share Link', share_link_path(id: mobile.id ),  {:remote => true, 'data-toggle' =>  "modal", 'data-target' => '#Share'}  %></li>
+          <li><%= link_to 'Delete', mobile, method: :delete %></li>
+        </ul>
+      </div>
+    </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

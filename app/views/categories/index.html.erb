@@ -1,0 +1,198 @@
+<% content_for :studio_class, "active"%>
+<% content_for :head, "GalleryProofing | Categories"%>
+<% content_for :body_class, "contact-index"%>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <%= link_to studio_home_pages_path do %><span class="fa circle fa-arrow-left back-btn"></span><% end %>
+            <h2>
+              <div id="pageTitleHeaderText">Gallery Categories</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><%= link_to "#", target: "_blank" do %>
+                  <span class="email"><i class="fa fa-envelope"></i></span>Email-Us
+                <% end %>
+              </ul>
+            </div>
+            <div class="right-buttons text-right">
+              <%= link_to 'Add Category', "#add-category", "data-toggle": "modal", class: "btn btn-primary", "data-backdrop": "static" %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+
+<!-- main -->
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <ul id="categoryContainer" class="list-unstyled ui-sortable sortable">
+        <% @categories.each do |category| %>
+        <%= form_for(category) do |f| %>
+        <li data-id="<%= category.id %>" class="category">
+          <ul class="list-unstyled">
+            <li class="ui-state-default handle ui-sortable-handle">
+              <i class="fa fa-sort" aria-hidden="true"></i>
+            </li>
+            <li class="cover">
+              <% if category.category_cover_pic.exists? %>
+              <div>
+                <%= image_tag category.category_cover_pic.url(:small), style: "height: 40px;" %>
+              </div>
+              <h6><%= link_to "Change Cover", "#add_cover_pic_#{category.id}", "data-toggle": "modal", "data-backdrop": "static" %></h6>
+              <% else %>
+              <div class="fake-cover">
+                Set Cover
+              </div>
+              <%= link_to "Add Cover", "#add_cover_pic_#{category.id}", "data-toggle": "modal", "data-backdrop": "static" %>
+              <% end %>
+            </li>
+            <%= f.hidden_field :id%>
+            <li class="name">
+              <%= f.text_field :name,id: "category_name_#{category.id}",class: "form-control", onkeyup: "saveCategoryName('#{category.id}')", required: true %>
+            </li>
+            <li class="actions">
+              <%= link_to "Delete Category", "#delete_category_#{category.id}", "data-toggle": "modal", "data-backdrop": "static" %>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Category Cover Pic -->
+        <div class="modal fade" id="add_cover_pic_<%= category.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Upload New Category Photo</h4>
+              </div>
+              <div class="modal-body">
+                <%= f.file_field :category_cover_pic, onchange: "saveCover('#{category.id}')", id: "category_cover_pic_#{category.id}", class: "pull-left" %>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <!-- Category Cover Pic -->
+
+        <!-- Delete category -->
+        <div class="modal" id="delete_category_<%= category.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure that you want to delete this category? This action cannot be undone!</p>
+              </div>
+              <div class="modal-footer">
+                <%= link_to "Cancel", "#", class: "btn btn-default", "data-dismiss": "modal" %>
+                <%= link_to "Yes, Delete", category_path(id: category.id), class: "btn btn-sm btn-danger", method: :delete %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Delete category -->
+
+        <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+  <div class="">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <p>Many photographers use Categories on their ShootProof Homepage to organize their Galleries by the different types of photography they shoot. So for instance you might have a Weddings Category, a Seniors Category, and a Family Portraits Category.</p><p>There are two settings you'll need to adjust so that ShootProof can properly organize and display your Galleries by Category on your ShootProof Homepage. <a href="#">Learn how</a>.</p>
+       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Category -->
+<div class="modal" id="add-category" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <%= link_to "#", class: "close", "data-dismiss": "modal", "aria-label": "Close" do %>
+        <span aria-hidden="true">&times;</span>
+        <% end %>
+        <h4 class="modal-title" id="myModalLabel">Add New Category</h4>
+      </div>
+      <%= form_for(@category, remote: true) do |f| %>
+      <div class="modal-body">
+        <p>To create a new gallery category give it a name.</p>
+        <div class="form-group">
+          <%= f.label :name, "Category Name" %>
+          <%= f.text_field :name, class: "form-control" %>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <%= link_to "Cancel", "#", class: "btn btn-default", "data-dismiss": "modal" %>
+        <%= f.submit "Create Category", class: "btn btn-primary" %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- Create Category -->
+
+<script>
+function saveCategoryName(id){
+  var category_id = id;
+  var category_name = $("#category_name_" + category_id).val();
+  $.ajax({
+    headers: {
+      'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+    },
+    type: "get",
+    url: "/categories/name",
+    data: {d: category_name, id: category_id }
+  });
+}
+function saveCover(id){
+  var category_id = id;
+  var ext = $('#category_cover_pic_' + id).val().split('.').pop().toLowerCase();
+  if( ext != "jpg" && ext != "jpeg")
+    {
+      event.preventDefault();
+    }
+  else{
+    $( "#edit_category_" + category_id).submit();
+    }
+}
+</script>
+
+<script>
+$(function() {
+  $( "#sortable" ).sortable();
+  $( "#sortable" ).disableSelection();
+});
+</script>
+<style>
+.fa.fa-sort {
+    padding-top: 25px;
+}
+</style>

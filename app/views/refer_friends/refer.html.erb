@@ -1,0 +1,176 @@
+<% content_for :head, "GalleryProofing | Account" %>
+<% content_for :body_class, "account-refer" %>
+
+<!-- main -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1 refer-header">
+      <h1>Share GalleryProofing with Your Photographer Friends</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1 refer-subhead">
+        <p>Invite your friends to GalleryProofing, and you'll receive $10 in credit after their first paid billing cycles.<br>
+            Even more exciting: When you <%= link_to "move to a paid plan", plans_billings_planbilling_path%>, you'll earn a free month of your plan
+                instead. (That's up to $60 in credit per referral!)
+        </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 refer-invite">
+        <h2 id="social">Invite via Social</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="panel refer-social">
+                    <h3>Share Custom Link</h3>
+                    <p class="link"><input type="url" class="form-control" id="shortlink" value="http://galleryproofing.com"></p>
+                    <p><button id="shortlinkCopy" class="btn btn-primary btn-sm zclip" data-copy-from="#shortlink">Copy</button></p>
+                    <span id="copyAnswer"></span>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="panel refer-social">
+                    <h3>Share on Twitter</h3>
+                    <p class="twitter"><span class="fa fa-twitter"></span></p>
+                    <p><%= link_to "Tweet", 'http://twitter.com/share?text=Photographers - check out @GalleryProofing for photo proofing, mobile apps, commission free sales and invoicing!&url=https://www.galleryproofing.com/', target:  '_blank', class: "share btn btn-primary btn-sm" %></p>
+                </div>
+            </div>
+            <div class="col-sm-4 refer-social">
+                <div class="panel">
+                    <h3>Share on Facebook</h3>
+                    <p class="facebook"><span class="fa fa-facebook"></span></p>
+                    <p><%= link_to('Post', 'https://www.facebook.com/dialog/feed?link=https://www.galleryproofing.com/&picture=http://fbrell.com/f8.jpg&name=GalleryProofing / Photo Proofing&caption= GALLERYPROOFING.COM&description=Photographers - check out GalleryProofing for photo proofing, mobile apps, commission free sales and invoicing!', target:  '_blank',class: "share btn btn-primary btn-sm" ) %>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 refer-invite">
+        <h2 id="email">Invite via Email</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 refer-email">
+      <%= form_tag({action: 'send_email'},id: "form1") do %>
+            <div class="row">
+                <div class="col-md-6 col-sm-8">
+                    <div class="form-group" id= "p_scents">
+                        <label>Email Address</label>
+                        <p><%= email_field_tag :email, '', id: "p_scnt", size: "20", name: "p_scnt[]", placeholder: "Enter your friend's email address...", class: "form-control" %></p>
+                    </div>
+                </div>
+            </div>
+            <%= link_to "Add Email Address", "#", id: "addEmailAddress" %>
+              <div class="form-group">
+                <label>Message to your friends</label>
+                <div class="redactor-box">
+                  <div class="redactor-editor" contenteditable="true" dir="ltr" style="min-height: 50px;" id="emailDiv">
+                         <p>Hi!</p>
+                         <p>I'm sure you've heard about GalleryProofing, but I'd love for you to check it out for your own business. It's the service I use for client galleries, Mobile Apps, invoicing, contact management, and more. The best part? They take ZERO commissions from my sales, so my business is able to thrive and I'm able to focus on what matters most.
+                         </p>
+                         <p><a href="https://www.galleryproofing.com">Click here to sign up</a> for a free account and give GalleryProofing a try.
+                         </p>
+                         <p>Let me know if you want to hear more about how I'm using GalleryProofing for my business. You can also email the folks at GalleryProofing and they'll be happy to answer your questions - <a href="mailto:ash@techbit.email">support@galleryproofing.com</a>.
+                         </p>
+                         <p>
+                           <u data-verified="redactor" data-redactor-tag="u">&#8203;</u>Thanks!<br><%= current_user.studio_name %>
+                         </p>
+                      </div>
+                  <%= text_area :email_body, "miuj", id: "email_body", class: "redactor-editor", style: "display:none;"%>
+                </div>
+              </div>
+
+
+              <div class="buttons text-center">
+                <%= submit_tag "Send", class: "btn btn-primary", data: { disable_with: "Please wait..." }  ,id:"submit-data" %>
+              </div>
+              <% end %>
+
+    </div>
+</div>
+<!-- /main -->
+
+<script>
+$(document).ready(function() {
+    $('.share').click(function(e) {
+        e.preventDefault();
+        window.open($(this).attr('href'), 'fbShareWindow', 'height=450, width=550, top=' + ($(window).height() / 2 - 275) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+        return false;
+    });
+});
+</script>
+
+
+<script>
+$(function() {
+  var scntDiv = $('#p_scents');
+  var i = $('#p_scents p').size() + 1;
+  $('#addEmailAddress').click(function() {
+    $('<p><%= email_field_tag :email, '', id: "p_scnt", size: "20", name: "p_scnt[]", placeholder: "Enter your friends email address...", class: "form-control" %></p>').appendTo(scntDiv);
+    i++;
+    return false;
+  });
+});
+
+$("#form1").submit(function(e) {
+  // alert("Please Wait while the message is being sent.");
+  var divHtml = $( "#emailDiv_ifr" ).contents().find( "body" ).html();
+  var body = divHtml;
+
+  // alert(body);
+  var values = "";
+  $('input[name="p_scnt[]"]').each(function() {
+    values += $(this).val() + ",";
+  });
+  // alert(values);
+  e.preventDefault();
+  $.ajax({
+    type: "post",
+    data: {mail_id: values, body: body },
+    headers: {
+      'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+    },
+    url: "/refer_friends/send_email"
+  });
+
+});
+
+
+
+
+
+var textarea = document.getElementById("shortlink");
+var copy    = document.getElementById("shortlinkCopy");
+var answer  = document.getElementById("copyAnswer");
+copy.addEventListener('click', function(e) {
+
+   // Select some text (you could also create a range)
+   textarea.select();
+
+   // Use try & catch for unsupported browser
+   try {
+
+       // The important part (copy selected text)
+       var ok = document.execCommand('copy');
+
+       if (ok)  answer.innerHTML = 'Copied!';
+
+       else    answer.innerHTML = 'Unable to copy!';
+   } catch (err) {
+       answer.innerHTML = 'Unsupported Browser!';
+   }
+});
+
+
+$( "#submit-data" ).submit(function( event ) {
+  alert( "Handler for .submit() called." );
+  event.preventDefault();
+});
+
+</script>

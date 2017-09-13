@@ -1,0 +1,7 @@
+<% if @watermark.errors.any? %>
+  <% if @watermark.errors[:name].present? %>
+    $('#rename-modal').modal('hide');
+  <% end %>
+<% else %>
+  location.reload();
+<% end %>

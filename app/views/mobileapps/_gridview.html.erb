@@ -1,0 +1,48 @@
+<% @mobileapps.each do |mobile| %>
+<!-- item1 -->
+<div class="grid-item">
+  <div class="sp-tile">
+    <a href=<%= edit_mobileapp_path(mobile) %>>
+      <div class="img-rounded-top full-width default">
+        <%#=  mobile.as_json %>
+        <%#= mobile.mobileapp_photos.find('mobileapp_photos.id': mobile.mobileapp_photo_id).url%>
+      <% if mobile.logo? %>
+        <%= image_tag mobile.logo.url %>
+      <% elsif mobile.photo_id? %>
+        <div class="icon-preview" style="background-image:url(<%= mobile.photos.find(mobile.photo_id).image.url %>);background-size:cover;"></div>
+        <!-- <div class="icon-preview"></div> -->
+      <% else  mobile.photo_id == nil %>
+          <div class="icon-preview" style="background-image:url(<%= mobile.logo.url %>);background-size:cover;"></div>
+      <% end %>
+
+      <div class="hover-block"><span>View</span></div>
+        <div class="status-flag status-flag-warning" style="display:none;">Pre-Registration</div>
+        <div class="status-flag status-flag-info" style="display:none;">Inactive</div>
+        <div class="status-flag status-flag-error" style="display: none;">Archived</div>
+        <div class="status-flag status-flag-primary flag-selected">Selected</div>
+      </div>
+      <div class="card-content">
+        <div class="card-title" title="Test"><%= mobile.name %></div>
+        <span class="event-photo-count"><%= mobile.photos.count %> Photos</span>
+        <div class="date-left"><%= mobile.created_at.strftime("%d-%b-%Y") %></div>
+      </div>
+
+    </a>
+    <div class="push-pop">
+      <div class="dropup">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Quick Actions
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+          <li><%= link_to 'Share', share_link_path(id: mobile.id ),  {:remote => true, 'data-toggle' =>  "modal", 'data-target' => '#Share'}  %></li>
+          <li><%= link_to 'Delete', mobile, method: :delete %></li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<!-- /item1 -->
+<% end %>

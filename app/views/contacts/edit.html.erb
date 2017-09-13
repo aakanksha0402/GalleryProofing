@@ -1,0 +1,345 @@
+<% content_for :head, "GalleryProofing | Edit Contact"%>
+<% content_for :studio_class, "active"%>
+<% if @not_authorized == true %>
+  <%= render partial: '/dashboards/no_authorization' %>
+<% else %>
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <%= link_to contacts_path do %>
+            <span class="fa circle fa-arrow-left back-btn"></span>
+            <% end %>
+            <h2>
+              <div id="pageTitleHeaderText"><%= @contact.firstname + " " + @contact.lastname %></div>
+            </h2>
+            <% if @contact.buisinessname %>
+            <h5><%= @contact.buisinessname %></h5>
+            <% end %>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><%= link_to "Browse Full Knowledge Base" ,"#", class: "bold", target: "_blank" %></li>
+                <li><%= link_to "#", target: "_blank" do %>
+                  <span class="email"><i class="fa fa-envelope"></i></span>Email-Us
+                <% end %></li>
+              </ul>
+            </div>
+            <div class="right-buttons text-right">
+              <%= link_to "Duplicate", contacts_duplicate_path(id: @contact), class: "btn btn-default" %>
+              <%= link_to 'Delete', "#delete-contact", "data-toggle": "modal", class: "btn btn-default" %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="tab-content clearfix">
+        <div class="tab-pane active" id="contact-edit-1">
+
+          <!-- in-side -->
+          <div class="row">
+            <%= form_for(@contact) do |f| %>
+            <div class="col-lg-12 editable-contact-info edit-mode-disabled">
+              <div class="row">
+                <div class="col-sm-4 col-lg-4">
+                  <div class="form-group">
+                    <%= f.label :firstname, "First Name", class: "required"%>
+                    <%= f.text_field :firstname, class: "form-control" %>
+                    <p class="display-mode-value"><%= f.label :firstname, @contact.firstname%></p>
+                  </div>
+                </div>
+                <div class="col-sm-4 col-lg-4">
+                  <div class="form-group">
+                    <%= f.label :lastname,"Last Name", class: "optional"%>
+                    <%= f.text_field :lastname, class: "form-control" %>
+                    <% unless @contact.lastname == '' %>
+                    <p class="display-mode-value"><%= f.label :lastname, @contact.lastname %></p>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4 business-name-column">
+                  <div class="form-group">
+                    <%= f.label :buisinessname, "Buisiness Name", class: "optional" %>
+                    <%= f.text_field :buisinessname, class: "form-control" %>
+                    <% unless @contact.buisinessname == '' %>
+                    <p class="display-mode-value"><%= f.label :buisinessname, @contact.buisinessname %></p>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group" id = "contact_div">
+                    <%= f.label :email, class: "required" %>
+                    <%= f.text_field :email, class: "form-control" %>
+                    <p class="display-mode-value"><%= f.label :email, @contact.email %></p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <%= f.label :phone_number, class: "required" %>
+                    <%= f.text_field :phone_number, class: "form-control" %>
+                    <% if @contact.phone_number.present? %>
+                      <p class="display-mode-value"><%= f.label :phone_number, @contact.phone_number %> </p>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              <div class="address-display-mode-container">
+                <% if @contact.address1 || @contact.address2 || @contact.city || @contact.pincode %>
+                <%= f.label :address1, "Address", class: "required" %>
+                <% end %>
+                <% if @contact.address1.present? %>
+                <%= f.label :address1, @contact.address1 , class: "required" %>
+                <% end %>
+                <% if @contact.address2.present? %>
+                <%= f.label :address2, @contact.address2, class: "optional" %>
+                <% end %>
+                <% if @contact.city.present? %>
+                <%= f.label :city, @contact.city, class: "optional" %>
+                <% end %>
+                <% if @contact.pincode %>
+                <%= f.label :pincode, @contact.pincode, class: "optional" %>
+                <% end %>
+                <%= f.label :country, @contact.country.name, class: "required" %>
+              </div>
+              <div class="row address-fields">
+                <div class="col-lg-12">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <%= f.label :address1, class: "optional" %>
+                        <%= f.text_field :address1, class: "form-control address-line-1", placeholder: "Street Address Line 1", maxlength: "100" %>
+                      </div>
+                      <div class="form-group">
+                        <%= f.label :address2, class: "optional" %>
+                        <%= f.text_field :address2, class: "form-control address-line-2 (Optional)", placeholder: "Street Address Line 1", maxlength: "100" %>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <%= f.label :city, class: "optional" %>
+                        <%= f.text_field :city, placeholder: "City", class: "form-control" %>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <%= f.label :pincode, "Pin Code", class: "optional" %>
+                        <%= f.number_field :pincode, placeholder: "Postal Code", class: "form-control", autocomplete: false, maxlength: 10, size: 10 %>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <%= f.label :country_id, class: "optional" %>
+                        <%= f.collection_select :country_id, Country.all, :id,:name, {}, {class: "selectpicker form-control"} %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row edit-buttons">
+                <div class="col-sm-12">
+                  <%= link_to "Edit", "#", class: "btn btn-default js-edit-contact margin-right" %>
+                  <%= link_to "Cancel", contacts_path, class: "btn btn-default js-cancel margin-right" %>
+                  <%= f.submit "Save", class: "btn btn-primary", id: "defaultSave" %>
+                </div>
+              </div>
+              <div class="row contact-info-tab">
+                <div class="col-lg-8 contact-info-column">
+                  <div class="row  info-tab-editable-values edit-mode-disabled">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <%= f.label :notes, class: "optional" %><br>
+                        <%= f.text_area :notes, class: "form-control", maxlength: "30000", rows: 9 %>
+                        <% if @contact.notes.present? %>
+                        <p class="display-mode-value"><%= f.label :notes, @contact.notes %></p>
+                        <% end %>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <div class = "errors_div">
+                        </div>
+                        <%= f.label :galleries, "Linked Galleries" %>
+                        <% if @galleries_of_contacts %>
+                        <% @galleries_of_contacts.each do |gallery| %>
+                        <ul>
+                          <%= link_to gallery.name, galleries_galleryhome_path(id: gallery.id) %>
+                        </ul>
+                        <% end %>
+                        <%= link_to 'Create Gallery', "#creategallery-modal", class: "btn btn-default js-add-gallery","data-toggle": "modal" %>
+
+                        <% else %>
+                        <ul id="linkedGalleries">
+                          <li class="callout callout-warning">No linked Galleries at this time.</li>
+                        </ul>
+                        <%= link_to 'Create Gallery', "#creategallery-modal", class: "btn btn-default js-add-gallery","data-toggle": "modal" %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <%= f.fields_for :referred_contact do |builder| %>
+                      <%= builder.hidden_field :contact_id, value: params[:id] %>
+                      <div class="form-group edit_contact_form">
+                        <%= builder.label :refer_contact, @contact.firstname + " " + @contact.lastname + " referred these Contacts to my studio" %>
+                        <% @c.each do |c| %>
+                        <li><%= link_to c.firstname + " " + c.lastname, edit_contact_path(c.id) %></li>
+                        <% end %>
+                        <%= builder.collection_select :reference_contact_id, current_brand.contacts.order(:firstname).where.not(id: params[:id]), :id, :combined_name_for_collection_select, {include_blank: "Select any one"}, {class: "selectpicker"} %>
+                      </div>
+                      <% end %>
+
+                      <div class="form-group edit_contact_form">
+                        <%= f.label :referred_by %>
+                        <% if @contact_that_referred != nil %>
+                        <%= @contact_that_referred.firstname + " " + @contact_that_referred.lastname%>
+                        <% else %>
+                        <%= "Referral Not Established." %>
+                        <% end %>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <%= f.label :tags %>
+                        <%= f.text_field :tag_list, class: "form-control", "data-role": "tagsinput" %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% end %>
+          </div>
+          <!-- /in-side -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /main -->
+<!-- Delete Modal -->
+<div class="modal fade id" id="delete-contact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <% @c = params[:id] %>
+      <% @f_name = @contact.firstname %>
+      <% @l_name = @contact.lastname %>
+      <%= render "delete_modal" %>
+    </div>
+  </div>
+</div>
+<!-- Delete Modal -->
+
+<!-- Gallery Modal -->
+        <div class="modal fade" id="creategallery-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add a Gallery</h4>
+              </div>
+              <%= form_for(@gallery, url: "/galleries") do |f| %>
+              <div class="modal-body">
+                  <div class="form-group">
+                    <%= f.hidden_field :contact_id, value: params[:id].to_i %>
+                    <label>Gallery Name</label>
+                    <%= f.text_field :name, class: "form-control", required: true, autocomplete: false, autofocus: true %>
+                  </div>
+
+                   <div class="form-group">
+                    <label>Shoot data</label>
+                    <div id="datetimepicker1" class="input-append date">
+                      <%= f.text_field :shoot_date, "data-format": "dd/MM/yyyy", required: true, value: "#{Date.today.to_s}" %>
+                      <span class="add-on">
+                       <span class="celender"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="form-group set-up-down">
+                    <label>Gallery Default Settings</label>
+                    <%= f.collection_select(:gallery_layout_id, current_brand.gallery_layouts.all, :id, :name, {}, class: "form-control input-lg selectpicker") %>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <%= link_to "Cancel", "#", class: "btn btn-default", "data-dismiss": "modal" %>
+                <%= f.submit "Create", class: "btn btn-primary" %>
+              </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <!-- /mMdal -->
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $(".checkbox input").click(function(){
+    if($( ".checkbox input" ).is(':checked')){
+      $(".checkbox").addClass('checked-box');
+    }
+    else{
+      $(".checkbox").removeClass('checked-box');
+    }
+  });
+  $('.js-edit-contact').click(function(){
+    $('.editable-contact-info').addClass('edit-mode-enabled');
+    $('.editable-contact-info').removeClass('edit-mode-disabled');
+    $('.info-tab-editable-values').addClass('edit-mode-enabled');
+    $('.info-tab-editable-values').removeClass('edit-mode-disabled');
+  });
+});
+</script>
+<script type="text/javascript">
+  $(function() {
+    $('#datetimepicker1').datetimepicker({
+      language: 'pt-BR'
+    });
+    $('#datetimepicker1').on('changeDate', function(ev){
+        $('#datetimepicker1').datetimepicker('hide');
+    });
+  });
+</script>
+<% end %>
+
+<script>
+$('input[type="submit"]').click(function(event)
+{
+  var email_regex =  new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+  if( email_regex.test($('#contact_email').val()) == false )
+  {
+      if($('#c_div').length)
+      {
+
+      }
+      else
+      {
+        $('#contact_div').append('<p style="color:red;" id="c_div" >Please enter valid email address.<p>');
+        $('#contact_email').css('border-color', 'red');
+      }
+
+    event.preventDefault(event);
+  }
+})
+</script>

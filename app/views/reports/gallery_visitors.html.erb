@@ -1,0 +1,223 @@
+<div id="main">
+  <div id="bd">
+    <div class="container-fluid" id="pageHeaderTitle">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-title">
+            <div class="row">
+              <div class="col-md-6 col-sm-5 col-xs-5">
+                <h2>
+                  <div id="pageTitleHeaderText">Gallery Visitors Report</div>
+                </h2>
+              </div>
+              <div class="col-md-6 col-sm-7 col-xs-7">
+                <div class="btn-group on-page-help-container">
+                  <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                    <span class="fa fa-question"></span>
+                  </a>
+                  <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                    <li><%= link_to "Can I download all of my contacts information?", "#", target: "_blank" %></li>
+                    <li><%= link_to "How do I add and edit contacts?", "#", target: "_blank" %></li>
+                    <li><%= link_to "How do I view a contact's activity?", "#", target: "_blank"  %></li>
+                    <li><%= link_to "Browse Full Knowledge Base" ,"#", class: "bold", target: "_blank" %></li>
+                    <li><%= link_to "#", target: "_blank" do %>
+                      <span class="email"><i class="fa fa-envelope"></i></span>Email-Us
+                    <% end %></li>
+                  </ul>
+                  </div>
+                <div class="right-buttons text-right">
+                  <%= link_to "Download as CSV",reports_gallery_visitors_path(format: "csv"),class: "btn btn-default" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6">
+          <a class="btn btn-default btn-sm margin-bottom" id="filter" href="#">Search &amp; Filter</a>
+        </div>
+        <div class="col-sm-6 text-right">
+          <%= link_to "Delete", "#",'data-target': "#Delete-visitor",'data-toggle': "modal", class: "btn btn-default", style: "display:none", id: "DeleteVisitor" %>
+          <!-- <a class="btn btn-default btn-sm margin-bottom" id="deleteVisitor" href="#">Delete</a> -->
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-lg-12">
+          <form action="/v2/111210/report/galleryvisitor" method="post" id="emails">
+            <div class="table-responsive">
+              <div class="table">
+                <div class="table-head">
+                  <div class="tr">
+                    <div class="th ">
+                      <div class="icheckbox_flat-sp" style="position: relative;">
+                        <div class="checkbox inside-check">
+                          <%= check_box_tag "gallery_visitor_ids","on",false,id: "selAll"%>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="th"><a href="?sort_by=event_name">Gallery Name</a></div>
+                    <div class="th"><a href="?sort_by=email_address">Visitor</a></div>
+                    <div class="th selected desc"><a href="?sort_by=last_activity">Last Activity</a></div>
+                    <div class="th"><span>Favorites</span></div>
+                    <div class="th"><span>Free Digitals</span></div>
+                    <div class="th"><span>Cart Items</span></div>
+                    <div class="th"><span>Orders</span></div>
+                  </div>
+                </div>
+                <div class="table-body">
+                  <% @gallery_visitors.each do |gallery_visitor| %>
+
+                      <div class="tr">
+                        <div class="td check">
+                          <div class="checkbox inside-check">
+                            <%= check_box_tag 'gallery_visitor[]',gallery_visitor.id,false,class: "check1" %>
+                          </div>
+                          <div class="icheckbox_flat-sp" style="position: relative;">
+                            <input type="checkbox" value="2976516-vma@techbit.email" style="position: absolute; opacity: 0;">
+                          </div>
+                        </div>
+                        <div class="td"><%= gallery_visitor.gallery.name %></div>
+                        <div class="td">
+                          <% @total_label_photos = 0 %>
+                          <% @contacts.each do |contact| %>
+                            <% if contact.email == gallery_visitor.email %>
+                              <%= contact.firstname %> <%= contact.lastname %>
+                              <% contact.galleries.each do |gallery| %>
+                                <% gallery.labels.each do |label| %>
+                                  <% @total_label_photos = @total_label_photos + label.photos.count %>
+                                <% end %>
+                                <%= gallery.labels.photos.count %>
+                              <% end %>
+                            <% else %>
+                              <%= gallery_visitor.email %>
+                            <% end %>
+                            <div class="sub-row">
+                              <span class="icon-tag  fa fa-tag"></span>
+                              <a href="#"><%= @total_label_photos %></a>
+                              <span class="icon-tag second-icon  fa fa-eye-slash"></span>
+                              <a href="#"><%= gallery_visitor.gallery.photos.where(is_hidden: true).count %></a>
+                            </div>
+                            <% break %>
+                          <% end %>
+                        </div>
+                        <div class="td"><%= gallery_visitor.updated_at.strftime("%d-%b-%Y %l:%M %P IST") %></div>
+                        <div class="td"><%= gallery_visitor.gallery_visitor_values[1] %></div>
+                        <div class="td">-</div>
+                        <div class="td">
+                          <% if gallery_visitor.gallery_visitor_values[0].count != 0 %>
+                            <%# gallery_visitor.gallery_visitor_values[0].each do |cart| %>
+                              <%= link_to "#{pluralize(gallery_visitor.gallery_visitor_values[0].count,'Item')}",reports_client_email_cart_path(gallery_id: gallery_visitor.gallery_id,email: gallery_visitor.email) %>
+                            <%# end %>
+                          <% else %>
+                            -
+                          <% end %>
+                        </div>
+                        <div class="td">Order #:
+                          <% gallery_visitor.checkouts.each do |checkout| %>
+                            <%= link_to "#{checkout.id} (#{checkout.checkout_status.status})",order_path(checkout.id)%>
+                          <% end %>
+                        </div>
+                      </div>
+
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="Delete-visitor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Delete Visitor</h4>
+      </div>
+      <%= form_tag delete_gallery_visitor_gallery_visitors_path do %>
+      <div class="modal-body">
+        <%= hidden_field_tag 'gallery_visitor_ids' %>
+          <p>Are you sure you want to delete this visitor?</p>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <!-- <button class="btn btn-sm btn-danger" type="button">Yes, Delete</button> -->
+        <%= submit_tag "Yes, Delete", class: "btn btn-danger" %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+
+
+<script>
+  $(document).ready(function(){
+    var v=[];
+    $(".checkbox input").click(function(){
+      if($(this).is(':checked')){
+      //  alert($(this).is(':checked'));
+        if($(this).val()=="on"){
+          v=[];
+          $('input[class^="check1"]').each(function(){
+            v.push($(this).val());
+            $(this).prop("checked",true);
+            $('#gallery_visitor_ids').val(v.join(","));
+          });
+          alert($("#gallery_visitor_ids").val());
+        }
+        else{
+          v.push($(this).val());
+          $('#gallery_visitor_ids').val(v.join(", "));
+        }
+      }else {
+        $(this).parent('.checkbox').removeClass('checked-box');
+        if($(this).val()=="on"){
+          v=[]
+          $('#gallery_visitor_ids').val(v.join(","));
+        }else{
+          var v1=v.indexOf($(this).val());
+          if(v1 > -1){
+            v.splice(v1,1)
+          }
+          $('#gallery_visitor_ids').val(v.join(","));
+        }
+      }
+    });
+  });
+  $(".checkbox input").change(function(){
+    if($('.checkbox input:checked').size()>0){
+
+      $('#DeleteVisitor').css('display',"inline-block");
+    }
+    else{
+      $('#DeleteVisitor').css('display',"none");
+    }
+  });
+  $(".checkbox input").click(function(){
+    if($(this).is(':checked')){
+      $(this).parent('.checkbox').addClass('checked-box');
+    }
+    else{
+      $(this).parent('.checkbox').removeClass('checked-box');
+    }
+  })
+  $('#selAll').click(function(){
+    if($(this).is(':checked')){
+      $('.checkbox').addClass('checked-box');
+    }
+    else{
+      $('.checkbox').removeClass('checked-box');
+    }
+  });
+</script>

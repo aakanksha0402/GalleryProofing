@@ -1,0 +1,17 @@
+<%= form_for(@client_view) do |f| %>
+  <% if @client_view.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@client_view.errors.count, "error") %> prohibited this client_view from being saved:</h2>
+
+      <ul>
+      <% @client_view.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

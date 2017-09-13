@@ -1,0 +1,2 @@
+$("#client_contact_state_province_id").remove();
+$("#state_and_province").html('<%=j collection_select(:client_contact,:state_province_id,@state_province.all,:id,:name,{},{class: "brands-set","data-live-search": true}) %>')

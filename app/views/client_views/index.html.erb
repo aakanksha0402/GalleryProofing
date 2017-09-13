@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Client Views</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @client_views.each do |client_view| %>
+      <tr>
+        <td><%= link_to 'Show', client_view %></td>
+        <td><%= link_to 'Edit', edit_client_view_path(client_view) %></td>
+        <td><%= link_to 'Destroy', client_view, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Client view', new_client_view_path %>

@@ -1,0 +1,618 @@
+<% content_for :head, "GalleryProofing | New Template"%>
+<% content_for :body_class, "contact-index" %>
+<% content_for :studio_class, "active"%>
+
+<% if @not_authorized == true %>
+  <%= render '/dashboards/no_authorization' %>
+<% else %>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+              <div id="pageTitleHeaderText">Email</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><%= link_to "Browse Full Knowledge Base" ,"#", class: "bold", target: "_blank" %></li>
+                <li><%= link_to "#", target: "_blank" do %>
+                  <span class="email"><i class="fa fa-envelope"></i></span>Email-Us
+                  <% end %>
+                </li>
+              </ul>
+            </div>
+            <% if @not_authorized_to_add != true %>
+              <div class="right-buttons text-right">
+                <%= link_to "New Template", "#newtemp-filter", class: "btn btn-primary", "data-toggle": "modal"%>
+              </div>
+            <% end %>
+            </div>
+          </div>
+        </div>
+        <!-- /title -->
+      </div>
+    </div>
+  </div>
+  <!-- /top -->
+
+  <!-- main -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <ul class="nav nav-pills in-pills">
+          <li class="type"><%= link_to "Activity", email_activity_email_templates_path %></li>
+          <li class="active"><%= link_to "Templates", "#2a","data-toggle": "tab" %></li>
+          <li class="type "><%= link_to "Automations", automation_series_index_path %></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="tab-content clearfix">
+          <div class="tab-pane active" id="2a">
+            <!-- with templates -->
+            <% if @email_templates.count >= 1 %>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-2 col-sm-3">
+                  <div class="form-group ">
+                    <%#= grouped_collection_select "templates", :default_email_template_type_id, @all, :id, :name, :id, :email_type %>
+                    <%= select_tag "templates", options_for_select(@all.map{ |all| [all.text_value, all.id, 'data-t': all.text] }), prompt: 'All Templates', class: "input-lg form-control selectpicker", id: "email_template", remote: true %>
+                    <%#= select_tag "templates", grouped_options_for_select(@default_email_template_type, selected_key = nil) %>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <% if @params_email_templates.count > 0 %>
+                  <div class="table-responsive has-dropdown">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th><%= sortable "email_templates.name", "Name" %></th>
+                          <th><%= sortable "email_templates.email_subject", "Subject" %></th>
+                          <th><%= "Type" %></th>
+                          <th><%= "Used in Automation Series" %></th>
+                          <th><%= sortable "email_templates.updated_at", "Last Edit date" %><span class="caret"></span></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <% @params_email_templates.each do |email_template| %>
+                      <tbody>
+                        <tr class= 'clickable-row' data-href="<%= edit_email_template_path(email_template) %>">
+                          <td><%= email_template.name %></td>
+                          <td><%= email_template.email_subject %></td>
+                          <td><%= email_template.default_email_template.email_type %></td>
+                          <td><%= email_template.automation_series.pluck(:name).join(", ") %></td>
+                          <td><%= email_template.updated_at.strftime("%I:%M %p") %></td>
+                          <% if email_template.automation_series.present? %>
+                          <td class="quick-actions">
+                            <%= link_to "Delete", "#Delete-pop-more", "data-toggle": "modal"%>
+                          </td>
+                          <% else %>
+                          <td class="quick-actions">
+                            <%= link_to "Delete", "#Delete-pop-more-#{email_template.id}", "data-toggle": "modal"%>
+                          </td>
+                          <% end %>
+                        </tr>
+
+                      </tbody>
+
+                      <!-- Delete not possible when used in automation -->
+                      <div class="modal fade" id="Delete-pop-more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                            </div>
+                            <div class="modal-body">
+                              <p><strong><%= email_template.name %> </strong>is currently used in an automation series and may not be deleted.</p>
+                            </div>
+                            <div class="modal-footer">
+                              <%= link_to "Cancel", "#", "data-dismiss": "modal", class: "btn btn-default" %>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Delete not possible when used in automation -->
+
+                      <!-- Delete Template Modal -->
+                      <div class="modal fade" id="Delete-pop-more-<%= email_template.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                            </div>
+                            <div class="modal-body">
+                              <p>Are you sure you want to delete <strong><%= email_template.name %></strong> You will no longer be able to use this email template. This cannot be undone.</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                              <%= link_to "Yes, Delete", email_template_path(email_template), method: :delete, class: "btn btn-sm btn-danger"%>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Delete Template Modal -->
+                      <% end %>
+                    </table>
+                  </div>
+                  <% else %>
+                  <%= "No Records Found" %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <% if params[:automation_series] %>
+              <script>
+                $(document).ready(function(){
+                  $("#email_template").val("<%= params[:automation_series]%>");
+                });
+              </script>
+            <% elsif params[:email_template] %>
+              <script>
+                $(document).ready(function(){
+                  $("#email_template").val("<%= params[:email_template]%>");
+                });
+              </script>
+            <% end %>
+            <!-- with templates -->
+            <% else %>
+            <!-- no templates -->
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-12 text-center">
+                  <div class="empty-state-icon"><!--?xml version="1.0" encoding="utf-8"?-->
+                    <!-- Generator: Adobe Illustrator 18.1.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 500 500" enable-background="new 0 0 500 500" xml:space="preserve">
+                      <g opacity="5.000000e-02">
+                        <image overflow="visible" width="388" height="272" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYUAAAERCAYAAACU1LsdAAAACXBIWXMAAAsSAAALEgHS3X78AAAA
+                        GXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAEHhJREFUeNrs3QlTHNcVBtCeBbCW
+                        SN4SZ1///39yqpI48W5LlgQMkO7S69JTM2Ibhrn3zTlVr6QCLEMD9+u33J6uAwAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADWmLkEgBq41oULArAfNW42ed/sA2Fw
+                        UQ2hANBY0R/fPi9jdkUonE/GXgSEUAD2peiPb1/0Y1lG/XGzqugPIXDWj9NqrMrbzlsOBqEARKxD
+                        91n0F5P3HfTjqIyD8rZ59f8aA+GkH6/K+KUfr/txXIVD12I4LP08AgHu9rdd9MfCP77vURkfVf/O
+                        rJolnJYQeNGPH/rxXT9+7MfP5e1dFQxCAeCWRf+6wr/tor+o/tvhbY/L+Ki8bRoKJ2V2MATB1/34
+                        qoxlCYlX1cc2NVsQCsBDFP2r7vYX1ccut1T0F9W/f1TePozDa2YKQyj8rx/Pyn83694tL40f17UU
+                        DEIBeIjN3Ovu9peTQLjvor8ueOpAWLenMOwfDMtHz8u/NXzMqrz9uATCWdfYMpJQgP0t/A+9mXvV
+                        3f4YDIdbLPqz6s/685leh3G2sCqfwzhDWJVloyEoXpaZxKq1JSShAPtzt7/rzdyr7vYPJ//uNov+
+                        bDK6NaFwUf1/60AY9hO+6d5uPA+bzm/K+2atBINQgP1Z4tn1Zu5Vd/v1/2PbRf8m17Sr/u3zsoT0
+                        WT9+3Y/Pu7ebzsPX/ktZRjo3UwCiFf2r7vYjbOZedbe/mHw92yz6t/mejNdjuA6/6scnZTwvX/v0
+                        5JJQADYq/Pu2mXuTu/2HKvo3/Z6N1+RxCYaPu7enkR5Xy17NLCEJBXjYu32buTcv/LMg39NZdU2e
+                        lGB4Wq7rQfV9sXwEiv6t7/Zt5sYr/NeZT8JyvOZH5W0zoQCK/l3u9ne9rh9pMzfjz8Z43dfthTRD
+                        KKDw78+6fsTN3Ew/N/V1XVTXUyhA8rt96/qK/qZLSfM1PzdCAZIu8VjXV/Q3mSksqnBfTL4vTh9B
+                        wKJ/1d2+dX02+dlcVN+zoyrkbTTDPRd+6/qKfuSf19nke/64e/8E0vTV24QC3PJu37q+op91lvCh
+                        JcEmvk9CgV0t8VjXV/Qzzhbqm4lHk0AQCij6d7zbt65P9tnCYXd5s7kJQkHh30bRt65Py7OF+mZi
+                        2TV2LFUo7PfdvnV9RZ/b/17VP3PTYLDRTOolHuv6ij53D4TpsdQmlpCEQttF/6q7fev6cPulo+aP
+                        pQqFeIXfur6iT9zf1+aPpQqF3d/tW9dX9Mk1W2j6WKpQ2P0Sj3V9RZ9cv/Pj71u90ax5TdG3rm+J
+                        hz0OhWYfoS0UrOtb14fba/YR2vsQCtb1revDNmYKTT5Ce9nIN2nTJR7r+oo+3KbmNPsI7WXCb8Z9
+                        L/FY1wduWn+a71VYJvpG1IVu3lnXV/Rht7OEJnsVlsEv/nQjpy6+1vWBXd2kNtursAx80acF9nDy
+                        d+v6wC5vWJvsVVgGvNjT6dmTfvyq/Pm4KujW9YFdr2I016uwDHah60AYQuB5Pz4v49MqHJ5MQsK6
+                        PvDQmuxVWAa8yGMgfNaP3/bjj/34Qz9+04+Py/sede8v/VjXB3YxU2iuV2EZ7CIflGI/zAp+14+/
+                        lfHnfnxRZg7j8a/Dzro+sLua1WSvwjLIxR1384cL+6wEwF/68Y8y/lRmDk/LxywmyWyJB3jIetVs
+                        r0KUmcJ4gcdlo9/346/9+HsJh3GWsO6iK/rArmYJzfUqLANd4KMyExhDYZgd1HsJj7rLL5Kt6AO7
+                        XN1orldhGeTizssFHUPhizKGU0fPygU/6Bp6EiGQPhia7FWI8kLTixIKT8qs4NPy59PuXR+CQACi
+                        hUJzvQrzIJ/DmLjj+tzYh3AkEIDgNbSpXoUoM4V6N79+pMVCIADBZwpX9SoIhQ0vcr3H0MzL2wHN
+                        BkNzvQpRQmE4y3texlk1LrrEr2AENBsGt+lVEAp3CISuBMJpP076cVz+fjb5GIBos4SmehWihMJZ
+                        CYEhDF7143X5+6qaMQBEmy0016uw61AYl4fGWcKbEgqvyt9Py/ssIwGRZwvj4Zh6szmlKJ/4eZkV
+                        nJQweFP+virvA4g6W6hfhyX9Efooy0f1bOF0EghmCUDkYKgf1z8NBhvNGwTD9PTReRUKANEDYXos
+                        NeUSUrRP+qIKhDOhAAQOhCaPpUYKhYsqDFbdu5NHggGIGgzNHUuNtHw0PZo6jJNOExsQe7bQ1LHU
+                        SKGgVwHIGAxNPUI74ukjvQpAtlBo5hHakfYUrutVEAhA5FraxCO0o+0p1M8/GgNh3GwGiDxTaOIR
+                        2pFPH512OpqBHMHQzCO0I/YpjMtIdTDYaAYihkFzvQrRZgqOpQJZZwlN9CpECwXHUoGMs4VmehWi
+                        bjQ7lgpkCoZmehWi7Sl4hDaQNRSa6FWIuKfgEdpARk30KkQ9feQR2kDGmUL6XoWoz/v2CG0gWzA0
+                        0asQMRQ8QhvIFAZN9SpEXD7SqwBknSWk71WI+sprehWAbLOFJnoVIp8+0qsAZAqGJnoVIu4p6FUA
+                        soZC+l6FqHsKehWAjNL3KkQ+faRXAcg4U0jdqzAP/LnpVQCyBUP6XoXIzWt6FYAsYdBMr0LU5SO9
+                        CkDWWULqXoWooaBXAcg4W0jfqxD99JFeBSDjbOGwu7zZnELUT1SvApB1trAoYTCGgqek3vNsQa8C
+                        kCkY5lUoTIPBRvMGwaBXAcgcCNNjqSmWkKJ/knoVgCyB0MSx1OjNa3oVgEzBkP5YauTlI70KQMbZ
+                        QupjqdFfjlOvApAtGFI/QjvD6SO9CkC2UEj7CO3IewrX9SoIBCBybU35CO3oewrjbOGkCoRxsxkg
+                        8kwh5SO0M50+Ou10NAM5giHtI7Qz9CmMy0h1MNhoBiKGQfpehegzBcdSgayzhJS9Chleec2xVCDb
+                        bCFtr0KWjWbHUoFMwZC2VyH6noJHaANZQyFlr0KGPQWP0AYyStmrkOX0kUdoAxlnCul6FbK8RJxH
+                        aAPZgiFlr0KGUPAIbSBTGKTuVciwfKRXAcg6S0jXq5Dlldf0KgDZZgspexUynT7SqwBkCoaUvQoZ
+                        9hT0KgBZQyFdr0KWPQW9CkBG6XoVMp0+0qsAZJwppOpVmCe6yHoVgGzBkK5XIVPzml4FIEsYpO1V
+                        yLJ8pFcByDpLSNWrkCUU9CoAGWcL6XoVsp0+0qsAZJwtHHaXN5tDyrKnoFcByDpbWJQwGEPBU1Lv
+                        ebagVwHIFAzzKhSmwWCjeYNg0KsAZA6E6bHUkPV3nuwi61UAsgRCymOp2ZrX9CoAmYIh3bHUTMtH
+                        ehWAjLOFVMdSs70cp14FIFswpHqEdsbTR3oVgGyhkOYR2pn2FK7rVRAIQFRpHqGdbU9hnC2cVIEw
+                        bjYDRJ4ppHiEdubTR6edjmYgRzCkeYR2xj6FcRmpDgYbzUDEMEjXq5BtpuBYKpB1lpCiVyHjK685
+                        lgpkmy2k6VXIutHsWCqQKRjS9Cpk21PwCG0gayik6FXIuKfgEdpARil6FbKePvIIbSDjTCF8r8I8
+                        6UX2CG0gWzCk6FXIGAoeoQ1kCoNUvQoZl4/0KgBZZwnhexWyvvKaXgUg22whRa9C5tNHehWATMGQ
+                        olch456CXgUgayiE71XIuqegVwHIKHyvQubTR3oVgIwzhdC9CvPEF1mvApAtGML3KmRuXtOrAGQJ
+                        gzS9ClmXj/QqAFlnCaF7FbKGgl4FIONsIXyvQvbTR3oVgIyzhcPu8mZzCFn3FPQqAFlnC4sSBmMo
+                        eErqPc8W9CoAmYJhXoXCNBhsNG8QDHoVgMyBMD2WGqIez5NfZL0KQJZASHEsNXvzml4FIFMwhD+W
+                        mnn5SK8CkHG2EPpYavaX49SrAGQLhtCP0G7h9JFeBSBbKIwPxqsfhicUNnRdr4JAACKHwyxaIGQO
+                        hels4aQKhHGzGYA9milMTx+ddjqagTz1a92fQuGegmE1CQYbzUDkulU34Ia6kZ03cGEdSwUy3cSe
+                        rbmJDbPs3cIrrzmWCmS7iX1T6tWbaDeyrWw0O5YKZLmJHcLgRT9+LuPVJBh2apn8QnuENhA5CMY/
+                        h5o0rGK87MeP/fi2H9/044fytpMoN7LL5BfcI7SBCIW/W1Nz6iWjk1L8v+/Hf/vx73581Y/vytuP
+                        zRTu7xviEdrALop+/baLSe2Z7iG8KrOCIQi+7Mc/SzB8W0JhXPLeuWVD3ziP0Aa2dbdfF/11b1/3
+                        tOZ6z3PYO/i6H/8qofBlCYhhKel1+e9CrG4sG/mGeoQ2sK27/Wl9OZ+M6bH40+pjT6pZwtdldjAE
+                        w3/KLOFF926T2Uzhnr7ZN+lVmPm9AEX/jnf7qzVF/2xNILzu3h0zrfc5h1D4qXu3uTyMYW8h1F5C
+                        S6FwXa/C0u8MKPp3vNsfN4mnRb9uOvvQsfjT6t8cAmA8gvqyfNxxxFWNlk4fXderYLYAOQv/tor+
+                        Te726yPv6+rL+P887t4/Fn86CY3x/cfd5QbbUMvcLdxF61WANu/2t130b3K3v5oU9bq+nFWrFavu
+                        /WPxZ5PPezouotanVvYU9CpAe0s8m67r36To3/Ruf7Wmvpyv+dyny0HTry/cU1FbnCnoVYCcRf8h
+                        1vWvKvq3udu/quhPv86LD1y7FPVo2dgPrV4F2E7hz7iuf13Rv8vd/odWH1IV/n0IBb0KsJ27/czr
+                        +rcp+k3d7Vs+0qsA21riaWVd/7qiv1eFfx9CQa8Cir51fUVfKOhVQNHvrOsr+kLhEr0KtFD4d1X0
+                        revT3PKRXgUy3+1HKPrW9WlqpqBXgcxLPLvezLWuT3OhUP/A6VUgWtGPvplrXZ8mQ0GvAvdR+Pd9
+                        M/e6u31FXyik+SXXq8Amd/s2cxV+uvZejlOvgqJ/17t9TVrQtXn6SK+Coq9JS9Fnz2cKXXd9r4Jf
+                        kDyFX5OWoo9QuNfZwsnkF1UDW467fev6ij5C4V6L0PnkF1ZHc64lHuv6IBS2EgyrSTCc+eULUfSt
+                        64NQePAlJMdS76fwW9dX9BEK6QucY6mb3+1b11f0EQrNzBI+dCz1pGvzWKp1fUs8IBSuMD2WWs8U
+                        Mh5Lta6v6INQ2HC2UBezusidB/68P1T4resr+iAUNiyw9WxhXSF86OUj6/rW9UEoBAiFsRC+6t4/
+                        hbS852Cwrm+JB4RC4FAYl4+GAvhzNT7tx+PyNc9uEQrW9RV9EApJA2EsZENxe9mPH/rxTT++7cfz
+                        fhz1Y14+flH9vbui8FvXV/RBKCSfKRyXUPiuH1/14+N+POnHQfm44e+H1axhuvxkXV/RB6HQiLFX
+                        4WWZITwpy0aH5f2nJSTGt40zhnoN37o+IBQaWkJaleL8YzUj6Kplpc/78awEw0EVCqvOuj4gFJqb
+                        KYwB8KJ7t28wFNpf+vF9CYVP+vG0e7vPsKiKv3V9QCg0OGMY9xZ+qv4+hMSw8TycRHpeQuGjKhSO
+                        O+v6wB6bNf61zUvBH5aQHnVvl4uelvGkvG08kXTeXX7VNuv6gFBo7OublWAYxkEJiKPy57jfMO/e
+                        3zS2rg8IhT0Jh3kVEtNeBev6gFDYs6933ehucLev6ANCYQ++9pnCDwAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXOH/AgwAictTpgM5CeQAAAAASUVORK5CYII=" transform="matrix(1 0 0 1 49.4375 162.2278)">
+                      </image>
+                    </g>
+                    <path fill="#231F20" d="M95.5,222.4l75.2,32.1l37.6,16.1l18.8,8c6.3,2.6,12.6,5.3,18.9,7.9l-1.5,0.2c2.6-2.3,5.3-4.5,8-6.6
+                    c2.7-2.2,5.4-4.3,8.1-6.4c2.7-2.1,5.5-4.2,8.3-6.3c2.8-2.1,5.5-4.1,8.3-6.2c2.8-2,5.6-4.1,8.4-6c2.9-1.9,5.9-3.7,8.9-5.4
+                    c3-1.7,6-3.5,8.9-5.4c2.9-1.9,5.6-4,8.4-6c2.8-2,5.5-4.2,8.3-6.2l8.2-6.4l8.1-6.4c2.7-2.1,5.4-4.3,8.2-6.3c2.7-2.1,5.5-4.1,8.3-6.1
+                    c2.8-2,5.6-4,8.5-5.9c2.9-1.9,5.8-3.7,8.8-5.5c3-1.8,6-3.5,9.2-5l0.8,1c-2.4,2.5-5,4.9-7.6,7.2c-2.6,2.3-5.3,4.5-8,6.6
+                    c-2.7,2.1-5.5,4.2-8.3,6.2c-2.8,2-5.6,4-8.5,6c-2.8,2-5.7,3.9-8.6,5.8l-8.7,5.7l-8.6,5.7c-2.8,2-5.7,3.9-8.5,5.9
+                    c-2.8,2-5.7,4-8.4,6.1c-2.7,2.1-5.3,4.4-7.9,6.7c-2.6,2.3-5.2,4.6-7.9,6.7c-2.7,2.1-5.6,4.1-8.4,6.1c-2.8,2-5.6,4-8.5,6
+                    c-2.8,2-5.7,3.9-8.5,5.9c-2.9,1.9-5.7,3.8-8.7,5.7c-2.9,1.9-5.8,3.7-8.8,5.5l-0.8,0.5l-0.7-0.3c-6.3-2.7-12.6-5.2-18.9-7.8l-19-7.6
+                    l-38-15.3l-75.9-30.5L95.5,222.4z"></path>
+                    <path fill="#FFFFFF" d="M386.9,198.1l18,139.7c0.8,6.4-3.7,12.3-10.1,13.1l-273,35.2c-6.4,0.8-12.3-3.7-13.1-10.1l-18-139.7
+                    c-0.8-6.4,3.7-12.3,10.1-13.1l120.1-105.7L373.8,188C380.2,187.2,386.1,191.7,386.9,198.1z"></path>
+                    <path fill="#435054" d="M389.4,197.8c1.8,12.6,3,25.3,4.4,38c1.4,12.7,2.6,25.4,4,38.1c0.8,6.3,1.5,12.7,2.5,19
+                    c1,6.3,2.3,12.6,3.5,18.8c1.2,6.3,2.1,12.6,2.9,18.9l0.6,4.7l0.3,2.4c0,0.3,0.1,1,0.1,1.4c0,0.5,0,1-0.1,1.5
+                    c-0.4,3.9-2.4,7.6-5.6,10c-1.6,1.2-3.4,2.1-5.3,2.5c-0.5,0.1-1,0.2-1.4,0.3c-0.5,0.1-0.8,0.1-1.2,0.1l-2.4,0.3l-9.5,1.1l-19,2.1
+                    c-12.7,1.4-25.3,2.9-38,4.5l-37.9,5l-37.9,5.2l-19,2.6l-19,2.5l-19,2.5l-19,2.3c-12.7,1.6-25.3,3.1-38,4.6l-9.5,1.1
+                    c-1.6,0.2-3.1,0.4-4.8,0.5c-1.9,0.1-3.6-0.2-5.4-0.8c-3.4-1.2-6.2-3.9-7.6-7.2c-0.4-0.8-0.6-1.7-0.8-2.6c-0.2-0.9-0.2-1.7-0.3-2.5
+                    l-0.6-4.8l-4.5-38c-1.5-12.7-2.9-25.3-4.6-38c-0.8-6.3-1.7-12.6-2.7-18.9l-3-18.9c-1-6.3-1.8-12.6-2.6-18.9l-0.1-0.6L89,236
+                    c0-0.4-0.1-1-0.1-1.4c0-0.9,0.1-1.8,0.3-2.7c0.4-1.8,1.1-3.5,2.2-5c2.1-3,5.5-5,9.2-5.5l-0.9,0.4l14.9-13.3l15-13.2l30.1-26.4
+                    l30.2-26.2l30.3-26.1l0.6-0.5l0.6,0.3l19,9l19.1,8.9l19.1,8.9l19.1,8.8c6.4,2.9,12.8,5.8,19.2,8.6c6.4,2.9,12.9,5.6,19.3,8.5
+                    l19.3,8.4c6.4,2.8,12.9,5.6,19.3,8.4l-1.2-0.2c1.8-0.3,3.7-0.2,5.5,0.3c1.8,0.4,3.5,1.3,5,2.4c1.5,1.1,2.7,2.5,3.7,4.1
+                    C388.5,194.1,389.2,195.9,389.4,197.8z M384.4,198.4c-0.3-2.4-1.5-4.7-3.4-6.2c-1.9-1.5-4.4-2.3-6.9-2l-0.7,0.1l-0.5-0.3
+                    c-6.3-3-12.6-6.1-18.9-9.2l-18.9-9.2c-6.3-3.1-12.6-6.2-18.9-9.2c-6.3-3-12.7-6-19-9l-19.1-8.8l-19.1-8.8l-19.2-8.7l-19.2-8.7
+                    l1.2-0.2L191.9,145L162,171.7l-30,26.5l-15,13.2L102,224.5l-0.4,0.4l-0.5,0.1c-2.7,0.3-5.2,1.8-6.8,4c-0.8,1.1-1.4,2.4-1.7,3.7
+                    c-0.2,0.7-0.2,1.3-0.2,2c0,0.7,0.1,1.3,0.2,2.2c0.8,6.3,1.6,12.7,2.3,19l1.8,19.1c0.6,6.4,1.4,12.7,2.2,19
+                    c1.6,12.7,3.4,25.3,5.1,37.9l5.3,37.9l0.7,4.7c0.1,0.8,0.2,1.6,0.4,2.3c0.2,0.7,0.4,1.4,0.7,2c1.1,2.6,3.4,4.6,6,5.5
+                    c1.3,0.4,2.7,0.6,4.1,0.5l0.6-0.1l0.6-0.1l1.2-0.2l2.4-0.3l9.5-1.3c12.6-1.8,25.3-3.5,37.9-5.2l19-2.5l19-2.4l19-2.4l19-2.3l38-4.6
+                    l38-4.8c12.6-1.7,25.3-3.4,37.9-5.3l18.9-2.8l9.5-1.4l2.4-0.3c0.4-0.1,0.8-0.1,1.1-0.2c0.3-0.1,0.6-0.1,0.9-0.2
+                    c1.2-0.3,2.3-0.9,3.3-1.7c1.9-1.5,3.2-3.9,3.4-6.3c0-0.3,0-0.6,0-0.9c0-0.3,0-0.5-0.1-0.9l-0.3-2.3l-0.6-4.7c-0.9-6.3-1.6-12.7-2-19
+                    c-0.4-6.4-0.7-12.8-1.4-19.1c-0.7-6.3-1.5-12.7-2.4-19c-1.8-12.6-3.9-25.2-5.8-37.8C387.9,223.7,385.8,211.1,384.4,198.4z"></path>
+                    <polyline fill="#FFFFFF" points="93.6,227.3 220.9,107.8 379.8,190.8 "></polyline>
+                    <path fill="#435054" d="M91.5,225l64.2-59.1l32.1-29.6l16.1-14.8c5.3-5,10.7-9.9,16-14.9l0.7-0.7l1.1,0.5c3.4,1.5,6.9,3,10.3,4.6
+                    c3.4,1.6,6.8,3.2,10.1,4.8c3.4,1.6,6.7,3.3,10,5c3.3,1.7,6.7,3.4,10,5.1c3.3,1.7,6.7,3.4,9.9,5.2c3.2,1.9,6.4,3.9,9.6,5.9
+                    c3.1,2,6.3,4,9.6,5.9c3.3,1.8,6.6,3.5,9.9,5.2c3.3,1.7,6.7,3.3,10,5l10.1,4.8l10.1,4.8c3.4,1.6,6.7,3.2,10.1,4.9
+                    c3.4,1.6,6.7,3.4,10,5.1c1.7,0.8,3.3,1.7,4.9,2.6c1.6,0.9,3.3,1.8,4.9,2.7c3.2,1.9,6.5,3.8,9.6,5.8c3.2,2,6.3,4.1,9.3,6.4l-0.6,1.1
+                    c-3.6-1.2-7.1-2.5-10.6-4c-3.5-1.4-6.9-3-10.2-4.6c-1.7-0.8-3.4-1.6-5-2.5c-1.7-0.8-3.3-1.7-5-2.5c-3.3-1.7-6.6-3.5-9.9-5.3
+                    c-3.3-1.8-6.5-3.6-9.8-5.5l-9.7-5.6l-9.7-5.6c-3.3-1.8-6.5-3.6-9.8-5.4c-3.3-1.7-6.6-3.5-9.9-5.2c-3.4-1.6-6.8-3.1-10.3-4.5
+                    c-3.5-1.4-6.9-2.9-10.3-4.5c-3.4-1.6-6.6-3.4-10-5.1c-3.3-1.7-6.6-3.5-9.9-5.3c-3.3-1.8-6.6-3.6-9.8-5.4c-3.3-1.8-6.5-3.7-9.7-5.6
+                    c-3.2-1.9-6.4-3.8-9.6-5.8l1.8-0.3c-5.3,4.9-10.6,10-15.9,15L190.4,139l-31.5,30.2l-63,60.4L91.5,225z"></path>
+                    <rect x="143.9" y="102.4" transform="matrix(0.9925 -0.1221 0.1221 0.9925 -23.633 30.0902)" fill="#FFFFFF" width="179.6" height="210.9"></rect>
+                    <path fill="#435054" d="M338.8,304l-181,22.3l-2.9,0.4l-0.2-2.7c-0.3-4.4-0.6-8.8-1-13.2c-0.4-4.4-0.8-8.8-1.2-13.1
+                    c-0.5-4.4-0.9-8.7-1.4-13.1c-0.5-4.4-0.9-8.7-1.5-13.1l-1.6-13.1l-1.6-13.1l-3.3-26.2l-3.4-26.1l-3.5-26.1
+                    c-1.2-8.7-2.3-17.4-3.6-26.1l-1.8-13.1l-1.9-13l-0.4-2.8l2.8-0.2c3.7-0.3,7.5-0.6,11.2-1c3.7-0.3,7.5-0.7,11.2-1.1l11.2-1.1
+                    l11.2-1.2l11.2-1.2l11.2-1.3l22.3-2.6l22.3-2.6l22.3-2.7c7.4-0.9,14.9-1.8,22.3-2.7l22.3-2.8l1.1-0.1l0.1,1.1L338.8,304z
+                    M332.7,299.2L308.9,92.4l1.2,1L287.8,96c-7.4,0.9-14.9,1.8-22.3,2.8l-22.3,2.8l-22.3,2.9l-22.3,2.9l-11.1,1.5l-11.1,1.5l-11.1,1.5
+                    l-11.1,1.6c-3.7,0.5-7.4,1.1-11.1,1.7c-3.7,0.6-7.4,1.1-11.1,1.8l2.4-3.1l1.3,13.1l1.4,13.1c0.9,8.7,1.9,17.5,2.9,26.2l2.9,26.2
+                    l3.1,26.2l3.1,26.2l1.6,13.1l1.6,13.1c0.5,4.4,1.2,8.7,1.7,13.1c0.6,4.4,1.2,8.7,1.9,13.1c0.7,4.3,1.3,8.7,2,13
+                    c0.7,4.3,1.4,8.7,2.2,13l-3.1-2.4L332.7,299.2z"></path>
+                    <rect x="165.7" y="129.4" transform="matrix(0.9925 -0.1221 0.1221 0.9925 -18.6528 29.2879)" fill="#A5E7F9" width="128" height="75"></rect>
+                    <path opacity="0.5" fill="#5CC0E2" d="M173.6,184.1c-9.5,1.1-13.8-1.6-15.7-4.1c-4.5-5.9-8.2-18.7,28.4-37.7s46.2-23.9,55.6-16.1
+                    c4.5,3.7,8,8.5,5.8,15L173.6,184.1z"></path>
+                    <path opacity="0.5" fill="#5CC0E2" d="M263.1,206.3c-9.5,1.1-13.8-1.6-15.7-4.1c-4.5-5.9-10-12.8,13.7-26.1
+                    c18.9-10.6,22.8-13.6,32.2-5.9c4.5,3.7,8,8.5,5.8,15L263.1,206.3z"></path>
+                    <path opacity="0.5" fill="#5CC0E2" d="M175.7,205.5c-9.5,1.1-13.8-1.6-15.7-4.1c-4.5-5.9,27.5-41.1,64.1-60.2s46.2-23.9,55.6-16.1
+                    c4.5,3.7,8,8.5,5.8,15L175.7,205.5z"></path>
+                    <path opacity="0.5" fill="#5CC0E2" d="M197.6,216.7c-9.5,1.1-13.8-1.6-15.7-4.1c-4.5-5.9,27.5-41.1,64.1-60.2s46.2-23.9,55.6-16.1
+                    c4.5,3.7,8,8.5,5.8,15L197.6,216.7z"></path>
+                    <path fill="#FFFFFF" d="M401.1,345.5L246.7,288L90.7,236.8l18,139.7c0.8,6.4,6.7,10.9,13.1,10.1l273-35.2
+                    c6.4-0.8,10.9-6.7,10.1-13.1l-18-139.7L248,287.4"></path>
+                    <path fill="#435054" d="M400.9,346.1c-3.3-1-6.5-2.1-9.8-3.1c-3.3-1.1-6.5-2.1-9.8-3.2c-3.3-1.1-6.5-2.2-9.7-3.3l-9.7-3.4
+                    c-6.5-2.2-12.9-4.6-19.4-6.9l-19.3-7l-38.7-14l-38.6-14.1l-39-12.7l-39.1-12.9l-19.5-6.4c-6.5-2.2-13-4.3-19.5-6.6
+                    c-3.2-1.1-6.5-2.2-9.7-3.4c-3.2-1.1-6.5-2.3-9.7-3.5c-3.2-1.2-6.4-2.4-9.7-3.6c-3.2-1.2-6.4-2.4-9.6-3.6l2.2-1.8l4.9,36.8l4.8,36.8
+                    l4.8,36.8l2.4,18.4l1.2,9.2l0.1,1.2l0.1,0.5l0.1,0.6l0.1,0.6l0.1,0.4l0.1,0.4l0.2,0.4c0.5,1.2,1.2,2.3,2.1,3.2
+                    c1.8,1.8,4.3,2.9,6.9,2.9c1.2,0,2.8-0.3,4.3-0.5l4.6-0.6l18.4-2.4l36.8-4.7l73.6-9.4l73.6-9.4l36.8-4.7l18.4-2.4l4.6-0.6l2.3-0.3
+                    l0.6-0.1l0.1,0c0.1,0-0.1,0,0.1,0l0.3-0.1c0.4-0.1,0.8-0.1,1.1-0.2c0.6-0.1,1.2-0.4,1.8-0.7c0.6-0.3,1.2-0.6,1.7-1
+                    c1-0.8,1.9-1.8,2.6-2.9c0.7-1.1,1.1-2.4,1.2-3.7c0.1-0.3,0.1-0.7,0.1-1c0-0.3,0-0.7,0-1l0-0.5l-0.1-0.6l-0.1-1.2l-1.2-9.2l-2.4-18.4
+                    l-4.7-36.8l-9.3-73.6l2.2,1l-8.6,5.7l-8.6,5.7c-5.7,3.8-11.5,7.5-17.3,11.3l-17.3,11.2l-17.3,11.1l-17.4,11.1
+                    c-5.8,3.7-11.6,7.4-17.4,11c-2.9,1.8-5.8,3.6-8.8,5.4c-2.9,1.8-5.9,3.6-8.8,5.3c-3,1.7-5.9,3.5-8.9,5.2c-3,1.7-5.9,3.5-9,5.1
+                    l-0.7-1.1c2.8-2,5.6-4,8.4-6c2.8-2,5.6-3.9,8.5-5.9c2.8-1.9,5.7-3.9,8.5-5.8c2.9-1.9,5.7-3.8,8.6-5.7c5.7-3.8,11.5-7.5,17.3-11.2
+                    l17.3-11.1l17.4-11.1l17.4-11c5.8-3.7,11.6-7.3,17.5-10.9l8.8-5.4l8.8-5.4l1.9-1.2l0.3,2.2L398,272l4.8,36.8l2.4,18.4l1.2,9.2
+                    l0.1,1.2l0.1,0.6l0.1,0.7c0,0.4,0.1,0.9,0,1.3c0,0.4,0,0.9-0.1,1.3c-0.2,1.8-0.8,3.5-1.7,5c-1.8,3.1-4.7,5.4-8.3,6.4
+                    c-0.5,0.2-0.8,0.2-1.2,0.3l-0.3,0.1l-0.2,0l-0.1,0l-0.6,0.1l-2.3,0.3l-4.6,0.6l-18.4,2.4l-36.8,4.8l-73.6,9.6l-73.6,9.6l-36.8,4.8
+                    l-18.4,2.3l-4.6,0.6c-1.6,0.2-2.9,0.5-4.9,0.5c-3.6,0-7.2-1.5-9.8-4.1c-1.3-1.3-2.3-2.8-2.9-4.5l-0.2-0.6l-0.2-0.7l-0.2-0.7
+                    l-0.1-0.6l-0.1-0.6l-0.1-0.7l-0.1-1.2l-1.2-9.2l-2.3-18.4l-4.7-36.8l-4.7-36.8L89,237l-0.3-2.5l2.5,0.7c3.3,0.9,6.6,1.8,9.9,2.8
+                    c3.3,0.9,6.6,1.9,9.9,2.9c3.3,1,6.6,2,9.9,3c3.3,1,6.6,2,9.8,3c6.6,2,13.1,4.1,19.6,6.2l19.6,6.4l39.1,12.8l39.2,12.9l38.5,14.6
+                    l38.4,14.7l19.2,7.4c6.4,2.5,12.8,4.9,19.2,7.5l9.6,3.8c3.2,1.3,6.4,2.6,9.5,3.9c3.2,1.3,6.3,2.6,9.5,4c3.2,1.3,6.3,2.7,9.5,4
+                    L400.9,346.1z"></path>
+                    <g>
+                      <path fill="#FFFFFF" d="M248,287.4"></path>
+                    </g>
+                    <path fill="#435054" d="M245.6,294c0,0-0.5,0.3-1.5,1c-1,0.7-2.4,1.6-4.2,2.9c-1.8,1.2-4,2.8-6.5,4.5c-2.5,1.7-5.3,3.8-8.4,6
+                    c-3.1,2.2-6.4,4.6-9.9,7.1c-3.5,2.5-7.2,5.2-11,8c-3.8,2.7-7.8,5.5-11.9,8.3c-4.1,2.8-9.1,4.5-13.1,7.4c-2.1,1.4-3.9,3.2-5.7,5
+                    c-0.9,0.9-1.8,1.7-2.8,2.5c-1,0.8-2,1.5-3,2.2c-4,2.9-7.9,5.8-11.8,8.5c-3.8,2.7-7.6,5.3-11.2,7.7c-3.6,2.4-7,4.7-10.1,6.8
+                    c-3.1,2.1-6,4-8.6,5.7c-2.6,1.6-4.9,3.1-6.7,4.2c-1.9,1.1-3.4,2-4.4,2.6c-1,0.6-1.6,0.9-1.6,0.9l-0.7-1.1c0,0,0.5-0.4,1.4-1.2
+                    c0.9-0.8,2.2-1.9,4-3.3c1.7-1.4,3.8-3,6.2-4.9c2.4-1.9,5.2-4,8.2-6.2c3-2.2,6.3-4.7,9.8-7.3c3.5-2.5,7.1-5.3,11-8
+                    c3.8-2.8,7.8-5.5,11.9-8.3c1-0.7,2-1.4,3.1-2.1c1.1-0.7,2.2-1.2,3.3-1.8c2.3-1.1,4.6-2.2,6.6-3.7c4.1-2.8,7.3-7,11.4-9.9
+                    c4-2.9,7.9-5.8,11.8-8.5c3.9-2.7,7.6-5.3,11.2-7.8c3.6-2.4,6.9-4.8,10-6.9c3.1-2.2,5.9-4.1,8.4-5.9c2.5-1.8,4.7-3.3,6.4-4.7
+                    c1.8-1.3,3.2-2.3,4.1-3c0.9-0.7,1.4-1.1,1.4-1.1L245.6,294z"></path>
+                    <path opacity="4.000000e-02" d="M132.3,368.5c5.6-0.3,11.3-0.8,16.9-1.3c5.6-0.5,11.2-1.1,16.8-1.7l16.8-1.8
+                    c5.6-0.6,11.2-1.3,16.8-2.2c5.6-0.9,11.1-1.7,16.6-3c5.5-1.3,11-2.8,16.5-4.1c5.5-1.3,11.1-2.3,16.7-2.8c5.6-0.5,11.4,0,17-0.1
+                    c5.7-0.1,11.2-0.9,16.8-1.9c5.5-1,11.1-2.3,16.6-3.5c5.5-1.2,11.1-2,16.7-2.7c5.6-0.6,11.2-1.1,16.9-1.4c5.6-0.4,11.3-0.7,16.9-1.2
+                    c5.6-0.5,11.2-1.3,16.8-2l8.4-1.2l8.4-1.3c5.6-0.9,11.1-1.8,16.7-3l-12.2,16l-2.5-17c-0.8-5.7-1.6-11.3-2.3-17
+                    c-0.4-2.8-0.8-5.7-1.2-8.5c-0.4-2.8-0.8-5.7-1.4-8.5c-0.6-2.8-1.2-5.6-1.8-8.4c-0.6-2.8-1-5.6-1.3-8.5c-0.3-2.8-0.3-5.7-0.3-8.6
+                    c0-2.9-0.1-5.8-0.5-8.6c-0.4-2.8-1-5.6-1.9-8.4c-0.9-2.8-1.9-5.5-2.8-8.3c-0.9-2.8-1.5-5.6-1.8-8.4c-0.4-2.8-0.6-5.7-0.8-8.5
+                    c-0.2-2.9-0.2-5.7-0.2-8.6c0.1-2.9,0.2-5.8,0.7-8.8c1.3-8.1,8.9-13.6,17-12.3c5.1,0.8,9.2,4.2,11.2,8.5c1.2,2.7,2.1,5.5,3,8.3
+                    c0.8,2.8,1.5,5.6,2.1,8.4c0.6,2.8,1.1,5.6,1.4,8.5c0.4,2.8,0.6,5.7,0.5,8.6c-0.1,2.9-0.4,5.8-0.6,8.7c-0.1,2.9,0,5.8,0.4,8.6
+                    c0.4,2.8,1,5.6,1.8,8.4c0.8,2.8,1.5,5.6,2,8.4c0.5,2.8,0.8,5.7,1,8.5c0.2,2.9,0.3,5.7,0.5,8.6c0.2,2.9,0.5,5.7,0.9,8.5
+                    c0.3,2.8,0.7,5.7,1.1,8.5c0.8,5.7,1.5,11.3,2.2,17l2,17l0.1,1.2c0.9,7.3-4.3,13.9-11.6,14.7c-0.3,0-0.5,0.1-0.8,0.1
+                    c-5.6,0.3-11.2,0.9-16.9,1.4l-8.4,0.9l-8.4,1c-5.6,0.8-11.2,1.5-16.7,2.4c-5.6,0.9-11.1,2-16.6,3.2c-5.5,1.1-11.1,2.1-16.7,3
+                    c-5.6,0.8-11.2,1.5-16.8,1.7c-5.6,0.3-11.3,0.5-16.9,0.9c-5.6,0.5-11.2,1.1-16.7,2.5c-5.5,1.4-10.9,3.3-16.5,4.3
+                    c-5.6,1-11.2,1.4-16.8,1.6c-5.7,0.1-11.4,0.1-17,0.3c-5.7,0.2-11.3,0.8-16.9,1.4c-5.6,0.6-11.2,1.4-16.7,2.2l-16.7,2.6
+                    c-5.6,0.9-11.1,1.7-16.7,2.7c-5.6,1-11.1,2-16.6,3.1c-7.7,1.6-15.2-3.4-16.8-11.1c-1.6-7.7,3.4-15.2,11.1-16.8
+                    C130.9,368.7,131.6,368.6,132.3,368.5z"></path>
+                    <circle fill="#FFFFFF" cx="243.2" cy="289" r="26.2"></circle>
+                    <circle fill="#FFF4E3" cx="239.7" cy="295.2" r="26.2"></circle>
+                    <path fill="#435054" d="M270.4,289c0,0,0,0.6-0.1,1.8c0,0.3,0,0.6-0.1,1c-0.1,0.4-0.1,0.8-0.2,1.3c-0.1,0.5-0.1,1-0.2,1.5
+                    c-0.1,0.5-0.2,1.1-0.4,1.6c-0.6,2.3-1.5,5-3.2,7.9c-1.7,2.8-4.1,5.8-7.5,8.3c-3.3,2.5-7.6,4.4-12.4,5c-0.6,0.1-1.2,0.1-1.8,0.2
+                    l-0.9,0.1l-0.5,0c0.1,0-0.2,0-0.2,0l-0.1,0l-0.1,0l-0.2,0c-1.1-0.1-2.2,0-3.6-0.3c-0.6-0.1-1.3-0.2-2-0.4c-0.6-0.2-1.2-0.4-1.9-0.5
+                    c-0.6-0.2-1.2-0.4-1.8-0.7c-0.6-0.3-1.2-0.5-1.8-0.8c-2.4-1.1-4.5-2.7-6.5-4.5c-2-1.8-3.8-3.8-5.4-6c-1.5-2.2-2.9-4.7-3.8-7.3
+                    c-0.4-1.3-0.9-2.7-1.1-4.1c-0.1-0.7-0.3-1.4-0.3-2.1l-0.1-1.1l0-0.5l0-0.3l0-0.1l0-0.1c0-0.1,0,0.1,0-0.2c0.1-1.3,0.1-2.5,0.4-4
+                    c0.1-0.7,0.2-1.5,0.4-2.1l0.6-2c0.9-2.7,2.1-5.2,3.7-7.4c1.6-2.2,3.5-4.2,5.6-5.9c2.1-1.6,4.4-3,6.8-4c4.7-2,9.9-2.5,14.4-2.1
+                    c1.2,0.2,2.4,0.3,3.5,0.6c0.6,0.1,1.1,0.2,1.7,0.4c0.5,0.2,1.1,0.3,1.6,0.5c2.1,0.7,4,1.7,5.8,2.8c3.5,2.2,6.2,5.1,7.9,8
+                    c1.7,2.9,2.5,5.8,2.9,8.1c0.1,0.6,0.2,1.1,0.3,1.6c0.1,0.5,0.1,1,0.2,1.5c0.1,0.9,0.2,1.7,0.2,2.3C270.4,288.3,270.4,289,270.4,289
+                    L270.4,289z M268.3,289c0,0,0-0.6-0.1-1.8c0-0.3,0-0.6-0.1-1c-0.1-0.3-0.1-0.7-0.2-1.1c-0.1-0.4-0.1-0.9-0.3-1.3
+                    c-0.2-0.5-0.3-0.9-0.5-1.4c-0.8-2-1.9-4.3-3.7-6.6c-1.7-2.3-3.9-4.7-6.8-6.8c-1.5-1-3.1-2-4.8-2.7c-0.4-0.2-0.9-0.4-1.4-0.5
+                    c-0.5-0.1-0.9-0.3-1.4-0.4c-1-0.3-1.9-0.4-2.9-0.6c-0.5-0.1-1.1-0.1-1.6-0.1l-0.8,0l-0.4,0c-0.1,0,0.1,0,0,0l0,0l-0.1,0l-0.2,0
+                    c-1.1,0.1-2.1,0.1-3.2,0.3c-2.1,0.3-4.2,1-6.3,1.9c-2,0.9-3.9,2.3-5.6,3.7c-1.7,1.5-3.2,3.3-4.4,5.3c-1.2,2-2.1,4.1-2.8,6.3
+                    c-0.3,1.1-0.6,2.3-0.7,3.3c-0.2,1-0.2,2.4-0.3,3.7c0-0.2,0,0,0-0.1l0,0.1l0,0.1l0,0.2l0,0.4l0,0.9c0,0.6,0.1,1.2,0.2,1.7l0.1,0.9
+                    c0,0.3,0.1,0.6,0.1,0.9l0.3,1.7c0.6,2.2,1.4,4.5,2.6,6.5c1.3,2,2.8,3.7,4.6,5.1c0.4,0.4,0.9,0.7,1.4,1l0.7,0.5l0.7,0.4
+                    c0.5,0.3,1,0.6,1.5,0.8c0.5,0.2,1,0.4,1.5,0.6c0.5,0.2,1,0.3,1.5,0.5c0.5,0.2,1,0.4,1.6,0.4c0.5,0.1,1,0.2,1.6,0.3
+                    c0.5,0.1,1,0.1,1.5,0.2c0.9,0.2,2.1,0.2,3.3,0.3l0.2,0l0.1,0l0.1,0c0,0-0.2,0-0.1,0l0.4,0l0.8,0c0.5,0,1,0,1.5-0.1
+                    c4-0.4,7.6-1.6,10.7-3.4c3.1-1.8,5.5-4.2,7.2-6.6c0.4-0.6,0.8-1.2,1.2-1.8c0.3-0.6,0.6-1.2,1-1.8c0.3-0.6,0.5-1.2,0.7-1.7
+                    c0.1-0.3,0.2-0.5,0.3-0.8c0.1-0.3,0.2-0.5,0.2-0.8c0.1-0.5,0.3-1,0.4-1.5c0.1-0.5,0.2-0.9,0.2-1.3c0.1-0.4,0.1-0.8,0.2-1.1
+                    c0.1-0.3,0.1-0.7,0.1-1C268.2,289.6,268.3,288.9,268.3,289L268.3,289z"></path>
+                    <circle fill="#FFFFFF" cx="189.6" cy="155.3" r="10"></circle>
+                    <path fill="#435054" d="M200.7,155.3c0,0,0,0.2,0,0.7c0,0.4-0.1,1.3-0.3,2.2c-0.2,0.9-0.5,2.1-1.1,3.4c-0.6,1.3-1.5,2.6-2.9,3.8
+                    c-1.4,1.2-3.3,2.1-5.4,2.4c-0.3,0-0.5,0-0.8,0.1l-0.4,0l-0.2,0l-0.2,0l0,0l-0.1,0c-0.5,0-0.8-0.1-1.5-0.2c-0.6-0.1-1.1-0.4-1.6-0.6
+                    c-0.5-0.3-1-0.6-1.4-0.9c-1.7-1.5-2.9-3.2-4-5c-0.5-0.9-0.9-1.8-1.3-2.8c-0.3-1-0.5-2-0.6-3.1c0-0.9,0.1-2.1,0.3-3.1
+                    c0.3-1,0.7-2,1.2-3c1.1-1.8,2.7-3.4,4.6-4.4c0.9-0.5,1.9-0.8,2.9-1c0.5-0.1,1-0.2,1.5-0.2l0.1,0l0,0l0,0l0.1,0l0.2,0l0.3,0
+                    c0.2,0,0.4,0,0.7,0c1.1,0.1,2.1,0.2,3,0.5c0.9,0.3,1.8,0.7,2.5,1.1c1.5,1,2.7,2.2,3.3,3.5c0.7,1.3,0.8,2.6,0.9,3.6
+                    c0.1,0.5,0.1,0.9,0.1,1.3c0,0.4,0,0.7,0,0.9C200.6,155,200.7,155.3,200.7,155.3L200.7,155.3z M198.5,155.3c0,0,0-0.2,0-0.6
+                    c0-0.4-0.2-1-0.6-1.7c-0.4-0.7-1-1.4-1.7-2.1c-0.7-0.7-1.4-1.5-2.3-2.2c-0.5-0.3-1-0.7-1.6-1c-0.6-0.3-1.2-0.5-1.8-0.7
+                    c-0.1,0-0.4-0.1-0.6-0.1l-0.3,0l-0.2,0c-0.1,0,0.1,0,0.1,0l0,0l0,0l-0.1,0c-0.4,0-0.7,0-1.1,0c-0.7,0-1.5,0.2-2.2,0.5
+                    c-0.8,0.3-1.5,0.6-2.2,1.1c-0.7,0.5-1.3,1.1-1.8,1.8c-0.5,0.7-1,1.5-1.3,2.3c-0.3,0.9-0.5,1.7-0.6,2.7c0,0.8,0,1.8,0.2,2.7
+                    c0.2,0.9,0.6,1.8,1.2,2.5c0.6,0.7,1.3,1.3,2.1,1.7c0.8,0.4,1.7,0.5,2.5,0.6c0.4,0,0.8,0,1.2,0c0.2,0,0.4,0,0.5,0c0.2,0,0.3,0,0.4,0
+                    c0.2,0,0.7,0,1.2,0l0.4,0c0.2,0,0.3,0,0.5,0c1.2-0.1,2.4-0.4,3.5-0.9c1.1-0.5,2-1.1,2.7-1.9c0.7-0.7,1.2-1.6,1.4-2.3
+                    c0.1-0.4,0.2-0.7,0.3-0.9c0.1-0.3,0.1-0.5,0.1-0.7C198.5,155.4,198.5,155.2,198.5,155.3L198.5,155.3z"></path>
+                    <polygon fill="#FFFFFF" points="181.5,196.9 205.4,168.5 228,181.4 253.2,148.5 282.3,183.4 "></polygon>
+                    <path fill="#435054" d="M179.2,198.2l7.2-9.2l5.7-7.3c3.8-4.9,7.6-9.8,11.3-14.8l1.3-1.7l2,1.1l22.6,12.9l-3.3,0.7
+                    c0.7-0.6,1.3-1.2,1.9-1.8c0.6-0.6,1.2-1.3,1.8-1.9c1.2-1.3,2.2-2.6,3.3-4c2.1-2.8,4.2-5.5,6.2-8.3c2.1-2.8,4.1-5.6,6.1-8.4
+                    c1-1.4,2-2.8,3-4.3c1-1.4,2-2.8,2.9-4.3l2-3.1l2,3c1.1,1.6,2.2,3.1,3.3,4.6c0.6,0.8,1.1,1.5,1.7,2.3l1.7,2.3c1.2,1.5,2.3,3,3.5,4.5
+                    c1.2,1.5,2.4,3,3.6,4.4c1.2,1.5,2.4,2.9,3.6,4.4c1.2,1.5,2.5,2.9,3.7,4.3c0.6,0.7,1.3,1.4,1.9,2.1c0.6,0.7,1.3,1.4,1.9,2.1
+                    c1.3,1.4,2.6,2.7,4,4l3.8,3.6l-5.5,0.7L179.2,198.2z M184.1,195.5l97.8-14.7l-1.6,4.2c-1-1.6-2.1-3.2-3.2-4.7
+                    c-0.6-0.8-1.1-1.5-1.7-2.3c-0.6-0.8-1.1-1.5-1.7-2.3c-1.2-1.5-2.3-3-3.5-4.4c-1.2-1.5-2.4-2.9-3.6-4.4c-1.2-1.5-2.5-2.9-3.7-4.3
+                    c-1.2-1.4-2.5-2.8-3.8-4.3l-1.9-2.1c-0.6-0.7-1.3-1.4-1.9-2.1c-1.3-1.4-2.6-2.8-3.9-4.1l4-0.1c-1.1,1.3-2.3,2.6-3.4,3.9
+                    c-1.1,1.3-2.2,2.6-3.3,4c-2.2,2.7-4.4,5.4-6.5,8.1c-2.2,2.7-4.3,5.4-6.4,8.2c-1,1.4-2.1,2.8-3,4.2c-0.5,0.7-0.9,1.5-1.4,2.2
+                    c-0.4,0.8-0.9,1.5-1.2,2.3l-0.9,2l-2.4-1.4l-22.6-12.9l3.3-0.6c-4.2,4.5-8.4,9.1-12.6,13.6l-6.3,6.9L184.1,195.5z"></path>
+                    <line fill="#FFFFFF" x1="198.9" y1="236.3" x2="279.7" y2="226.6"></line>
+                    <path fill="#435054" d="M198.8,235.4c0,0,1.3-0.1,3.5-0.4c2.2-0.3,5.4-0.6,9.2-1c3.8-0.4,8.2-1,12.9-1.6c4.7-0.6,9.8-1.3,14.8-2
+                    c5-0.7,10.1-1.4,14.8-2.1c2.4-0.3,4.6-0.7,6.8-1c2.2-0.3,4.2-0.7,6.1-1c3.8-0.7,6.9-1.4,9.1-1.9c2.2-0.5,3.4-0.9,3.4-0.9l0.8,6.3
+                    c0,0-1.3,0-3.5,0c-2.2,0-5.4,0.1-9.2,0.3c-1.9,0.1-4,0.2-6.1,0.4c-2.2,0.2-4.5,0.4-6.8,0.6c-4.7,0.5-9.8,0.9-14.9,1.4
+                    c-5.1,0.5-10.1,1-14.9,1.6c-4.7,0.5-9.2,1-12.9,1.5c-3.8,0.5-6.9,0.9-9.1,1.1c-2.2,0.3-3.5,0.5-3.5,0.5L198.8,235.4z"></path>
+                    <line fill="#FFFFFF" x1="180.2" y1="253.8" x2="297.8" y2="239.6"></line>
+                    <path fill="#435054" d="M179.8,250.6c0,0,1.9-0.1,5.1-0.4c1.6-0.1,3.6-0.3,5.8-0.5c2.2-0.2,4.8-0.4,7.5-0.7c5.5-0.5,12-1.2,18.9-2
+                    c6.9-0.8,14.3-1.6,21.6-2.4c7.4-0.8,14.7-1.7,21.6-2.5c6.9-0.8,13.3-1.6,18.8-2.2c11-1.4,18.4-2.3,18.4-2.3l0.5,3.8
+                    c0,0-7.4,0.9-18.4,2.2c-5.5,0.7-11.9,1.5-18.8,2.3c-6.9,0.9-14.2,1.8-21.6,2.7c-7.3,0.9-14.7,1.9-21.6,2.8
+                    c-6.9,0.9-13.3,1.7-18.8,2.5c-2.7,0.4-5.3,0.8-7.5,1.1c-2.2,0.3-4.2,0.6-5.8,0.9c-3.2,0.5-5,0.9-5,0.9L179.8,250.6z"></path>
+                    <path fill="#435054" d="M298.7,197.1l-32.5,4.6l-31.7,4.3l-63.4,8.7l-1.9,0.3l-0.1-2.8c-0.1-1.6-0.2-3.1-0.3-4.7
+                    c-0.1-1.6-0.3-3.1-0.5-4.7c-0.2-1.6-0.3-3.1-0.5-4.7c-0.2-1.6-0.4-3.1-0.6-4.7c-0.8-6.2-1.7-12.4-2.6-18.6c-0.4-3.1-0.9-6.2-1.3-9.3
+                    l-1.4-9.3c-0.5-3.1-0.9-6.2-1.4-9.3c-0.5-3.1-1-6.2-1.5-9.3l-0.5-2.9l2.9-0.2c2.7-0.2,5.3-0.4,8-0.6l8-0.7c5.3-0.5,10.6-1,15.9-1.5
+                    c5.3-0.6,10.6-1.1,15.9-1.7l15.9-1.8l15.9-1.8l15.9-1.9c5.3-0.6,10.6-1.3,15.9-1.9l15.9-2l1-0.1l0.2,1.1c0.5,3.1,1,6.2,1.5,9.3
+                    c0.4,3.1,0.9,6.2,1.3,9.3l1.2,9.3c0.2,1.5,0.4,3.1,0.5,4.7l0.5,4.7l1.1,9.3c0.4,3.1,0.7,6.2,1,9.3c0.3,3.1,0.7,6.2,0.9,9.3
+                    c0.3,3.1,0.6,6.2,0.8,9.3L298.7,197.1z M296.7,195.5c-0.5-2.8-0.9-5.6-1.3-8.4c-0.5-3.1-0.9-6.2-1.3-9.3c-0.4-3.1-0.9-6.2-1.3-9.3
+                    l-1.2-9.3l-0.6-4.6c-0.2-1.6-0.4-3.1-0.6-4.7l-1.1-9.3c-0.4-3.1-0.6-6.2-1-9.3c-0.3-3.1-0.6-6.2-0.8-9.3l1.2,1l-15.9,1.9
+                    c-5.3,0.6-10.6,1.3-15.9,2l-15.9,2l-15.9,2.1l-15.9,2.1c-5.3,0.7-10.6,1.4-15.8,2.2c-5.3,0.8-10.6,1.5-15.8,2.4l-7.9,1.3
+                    c-2.6,0.4-5.3,0.9-7.9,1.4l2.4-3.1c0.2,3.1,0.5,6.2,0.8,9.4c0.3,3.1,0.5,6.2,0.8,9.3l0.9,9.3c0.3,3.1,0.6,6.2,1,9.3
+                    c0.7,6.2,1.3,12.4,2,18.6c0.2,1.6,0.4,3.1,0.6,4.7c0.2,1.6,0.4,3.1,0.6,4.6c0.2,1.5,0.4,3.1,0.7,4.6c0.3,1.5,0.5,3.1,0.8,4.6
+                    l-2.1-2.5l63.6-7l31.8-3.5L296.7,195.5z"></path>
+                  </svg>
+
+                </div>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12 text-center">
+                <p class="empty-state lead">Creating Email Templates helps you quickly send emails from your ShootProof account to your clients without the need to write your content every time.</p>
+                <p class="empty-state trail before-cta">Creating Email Templates also allows you up to be able to send automated emails.</p>
+                <% if @not_authorized_to_add != true %>
+                <div class="last-btn">
+                  <%= link_to "New Template", "#newtemp-filter", id: "btn-newtemp", class: "btn btn-primary", style: "display: block", "data-toggle": "modal"%>
+                </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <!-- no templates -->
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /main -->
+
+  <!-- Modal -->
+  <!-- new email template -->
+  <div class="modal" id="newtemp-filter" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">New Email Template</h4>
+        </div>
+        <%= form_tag email_templates_new_template_path, remote: true do %>
+        <div class="modal-body">
+          <div class="form-group">
+            <%= label_tag "Name"%>
+            <%= text_field_tag 'name',nil, :class => 'form-control' %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <%= link_to "Close", "#", class: "btn btn-default", "data-dismiss": "modal" %>
+          <%= submit_tag 'Create', class: "btn btn-primary" %>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <!-- new email template -->
+  <!-- /mMdal -->
+
+  <!-- Modal -->
+  <!-- activity email -->
+  <div class="modal" id="viewemail-filter" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Download Your Mobile App! test</h4>
+        </div>
+        <div class="modal-body">
+          <table cellpadding="0" cellspacing="0" border="0" id="backgroundTable" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; margin: 0; padding: 0; width: 100% !important; line-height: 28px; background-color: #EEEEEE; border: none; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; color: #414141; font-size: 18px;">
+            <tbody>
+              <tr>
+                <td align="center" valign="top" class="bounds" style="border-collapse: collapse; color: #414141; margin: 0; padding: 14px 0px; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                  <table cellpadding="0" cellspacing="0" class="column" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; margin: 0; max-width: 600px; border: none;">
+                    <tbody>
+                      <!-- Above the white content area -->
+                      <tr>
+                        <td class="half-height-mobile" style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; line-height: 7px;">&nbsp;
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                          <table cellspacing="0" cellpadding="0" class="content" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; background-color: #FFF; border-radius: 5px; text-align: left; width: 90%; margin: 0 auto;">
+                            <tbody>
+                              <tr>
+                                <td align="center" valign="top" style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                                  <p class="content-logo" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-top: 60px; margin-bottom: 30px;">
+                                    <a href="#" target="_blank" style="color: #4FBEE3; text-decoration: none;">
+                                      <span style="color: #414141; font-weight: 400; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; line-height: 15px; display: block; max-width: 240px;">techbit</span>
+                                    </a>
+                                  </p>
+                                  <p class="content-icon" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 30px; line-height: 0;"><img src="https://d1icb03h9nte03.cloudfront.net/201602291456774521/studio/images/email/icons/mobile-app.png" style="outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; width: auto; max-width: 600px; max-height: 60px;"></p>
+                                  <h1 class="content-headline" style="color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; font-weight: 300; font-size: 24px; line-height: 29px;">Your Mobile App is ready!</h1>
+                                  <p class="content-button" style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-top: 48px; margin-bottom: 18px;"><a href="http://techbit.shootproof.com/app/171844" target="_blank" style="color: #FFF; text-decoration: none; border-radius: 5px; background-color: #414141; text-transform: uppercase; font-size: 12px; line-height: 14px; padding: 18px;">install app</a></p>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="width-container studio-to-client" style="border-collapse: collapse; color: #414141; margin: 0; padding: 30px 20px 0 20px; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+                                  <div class="content">
+                                    <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 28px;">
+                                      Hi!
+                                    </p>
+                                    <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 28px;">
+                                      To download your test Mobile App, open this email on your phone or tablet and click the button above.
+                                    </p>
+                                    <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 28px;">
+                                      Enjoy your photos!
+                                    </p>
+                                    <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; margin-bottom: 28px;">
+                                      Thanks,<br>
+                                      ABC
+                                    </p>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="line-height: 30px; border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">&nbsp;</td>
+                              </tr>
+                            </tbody></table>
+                            <table width="100%" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                              <tbody><tr>
+                                <td style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td align="center" class="width-container footer" style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; text-align: center;">
+                                  <p style="margin: 0; color: #414141; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">
+
+                                  </p>
+                                  <p class="copyright" style="margin: 0; color: #CCCCCC; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif; padding-top: 18px; font-weight: 300; font-size: 12px; line-height: 18px;">Copyright © 2016 techbit<br><span class="address"><a href="#" style="color: #CCCCCC !important; text-decoration: none !important; cursor: text;"><br><br>India</a></span>
+                                  </p>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="border-collapse: collapse; color: #414141; margin: 0; padding: 0; font-family: &quot;Segoe UI&quot;, &quot;Segoe UI Web&quot;, &quot;Segoe UI Symbol&quot;, &quot;Helvetica Neue&quot;, &quot;BBAlpha Sans&quot;, &quot;S60 Sans&quot;, Arial, sans-serif;">&nbsp;</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- activity email -->
+  <!-- /mMdal -->
+
+  <!-- Modal -->
+  <!-- activity history -->
+  <div class="modal" id="showhistory-filter" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Download Your Mobile App! test</h4>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table">
+              <tr>
+                <td>Processed</td>
+                <td>01-Mar-2016 2:53:18 pm IST</td>
+              </tr>
+              <tr>
+                <td>Delivered</td>
+                <td>01-Mar-2016 2:53:19 pm IST</td>
+              </tr>
+              <tr>
+                <td>Clicked a link</td>
+                <td>01-Mar-2016 2:53:24 pm IST</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- activity history -->
+  <!-- /mMdal -->
+
+
+  <script type="text/javascript">
+  $('.sitemenu > li').mouseout(function() {
+    $(this).children('.dropdown-menu').hide();
+  });
+  $('.sitemenu > li').mouseover(function() {
+    $(this).children('.dropdown-menu').show();
+  });
+  </script>
+<% end %>

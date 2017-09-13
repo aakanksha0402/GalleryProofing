@@ -1,0 +1,283 @@
+<div class="row">
+  <div class="col-lg-12 main-pane albums-main">
+
+<div class="album-title">
+
+
+<!-- head -->
+<div class="sticky-header">
+  <h4 class="albumum-head">All Album</h4>
+  <div class="album-header all-photos has-photos">
+    <div class="album-meta">
+      <!-- nav -->
+      <div class="action-button btn-container btn-group pull-right">
+        <ul class="collapse-buttons list-unstyled">
+          <li>
+            <a  data-toggle="modal" data-target="#Add-album"  href="#" class="btn btn-link btn-sm">
+              <span class="fa fa-folder-open"></span>
+              Add Album
+            </a>
+          </li>
+          <li>
+            <a href="#" class="btn btn-link btn-sm">
+              <span class="fa fa-language"></span>
+              Alphabetize Albums
+            </a>
+          </li>
+          <li>
+            <a  data-toggle="modal" data-target="#Add-generate-passwords" href="#" class="btn btn-link btn-sm">
+              <span class="fa fa-lock"></span>
+              Generate Passwords
+            </a>
+          </li>
+          <li class="more-tab" style="display: block;">
+            <a href="#" class="btn btn-link btn-sm dropdown-toggle no-arrow show-archived skip" data-toggle="dropdown" aria-expanded="false"><span class="fa fa-ellipsis-h"></span></a>
+            <ul class="dropdown-menu dropdown-menu-right arrow-upper-right">
+
+              <li><a href="#" class="show-archived" data-action="download-all">Download CSV of Album Passwords</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <!-- /nav -->
+    </div>
+  </div>
+
+</div>
+<!-- /head -->
+</div>
+</div>
+</div>
+<div class="explainAllAlbums">
+<p>In the All Albums view, you can create and organize albums and sub-albums, as well as create passwords for them.</p>
+<p>To add photos to an album, click the album name to upload new photos. Or, you can return to the All Photos area to drag existing photos into the album.</p>
+</div>
+<br>
+<!-- main content -->
+<div id="all-album-1">
+  <div class="row">
+    <div class="col-lg-12 main-pane albums-main">
+
+    <% @albumlist.order(:title).each do |a|%>
+
+    <% sub_album = a.array_checking([] ,1) %>
+    <% @total = 0 %>
+    <% sub_album.each do |s| %>
+      <% @total += @gallery.albums.find(s).photos.count %>
+    <% end %>
+
+    <%= link_to albums_albumhome_path(gallery_id: params[:id],album_id: a.id),style: "color: #889EA6;",remote: true do%>
+      <div class="dragebal-row clickable-row">
+        <ul id="sortable">
+          <li class="ui-state-default">
+            <div class="inside-img-drag">
+              <div class="gallery-meta">
+                <div class="cover-photo-container clearfix pull-left">
+                  <div class="cover-photo default">
+                  </div>
+                </div>
+                <h3 class="gallery-title pull-left">
+                <span class="name pull-left"><%= a.title %></span>
+                </h3>
+
+                <span class="photo-count-drag"><%= @total %> photos</span>
+
+                <div class="arrow pull-right">
+                  <span class="fa fa-arrows-v"></span>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <%end%>
+    <% end %>
+    </div>
+  </div>
+</div>
+<!-- /main content -->
+
+
+<!-- Add Album Modal -->
+<div class="modal fade" id="Add-album" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create a New Album</h4>
+      </div>
+      <%= form_for @album,url: {controller: "albums", action: "create", p: "p"} do |f| %>
+      <div class="modal-body">
+
+        <div class="field">
+          <%= f.label :title %><br>
+          <%= f.text_field :title , class: "form-control"%>
+        </div>
+        <% if params[:album_id].present?%>
+        <div>
+          <%= f.hidden_field :gallery_id, value: params[:id]%>
+          <%= f.hidden_field :parent, value: params[:album_id]%>
+          <%= f.hidden_field :level, value: @level.level+1%>
+        </div>
+        <%else%>
+        <div>
+          <%= f.hidden_field :gallery_id, value: params[:id]%>
+          <%= f.hidden_field :parent, value: 0%>
+          <%= f.hidden_field :level, value: 0%>
+        </div>
+        <%end%>
+
+
+      </div>
+      <div class="modal-footer">
+        <div class="actions">
+          <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Cancel</span></button>
+          <%= f.submit "Add Album",id: "Submit", class: "btn btn-primary"%>
+        </div>
+      </div>
+    </div>
+    <%end%>
+  </div>
+</div>
+<!-- /mMdal -->
+
+
+
+<!-- Modal -->
+<div id="Add-generate-passwords" class="modal" role="dialog"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Auto Generate Album Passwords</h4>
+      </div>
+      <%= form_for Album.new,url: albums_password_generate_path(id: params[:id]) do |f|%>
+      <div class="modal-body">
+        <%= hidden_field_tag :password_ids%>
+        <div class="content albums-list">
+          <ul class="list-unstyled">
+            <li class="root-album switch-album" data-target="all-album">
+                <% @albumlist.order(:created_at).each do |gallery_album| %>
+
+                <div class="clearfix"></div>
+            </li>
+            <li class="switch-album" data-target="all-album-1">
+              <div class="inside-title-name">
+                <div class="checkbox inside-check">
+                  <%= check_box_tag "gallery_ids[]",gallery_album.id,false, class: 'check1'%>
+                </div>
+                <div data-target="all-album" class="album-text name">
+
+                  <%= gallery_album.title%>
+                </div>
+              </div>
+                <ul class="list-unstyled">
+                  <%@c.each do |child1|%>
+                  <%if child1.parent == gallery_album.id%>
+                  <div class="clearfix"></div>
+                  <li class="switch-album">
+                    <div class="inside-title-name name" style="padding-left:10px">
+                      <div class="checkbox inside-check" >
+                        <%= check_box_tag "gallery_ids[]",child1.id,false, class: 'check1 name'%>
+                      </div>
+                      <div data-target="all-album" class="album-text name" style="padding-left:10px">
+                          <%= child1.title%>
+                      </div>
+                    </div>
+                    <ul class="list-unstyled">
+                      <%@c1.each do |child2|%>
+                      <%if child2.parent == child1.id%>
+                      <div class="clearfix"></div>
+                      <li class="switch-album">
+                        <div class="inside-title-name name" style="padding-left:20px">
+                          <div class="checkbox inside-check">
+                            <%= check_box_tag "gallery_ids[]",child2.id,false, class: 'check1 name'%>
+                          </div>
+                          <div data-target="all-album" class="album-text name" style="padding-left:20px">
+                              <%= child2.title%>
+                          </div>
+                        </div>
+
+                        <ul class="list-unstyled">
+                          <%@c2.each do |child3|%>
+                          <%if child3.parent == child2.id%>
+                          <div class="clearfix"></div>
+                          <li class="switch-album">
+                            <div class="inside-title-name name" style="padding-left:30px">
+                            <div class="checkbox inside-check">
+                              <%= check_box_tag "gallery_ids[]",child3.id,false, class: 'check1 name'%>
+                            </div>
+                              <div data-target="all-album" class="album-text name" style="padding-left:30px">
+                                  <%= child3.title%>
+                              </div>
+                            </div>
+                          </li>
+                          <%end%>
+                          <%end%>
+                        </ul>
+                      </li>
+                      <%end%>
+                      <%end%>
+                    </ul>
+                  </li>
+                  <%end%>
+                  <%end%>
+                </ul>
+            </li>
+            <%end%>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <%= submit_tag "Generate Password",class: "btn btn-small btn-primary"%>
+      </div>
+      <%end%>
+    </div>
+
+  </div>
+</div>
+
+<script>
+$(document).ready(function(){
+  <% if params[:p].present? %>
+    $('#Add-album').modal('show');
+  <% end %>
+});
+</script>
+<script>
+$(document).ready(function(){
+  $(".checkbox input").click(function(){
+    if($(this).is(':checked')){
+      $(this).parent('.checkbox').addClass('checked-box');
+    }
+    else{
+      $(this).parent('.checkbox').removeClass('checked-box');
+    }
+  });
+  var v=[];
+  $(".checkbox input").click(function(){
+    if($(this).is(':checked')){
+      v.push($(this).val());
+      $('#password_ids').val(v.join(", "));
+    }
+    else {
+      $(this).parent('.checkbox').removeClass('checked-box');
+      var v1=v.indexOf($(this).val());
+      if(v1 > -1){
+        v.splice(v1,1)
+      }
+      $('#password_ids').val(v.join(","));
+    }
+  });
+});
+</script>
+<script>
+$("#Submit").click(function(e){
+   if($('#album_title').val() == "")
+   {
+    e.preventDefault();
+    }
+ })
+</script>

@@ -1,0 +1,165 @@
+<!-- top -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12">
+			<!-- title -->
+			<div class="page-title">
+				<div class="row">
+					<div class="col-md-6 col-sm-5 col-xs-5">
+						<h2>
+							<div class="second-heading">
+						<div id="pageTitleHeaderText">Order <%= @order.id %></div>
+						<div id="TitleHeaderText-more">Placed <%= @order.created_at.strftime("%d-%b-%Y %H:%M %p") %>
+							<span class="img-title"><i class="fa fa-picture-o" aria-hidden="true"></i>&nbsp 1</span>
+							<span class="event"><a href="#"><%= @order.gallery_visitor.gallery.name %></a></span>
+						</div>
+							</div>
+						</h2>
+						 <div class="form-group panel-in-set-1 in-side-set order-drop-down">
+							 <%= select_tag 'menu_select', options_from_collection_for_select(@checkout_status, :id, :status),class: "selectpicker" %>
+
+						 </div>
+					</div>
+					<div class="col-md-6 col-sm-7 col-xs-7">
+						<div class="right-buttons text-right">
+							<button id="email" class="btn btn-default">Email</button>
+							<button id="print" class="btn btn-default">Print</button>
+							<button id="paid" class="btn btn-default">Mark as Paid</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /title -->
+		</div>
+	</div>
+</div>
+
+<!-- email -->
+<div class="container">
+	<div id="OrderEmail" role="dialog" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" data-dismiss="modal" class="close">&times;</button>
+					<h4 class="modal-title">Email Order Receipt</h4>
+				</div>
+				<%= form_tag mail_sent_orders_path, method: :get do %>
+					<div class="modal-body">
+						    <p>Please enter the email address below you would like to send this receipt to:</p>
+						    <div class="form-group">
+						        <input type="text" class="form-control" value="vma@techbit.email" maxlength="100">
+						        <label style="display: none" class="control-label">Please enter a valid email address to send the receipt to.</label>
+						    </div>
+						    <div class="form-group">
+						        <label>Optional message to include</label>
+						        <div class="redactor-box"><ul class="redactor-toolbar" id="redactor-toolbar-0" style="position: relative; width: auto; top: 0px; left: 0px; visibility: visible;"><li><a rel="bold" class="re-icon re-bold" href="#" tabindex="-1"></a></li><li><a rel="italic" class="re-icon re-italic" href="#" tabindex="-1"></a></li><li><a rel="underline" class="re-icon re-underline" href="#" tabindex="-1"></a></li><li><a rel="link" class="re-icon re-link" href="#" tabindex="-1"></a></li><li><a rel="alignment" class="re-icon re-alignment" href="#" tabindex="-1"></a></li><li><a rel="unorderedlist" class="re-icon re-unorderedlist" href="#" tabindex="-1"></a></li><li><a rel="orderedlist" class="re-icon re-orderedlist" href="#" tabindex="-1"></a></li></ul><div contenteditable="true" class="redactor-editor" dir="ltr" style="min-height: 150px;"><p>&#8203;</p></div><textarea class="form-control" id="receiptOptionalMessage" style="display: none;" dir="ltr"></textarea></div>
+						    </div>
+						<%#= render "email_popup"%>
+						<p>Please enter the email address below you would like to send this receipt to:</p>
+						<div class="form-group">
+							<p><%=label_tag 'Email'%></p>
+							<%= text_field_tag 'email', (params[:email]),:required => true, class: "form-control" %>
+						</div>
+						<div class="form-group">
+							<p><%=label_tag 'Optional message to include'%></p>
+							<%= text_area_tag 'message', (params[:message]),:required => true, class: "form-control" %>
+						</div>
+						<%= hidden_field_tag "order", @order.id %>
+					</div>
+					<div class="modal-footer">
+						<button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+				    <%= submit_tag "Send Email",class: "btn btn-primary" %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- paid Modal -->
+<div class="container">
+	<div id="OrderPaid" role="dialog" class="modal description-modal" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" data-dismiss="modal" class="close">&times;</button>
+					<h4 class="modal-title">Payment Details</h4>
+				</div>
+				<%= form_for @order,url: edit_order_path(@order) do |f| %>
+					<div class="modal-body">
+						<% if @order.errors.any? %>
+					    <div id="error_explanation">
+					      <h2><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h2>
+
+					      <ul>
+					      <% @order.errors.full_messages.each do |message| %>
+					        <li><%= message %></li>
+					      <% end %>
+					      </ul>
+					    </div>
+					  <% end %>
+					  <div class="field">
+					    <%= f.label "Received" %><br>
+					     <%= f.select :checkout_status_id, [['Yes', true],['No', false]] %>
+					  </div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- set status -->
+<div class="container">
+	<div id="ChangeStatus" role="dialog" class="modal description-modal" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" data-dismiss="modal" class="close">&times;</button>
+					<h4 class="modal-title">Payment Details</h4>
+				</div>
+				<%= form_for @order,url: edit_order_path(@order)  do |f| %>
+					<div class="modal-body">
+						<% if @order.errors.any? %>
+					    <div id="error_explanation">
+					      <h2><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h2>
+
+					      <ul>
+					      <% @order.errors.full_messages.each do |message| %>
+					        <li><%= message %></li>
+					      <% end %>
+					      </ul>
+					    </div>
+					  <% end %>
+					  <div class="field">
+					    <%= f.label "Received" %><br>
+					     <%= f.select :checkout_status_id, options_from_collection_for_select(@checkout_status, :id, :status),class: "selectpicker" %>
+					  </div>
+					</div>
+					<div class="modal-footer">
+						<%= f.submit "Update Status",class: "btn btn-primary" %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+
+    <script type="text/javascript">
+      $('document').ready(function () {
+        $('#email').click(function () {
+                $('#OrderEmail').modal('show');
+        });
+
+        $('#paid').click(function () {
+        	$('#OrderPaid').modal('show');
+        });
+        $('#print').click(function () {
+               window.print();return false;
+        });
+      });
+			$('#menu_select').bind('change', function(){
+				 $('#ChangeStatus').modal('show');
+			 });
+    </script>

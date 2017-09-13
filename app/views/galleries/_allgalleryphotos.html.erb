@@ -1,0 +1,254 @@
+<div class="row">
+    <div >
+   <div class="col-lg-12 main-pane albums-main">
+    <!-- head -->
+    <div class="album-header all-photos has-photos">
+      <div class="album-meta">
+        <!-- nav -->
+        <div class="action-button btn-container btn-group pull-right">
+          <ul class="collapse-buttons list-unstyled">
+
+            <!-- regarding  gallery all photos start-->
+            <li  id = "add_set_as_gallery_cover">
+              <%= link_to "#profile-change","data-toggle": "modal" ,class: "btn btn-link btn-sm", id: "remove_set_gallery" do %>
+                <span class='fa fa-picture-o'></span> Set as Gallery Cover
+              <% end %>
+            </li>
+            <li  id = "add_create_mobile_app">
+              <%= link_to "#mobile_app_create","data-toggle": "modal" ,class: "btn btn-link btn-sm", id: "mobile_app" do%>
+              <span class="fa fa-mobile"></span> Create Mobile App
+              <% end %>
+            </li>
+
+            <li id = "add_download_link" class="temp">
+              <%= link_to galleries_selected_download_path(), "data-toggle": "modal" ,class: "btn btn-link btn-sm" , id: "selected_download_header" do %>
+              <%#=link_to "Download",galleries_selected_download_path(),"data-toggle": "modal" ,class: "btn btn-sm", id: "selected_download_context" %>
+              <span class="fa fa-download"></span> Download
+              <%#= link_to "Download",galleries_add_photos_path(gallery_id: @find_gallery.id),class: "btn btn-link btn-sm"%>
+              <% end %>
+            </li>
+
+            <!-- regarding  gallery all photos  end-->
+              <% unless @not_authorized == true %>
+                <li  id = "add_photos_link_disable">
+                  <span class="fa fa-picture-o"></span>
+                  <%= link_to "Add Photos",galleries_add_photos_path(gallery_id: @find_gallery.id),class: "btn btn-link btn-sm"%>
+                </li>
+                <% end %>
+                <% unless @not_authorized_to_edit == true %>
+                  <li id = "remove_add_album" >
+                    <span class="fa fa-folder-open"></span>
+                    <%#= link_to "Add Album",new_album_path(gallery_id: params[:id]),class: "btn btn-link btn-sm"%>
+                    <%#= link_to "Add Album", "#Add-album" , 'data-toggle': "modal",class: "btn btn-link btn-sm"%>
+                    <%#= link_to "Add Album", albums_albumlist_path(id: params[:id]) , 'data-toggle': "modal",class: "btn btn-link btn-sm",remote: true%>
+                    <%= link_to "Add Album", albums_albumlist_path(id: params[:id],p: 'a') ,'data-toggle': "modal",class: "btn btn-link btn-sm",remote: true%>
+                  </li>
+                <% end %>
+
+            <li id= "remove_file_link">
+              <span class="fa fa-list-ul"></span>
+
+              <%= link_to "File List",galleries_filelist_path(id: params[:id]),class: "btn btn-link btn-sm"%>
+            </li>
+            <% unless @not_authorized_to_edit == true %>
+            <li id = "remove_refresh_watermark">
+              <span class="fa fa-shield"></span>
+              <%= link_to "Refresh Watermark","#",'data-target': "#refresh_watermark",'data-toggle': "modal",class: "btn btn-link btn-sm"%>
+            </li>
+            <% end %>
+
+            <li class="more-tab" style="display: block;" id "all_selected">
+              <a href="#" class="btn btn-link btn-sm dropdown-toggle no-arrow show-archived skip" data-toggle="dropdown" aria-expanded="false"><span class="fa fa-ellipsis-h"></span></a>
+              <ul class="dropdown-menu dropdown-menu-right arrow-upper-right net-set">
+                <li>
+                  <%= link_to "Download All", "#",'data-toggle': "modal", class: "show-archived", 'data-target': "#download_all_gallery_photos", id:"download_all" %>
+                </li>
+
+                <% unless @not_authorized_to_edit == true%>
+                <li>
+                  <%= link_to "Delete All","#",'data-toggle': "modal", 'data-target': "#delete_all_gallery_images", id: "delete_all" %>
+                </li>
+                <li>
+                  <%=link_to "Delete","#", id: "delete_from_header" %>
+                </li>
+                <li id = "rename_from_header">
+                  <%= link_to "Rename","#" ,class: "btn btn-sm", id: "rename_image_id", remote: true%>
+                </li>
+
+                <% end %>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <!-- /nav -->
+      </div>
+    </div>
+    <!-- /head -->
+
+    <div class="album-title">
+      <h4 class="albumum-head">All Photos</h4>
+      <div class="checkbox">
+        <%= check_box_tag "HideRecord",false,false %>
+        <label for="remember" class="optional">Hide photos in albums</label>
+      </div>
+    </div>
+
+
+
+    <div class="all-photo" id="allphoto"> <!--start-photo-view-->
+      <% all_photos.each do |all_photo| %>
+
+          <ul class="photos-view">
+            <li class="photo-tile">
+              <% if (current_brand.apply_watermark && all_photo.watermark_image_file_name) || all_photo.upload_watrmark? %>
+                <div class="inside-img"><%= image_tag all_photo.watermark_image.url%></div>
+              <% else %>
+              <%#= all_photo.id %>
+                <div class="inside-img"  ><%#= all_photo.id %><%= image_tag all_photo.image.url , "data-id": all_photo.id %></div>
+              <% end %>
+              <div class="inside-img-open">
+                <% if (current_brand.apply_watermark && all_photo.watermark_image_file_name) || all_photo.upload_watrmark? %>
+                 <a  href="<%= all_photo.watermark_image.url %>" class="fa fa-search lightview" data-lightview-group="shared_options" data-title="Click the right half of the image to move forward.">
+                </a>
+                <% else %>
+                  <a  href="<%= all_photo.image.url %>" class="fa fa-search lightview" data-lightview-group="shared_options" data-title="Click the right half of the image to move forward.">
+                  </a>
+                <% end %>
+              </div>
+              <div class="photo-name"><%= all_photo.image_file_name%></div>
+            </li>
+          </ul>
+
+      <% end %>
+
+    </div><!--/start-photo-view-->
+  </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<!-- Refresh Watermark Modal -->
+<div id="refresh_watermark" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Refresh Watermark Settings?</h4>
+      </div>
+      <div class="modal-body">
+      <%= form_tag(create_watermark_galleries_path) do %>
+        <p>Please select the watermark you would like to apply to the photos in this gallery.</p>
+
+       <p><em>Note: the photos will temporarily be removed from the gallery while they are being processed.</em></p>
+        <p>
+          <% if @watermarks.present? %>
+            <%= select_tag "apply_watermark",content_tag(:option,'No Watermark',:value=>"no_watermark")+options_from_collection_for_select(@watermarks, 'id', 'name',@watermark_id) ,{class: "selectpicker brands-set","data-live-search" => "true"} %>
+          <% end %>
+            <%= hidden_field_tag "gallery_id", @find_gallery.id %>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <%= submit_tag "Apply Change", class: "btn btn-sm btn-primary" %>
+
+
+
+      </div>
+    </div>
+    <% end %>
+  </div>
+</div>
+<!-- /mModal-->
+
+
+
+<!-- Modal -->
+<!-- Download Modal -->
+<div id="download_all_gallery_photos" class="modal" role="dialog" data-backdrop = "static">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Download All Photos</h4>
+      </div>
+      <div class="modal-body">
+       <p>When the photos are ready for download, an email will be sent to <%= current_user.email %>. It should be just a few moments!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <%#= link_to "Submit Request", galleries_download_all_path(id: params[:id]), class: "btn btn-primary", id: "all_download" %>
+        <%= link_to "Submit Request",'#', class: "btn btn-primary", id: "all_download" %>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /mModal-->
+
+
+
+<!-- Modal -->
+<!-- Refresh Watermark Modal -->
+<div id="delete_all_gallery_images" class="modal" role="dialog" data-backdrop = "static">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Delete All Photos in This Gallery</h4>
+      </div>
+      <div class="modal-body">
+       <p>Are you sure that you want to delete all <em><%= all_photos.count %></em> photos in the <em><%= @find_gallery.name %></em> gallery? Note, this will not delete the gallery.</p>
+       <p>This action cannot be undone!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <%= link_to "Delete All Gallery Photos", galleries_all_delete_path(id: params[:id]), class: "btn btn-danger", id: "all_delete" %>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /mModal-->
+
+
+<script>
+$(document).ready(function() {
+  $("#f").click(function(){
+    $("#download_all").modal('hide');
+  });
+  $("#all_delete").click(function(){
+    $("#delete_all").modal('hide');
+  });
+    $('#HideRecord').change(function() {
+      var checked = $(this).prop('checked');
+      var id = "<%=j params[:id]%>";
+      $.ajax({
+        type: "get",
+        url: "/galleries/hide_album_photos",
+        data: {id: id, checked: checked}
+      }).success();
+      //  if ($(this).prop('checked')) {
+      //       // alert("Checked"); //checked
+      //       $(".photos-view").find(".album_photo_display").hide();
+      //   }
+      //   else {
+      //       // alert("Not Checked"); //not checked
+      //       $(".photos-view").find(".album_photo_display").show();
+      //   }
+    });
+});
+</script>
+<script>
+$("#all_download").click(function()
+    {
+        $.ajax({
+          type: 'GET',
+          url: '/galleries/download_mail_send',
+          data: {id: '<%= params[:id] %>'}
+        }).success();
+    });
+</script>

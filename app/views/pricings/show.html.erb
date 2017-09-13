@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @pricing.name %>
+</p>
+
+<p>
+  <strong>Is deleted:</strong>
+  <%= @pricing.is_deleted %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @pricing.user %>
+</p>
+
+<p>
+  <strong>Pricing style:</strong>
+  <%= @pricing.pricing_style %>
+</p>
+
+<%= link_to 'Edit', edit_pricing_path(@pricing) %> |
+<%= link_to 'Back', pricings_path %>

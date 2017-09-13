@@ -1,0 +1,9 @@
+<% content_for :head, "GalleryProofing | Mobileapp List"%>
+<% content_for :photo_class, "active"%>
+<% if @mobileapps.present? || params[:app_name].present? || params[:gallery_find] %>
+  <% content_for :body_class, "mobile-index" %>
+  <%= render 'mobileapp' %>
+<% else %>
+  <% content_for :body_class, "pricing-catalog" %>
+  <%= render 'empty_mobileapp' %>                     
+<% end %>

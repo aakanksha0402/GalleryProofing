@@ -1,0 +1,452 @@
+<% content_for :body_class, "gallery_default-style slider-style" %>
+<% content_for :gallery, "active" %>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <!-- title -->
+            <div class="page-title">
+                <div class="back-btn">
+                  <%= link_to "<span class='fa fa-arrow-left'></span> BACK TO GALLERY".html_safe,view_album_path(album: params[:album]) %>
+                </div>
+                <div class="img-name-set">
+                    <span id="image_name" class="font-text img-set-name"></span>
+                </div>
+                <% if  @custom_gallery_layout.pricing_id.present? %>
+                <div class="button-buy">
+                    <%= link_to "buy photo",'#', remote: true , id:"photo_buy" , class:"btn btn-primary"%>
+                </div>
+                <% else %>
+                <div class="button-buy">
+
+                    <%= link_to "Add Pricelist",edit_custom_gallery_layout_path(params[:gallery]), id:"photo_buy" , class:"btn btn-primary"%>
+                </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Place somewhere in the <body> of your page -->
+
+    <div class="slider-style">
+        <div id="slider" class="flexslider">
+
+            <ul class="slides">
+                <% @all_photos.each do |f|%>
+                <li>
+                    <% if session[f.id] == "b&w" %>
+                    <%= image_tag f.image.url , "data-id": f.id,:style => "filter: grayscale(100%);" %>
+                    <% else %>
+                    <%= image_tag f.image.url , "data-id": f.id %>
+                    <span class="top-icon">
+                     </span>
+                     <% end %>
+                    <span class="bottom-icon">
+                        <span class="photo-icon photo-icon-favorite ng-scope">
+                            <svg class="sp-svg" version="1.1" viewBox="0 0 14.619 13.967">
+                                <path
+                                    d="M5.236,4.797l1.542-4.414c0.178-0.511,0.901-0.51,1.078,0.002l1.529,4.419l4.675,0.102c0.541,0.012,0.763,0.7,0.332,1.026l-3.73,2.819l1.347,4.478c0.156,0.518-0.43,0.942-0.873,0.633l-3.834-2.677L3.459,13.85c-0.445,0.308-1.029-0.117-0.871-0.635l1.361-4.474L0.226,5.91C-0.204,5.583,0.02,4.895,0.561,4.885L5.236,4.797z"></path>
+                            </svg>
+                            <span class="font-text">Favorite</span>
+                        </span>
+                        <span class="photo-icon photo-icon-hidden ng-scope">
+                            <svg class="sp-svg" version="1.1" viewBox="0 0 18.228 13.249">
+                                <path
+                                    d="M6.229,10.039L6.93,9.338l5.541-5.541l0.276-0.276l0,0l1.457-1.457l0,0l1.003-1.003L14.147,0L12.81,1.337c-1.058-0.445-2.282-0.74-3.696-0.74c-6.112,0-8.788,5.339-8.898,5.566L0,6.604l0.216,0.439c0.068,0.137,1.081,2.125,3.201,3.687l-1.458,1.458l1.061,1.061L6.229,10.039L6.229,10.039z M2.263,6.601c0.701-1.13,2.876-4.003,6.851-4.003c0.78,0,1.489,0.114,2.134,0.302l-0.913,0.913c-0.374-0.164-0.786-0.258-1.22-0.258c-1.683,0-3.047,1.364-3.047,3.047c0,0.435,0.094,0.846,0.258,1.22L4.848,9.299C3.499,8.387,2.653,7.227,2.263,6.601z"></path>
+                                <path
+                                    d="M18.011,6.161c-0.061-0.123-0.896-1.731-2.595-3.188l-1.408,1.408c0.982,0.808,1.628,1.697,1.953,2.218c-0.708,1.122-2.913,4.008-6.848,4.008c-0.432,0-0.836-0.043-1.225-0.107l-1.653,1.653c0.861,0.274,1.809,0.454,2.877,0.454c6.091,0,8.785-5.336,8.897-5.563l0.217-0.441L18.011,6.161z"></path>
+                                <path d="M9.113,9.649c1.683,0,3.047-1.364,3.047-3.047c0-0.117-0.016-0.23-0.03-0.343L8.77,9.62C8.883,9.633,8.996,9.649,9.113,9.649z"></path>
+                            </svg>
+                            <span class="font-text">HIDDEN</span>
+                        </span>
+
+                    </span>
+                </span>
+            </li>
+            <% end %>
+            <!-- items mirrored twice, total of 12 -->
+        </ul>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 text-center ">
+        <div id="photoActions">
+
+            <button class="btn photo-action photo-action-hide theme-color-primary-selected theme-color-primary-hover ng-scope">
+                <span class="fa">
+                    <svg class="sp-svg" version="1.1" viewBox="0 0 18.228 13.249">
+                        <path
+                            d="M6.229,10.039L6.93,9.338l5.541-5.541l0.276-0.276l0,0l1.457-1.457l0,0l1.003-1.003L14.147,0L12.81,1.337c-1.058-0.445-2.282-0.74-3.696-0.74c-6.112,0-8.788,5.339-8.898,5.566L0,6.604l0.216,0.439c0.068,0.137,1.081,2.125,3.201,3.687l-1.458,1.458l1.061,1.061L6.229,10.039L6.229,10.039z M2.263,6.601c0.701-1.13,2.876-4.003,6.851-4.003c0.78,0,1.489,0.114,2.134,0.302l-0.913,0.913c-0.374-0.164-0.786-0.258-1.22-0.258c-1.683,0-3.047,1.364-3.047,3.047c0,0.435,0.094,0.846,0.258,1.22L4.848,9.299C3.499,8.387,2.653,7.227,2.263,6.601z"></path>
+                        <path
+                            d="M18.011,6.161c-0.061-0.123-0.896-1.731-2.595-3.188l-1.408,1.408c0.982,0.808,1.628,1.697,1.953,2.218c-0.708,1.122-2.913,4.008-6.848,4.008c-0.432,0-0.836-0.043-1.225-0.107l-1.653,1.653c0.861,0.274,1.809,0.454,2.877,0.454c6.091,0,8.785-5.336,8.897-5.563l0.217-0.441L18.011,6.161z"></path>
+                        <path d="M9.113,9.649c1.683,0,3.047-1.364,3.047-3.047c0-0.117-0.016-0.23-0.03-0.343L8.77,9.62C8.883,9.633,8.996,9.649,9.113,9.649z"></path>
+                    </svg>
+                    <span class="font-text ng-binding" id="hide">
+                      <%= link_to @photo.is_hidden ? "Unhide" : "Hide","",class:"hide_unhide" ,remote: true, id: "hide_unhide" , data: { disable_with: "Please wait..." } %>
+
+
+                    </span>
+                </span>
+            </button>
+
+            <!-- <button class="btn photo-action photo-action-share">
+                <svg class="sp-svg" version="1.1" viewBox="0 0 13.364 13.364">
+                    <path
+                        d="M0.29,0.762L0.001,6.017c-0.008,0.142,0.045,0.28,0.146,0.381l6.82,6.82c0.195,0.195,0.512,0.195,0.707,0l5.545-5.545c0.195-0.195,0.195-0.512,0-0.707l-6.82-6.82C6.298,0.046,6.159-0.007,6.017,0.001L0.762,0.29C0.507,0.304,0.304,0.507,0.29,0.762zM4.417,4.417c-0.432,0.432-1.131,0.432-1.563,0c-0.432-0.432-0.432-1.131,0-1.563s1.131-0.432,1.563,0C4.849,3.286,4.849,3.986,4.417,4.417z"></path>
+                </svg>
+                <span class="font-text ng-binding">
+                  <%= link_to "LABEL",'#', remote: true , id:"set_image_label" %>
+                </span>
+            </button> -->
+
+            <%= button_tag(onclick: "add_to_favorite()", class: "btn photo-action", style:"box-shadow: none !important;
+") do %>
+              <%= render partial: "favorite" %>Favourite
+            <% end %>
+
+              <% if @custom_gallery_layout.social_sharing_link == true %>
+                <%= link_to '' , class: "btn photo-action", remote: true , id:"share_link" do %>
+                  <%= render partial: "share_social" %>
+                <% end %>
+              <% end %>
+        </div>
+    </div>
+</div>
+
+<div id="carousel" class="flexslider down-show">
+    <ul class="slides">
+        <% @all_photos.each do |f| %>
+        <li>
+            <div class="img-slider">
+                <% if session[f.id] == "b&w" %>
+                    <%= link_to image_tag(f.image.url,"data-id": f.id,:style => "filter: grayscale(100%);"),'', remote: true , id:"link" %>
+                <% else %>
+                    <%= link_to image_tag(f.image.url,"data-id": f.id),'', remote: true , id:"link" %>
+                <% end %>
+                <%#= image_tag f.image.url , "data-id": f.id  %>
+            </div>
+            <%end%>
+        </li>
+
+        <!-- items mirrored twice, total of 12 -->
+    </ul>
+</div>
+</div>
+
+<!-- Modal -->
+<%= render "/carts/view_items" %>
+<!-- /mMdal -->
+<%= render "/views/setlabels" %>
+<!-- modal for set LABEL -->
+<div class="modal fade second-model-view" id="full-cons" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="sp-modal-content">
+                        <h1 class="theme-color-primary no-description">
+                            <span class="font-text ng-binding">LABEL PHOTO</span>
+                        </h1>
+                        <% @labelall.each do |labels|%>
+                        <div>
+                            <a class="btn btn-icon theme-button social facebook" id="label-select-<%=labels.id%>">
+                                <span class="font-text label-class">
+                                  <svg class="sp-svg" version="1.1" viewBox="0 0 13.615 11.057"  id="label-svg"><path d="M3.41,10.911L0.146,7.647c-0.195-0.195-0.195-0.512,0-0.707l0.707-0.707c0.195-0.195,0.512-0.195,0.707,0l2.203,2.203l8.291-8.29c0.195-0.195,0.512-0.195,0.707,0l0.707,0.707c0.195,0.195,0.195,0.512,0,0.707l-9.351,9.35C3.922,11.106,3.605,11.106,3.41,10.911z"></path></svg>
+                                  <%= check_box_tag 'labels[]', false%><%= labels.name %>
+                                </span>
+                            </a>
+                        </div>
+                        <% end %>
+                        <span class="font-text">
+                          <%= link_to "Done", "#" , class:"btn theme-button tags-close" , id:"done" , remote:"true" %>
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="slide-show" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="carousel" class="carousel slide carousel-fade" data-ride="carousel">
+                <!-- Carousel items -->
+                <div class="carousel-inner">
+                    <div class="active item">
+                        <img src="/assets/342045185.jpg" alt="not found1"/>
+                    </div>
+                    <div class="item">
+                        <img src="/assets/342045193.jpg" alt="not found2"/>
+                    </div>
+                    <div class="item">
+                        <img src="/assets/342045196.jpg" alt="not found3"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+</div>
+<!-- /mMdal -->
+<div class="modal" id="full-cons-share" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+      </div>
+
+<script type="text/javascript">
+
+$(document).ready(function () {
+
+    $('#carousel').flexslider({
+        animation: "slide",
+        controlNav: false,
+        animationLoop: false,
+        slideshow: false,
+        itemWidth: 210,
+        itemMargin: 5,
+        asNavFor: '#slider',
+        start: function (slider) {
+            $('.flex-next').click(function () {
+              //  alert("hello");
+            });
+        }
+    });
+
+    // $('.next').click(function(){
+    //   alert("asaa");
+    // });
+    photo=$(".flex-active-slide").find("img").data("id");
+
+    var a = '<%= @photo.id %>';
+    $("#carousel li").removeClass("flex-active-slide");
+    $('#carousel').find('img').each(function () {
+        if ($(this).data('id') == a) {
+            $(this).parent().parent().parent().addClass("flex-active-slide");
+            id = $(this).data('id');
+        }
+    });
+    $("#slider .flex-viewport li").removeClass("flex-active-slide");
+    // $('#slider li').removeClass("flex-active-slide");
+    $('#slider').find('img').each(function () {
+        if ($(this).data('id') == a) {
+            $(this).parent().addClass("flex-active-slide");
+
+        }
+    });
+    $(".discount-show-hide").click(function () {
+        $(".abot-detail").toggle();
+    });
+});
+</script>
+<script type="text/javascript">
+$(window).load(function () {
+    image_id = $('#slider').find('img').attr('data-id');
+    // The slider being synced must be initialized first $('#carousel').flexslider({     animation: "slide",     controlNav: false,     animationLoop: false,     slideshow: false,     itemWidth: 210,     itemMargin: 5,     asNavFor: '#slider' });
+    callajax(image_id);
+    $('#slider').flexslider({
+      animation: "slide",
+      controlNav: false,
+      animationLoop: false,
+      slideshow: false,
+      sync: "#carousel",
+      start: function (slider) {
+          $('.flex-next').click(function () {
+            image_id = $(this).parents().eq(2).find('li.flex-active-slide').find('img').attr('data-id');
+            callajax(image_id);
+          });
+          $('.flex-prev').click(function () {
+            image_id = $(this).parents().eq(2).find('li.flex-active-slide').find('img').attr('data-id');
+            callajax(image_id);
+          });
+      }
+    });
+
+});
+
+$("#carousel #link").click(function (e) {
+    image_id = $(this).find('img').attr('data-id');
+    callajax(image_id);
+});
+
+$("#photo_buy").click(function () {
+
+    image_id = $(".flex-active-slide").find("img").data("id");
+    gallery = '<%= params[:gallery] %>';
+    brand = '<%= params[:brand] %>';
+//    album = '<%= params[:album] %>';
+    $.ajax({
+        type: 'GET',
+        url: '/view_items/' + brand + '/' + gallery + '/' + image_id
+    });
+});
+
+
+$("#set_image_label").click(function () {
+    image_id = $(".flex-active-slide").find("img").data("id");
+    gallery = '<%= params[:gallery] %>';
+    brand = '<%= params[:brand] %>';
+    $.ajax({
+    url : "/views/setlabels",
+    type : "get",
+    data : { photo: image_id, gallery:gallery , brand:brand }
+    }).success();
+});
+
+function callajax(id) {
+    $.ajax({
+        type: 'GET',
+        url: 'views/image_load',
+        data: {
+            id: image_id
+        }
+    })
+}
+$('.hide_unhide').click(function () {
+
+    $.ajax({
+        type: 'GET',
+        url: '/views/hide_unhide',
+        data: {
+            id: image_id,
+            gallery: '<%= params[:gallery]%>',
+            brand: '<%= params[:brand] %>'
+        }
+    })
+    // Prevent link from following through to its given href
+});
+$('#done').click(function () {
+  var type = [];
+  var cboxes = document.getElementsByName('labels[]');
+      var len = cboxes.length;
+      for (var i=0; i<len; i++) {
+          type[i] = cboxes[i].value;
+      }
+      photo=$(".flex-active-slide").find("img").data("id");
+      $.ajax({
+               type: 'GET',
+               url: '/views/setlabels',
+               data: {label:type, photo:photo}
+             }).success();
+    // Prevent link from following through to its given href
+});
+$('#share_link').click(function () {
+  photo=$(".flex-active-slide").find("img").data("id");
+  gallery = '<%= params[:gallery] %>';
+  brand = '<%= params[:brand] %>';
+  $.ajax({
+        url : "/views/social_sharing",
+        type : "get",
+        data : { photo: JSON.stringify(photo), gallery:gallery , brand:brand }
+    }).success();
+});
+
+
+</script>
+<script type="text/javascript">
+    $(".black-white").click(function () {
+      image_id = $(".flex-active-slide").find("img").data("id");
+      gallery='<%= params[:gallery] %>';
+      brand='<%= params[:brand] %>';
+      $.ajax({
+        type:'GET',
+        url: '/'+ brand + '/' + '/gallery/' + gallery + '/photo/' + image_id,
+        data: {
+
+            black_white: true
+
+        },
+        success:function(data) {
+            $('#carousel').find('img').each(function () {
+               style =  window.getComputedStyle(this);
+               filters = style.getPropertyValue('filter');
+                if ($(this).data('id') == image_id) {
+
+                    if (filters == 'grayscale(1)') {
+                        $(this).css({'filter': 'grayscale(0)'});
+                    } else {
+                        $(this).css({'filter': 'grayscale(100%)'});
+                    }
+                }
+            });
+            $('#slider').find('img').each(function () {
+                style =  window.getComputedStyle(this);
+                filters = style.getPropertyValue('filter');
+                if ($(this).data('id') == image_id) {
+                    if (filters == 'grayscale(1)') {
+                        $(this).css({'filter': 'grayscale(0)'});
+                    } else {
+                        $(this).css({'filter': 'grayscale(100%)'});
+                    }
+
+                }
+            });
+
+        }
+      });
+    });
+</script>
+<script>
+
+  $("#label-select").click(function(){
+      $("#label-select1").css("background-color", "red");
+  });
+
+  $("#label-select").click(function(){
+    //alert("hello");
+      $("#label-select2").css("background-color", "red");
+  });
+
+
+
+$(".sp-modal-content a.btn-icon").each(function(){
+ console.log($(this));
+ $(this).click(function(){
+   ($(this).attr('id'));
+   console.log($(this).find('input[type="checkbox"]').val());
+   if($(this).find('input[type="checkbox"]').is(":checked"))
+   {
+     $(this).find('input[type="checkbox"]').prop('checked',false);
+     console.log($(this));
+     var svg=($(this).find('#label-svg'));
+     svg.css('display','none');
+   }
+   else {
+         $(this).find('input[type="checkbox"]').prop("checked" ,true);
+         var svg=($(this).find('#label-svg'));
+         svg.css('display','block');
+         svg.parent().parent().addClass(" btn theme-button active");
+   }
+
+ })
+})
+function add_to_favorite() {
+  id = $(".flex-active-slide").find("img").data("id");
+  $.ajax({
+    headers: {
+      'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+    },
+    type: 'post',
+    url: '/favorites/add_favorite',
+    data: {photo_id: id, gallery: '<%= params[:gallery] %>'}
+  }).success();
+
+}
+</script>

@@ -1,0 +1,9 @@
+var name = '<%= params[:name] %>';
+var revised_name = $.trim(name);
+if($.trim(name) == ''){
+  $('#newtemp-filter').find('.modal-body').find('.form-group').find('p').remove();
+  $('#newtemp-filter').find('.modal-body').find('.form-group').append('<p style="color:red;">Name cannot be Blank</p>');
+}
+else{
+  location.href="/email_templates/new?name="+ revised_name
+}

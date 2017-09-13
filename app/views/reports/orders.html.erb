@@ -1,0 +1,131 @@
+<div id="main">
+  <div id="bd">
+
+    <div class="container-fluid" id="pageHeaderTitle">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-title">
+            <div class="row">
+              <div class="col-md-6 col-sm-5 col-xs-5">
+
+                <h2>
+                  <div id="pageTitleHeaderText">Orders Report</div>
+                </h2>
+              </div>
+              <div class="col-md-6 col-sm-7 col-xs-7">
+                <!-- <div class="btn-group on-page-help-container">
+                  <a data-toggle="dropdown" class="on-page-help dropdown-toggle" href="#"><svg class="touch-icon on-page-help"><use xlink:href="/v2/content/201607281469727466/svg.svg#iconOnPageHelp"/></svg></a>
+                  <ul role="menu" class="dropdown-menu dropdown-menu-right arrow-upper-right" id="onPageHelp">
+                    <li><a target="_blank" href="https://kb.shootproof.com/help/article/link/how-do-i-refund-a-client">How do I refund a client?</a></li>
+                    <li><a target="_blank" href="https://kb.shootproof.com/help/article/link/view-orders">How do I view my client orders?</a></li>
+                    <li><a target="_blank" href="https://kb.shootproof.com/help/article/link/orders-report">What is the Orders Report?</a></li>
+                    <li><a target="_blank" class="bold" href="https://kb.shootproof.com/help">Browse Full Knowledge Base</a></li>
+                    <li><a id="supportRequest" href="#"><svg class="icon-email"><use xlink:href="/v2/content/201607281469727466/svg.svg#iconEmail"/></svg>Email Us</a></li>
+                  </ul>
+                </div> -->
+
+                <div class="right-buttons text-right">
+                  <%= link_to "Download as CSV",reports_orders_path(format: "csv"),class: "btn btn-default" %>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="container-fluid">
+        <div class="row filter">
+          <div class="col-sm-8 select2-sm">
+            <form method="get">
+              <% if @checkouts.present? %>
+                <%= select_tag "year",options_for_select(@checkouts.minimum('created_at').year..@checkouts.maximum('created_at').year),{class: "inputsm selectpicker col-lg-3",'data-live-search': true}%>
+              <% else %>
+                <%= select_tag "year",options_for_select([Date.today.year]),{class: "inputsm selectpicker col-lg-3",'data-live-search': true}%>
+              <% end %>
+              <input type="submit" value="Filter" id="ordered_filter" class="btn btn-link btn-sm">
+            </form>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12 ">
+            <div class="table-responsive">
+              <div class="table">
+                <div class="table-head">
+                  <div class="tr">
+                    <div class="th selected"><a>Order Date</a></div>
+                    <div class="th"><a>Order ID</a></div>
+                    <div class="th"><a>Gallery</a></div>
+                    <div class="th"><a>Albums</a></div>
+                    <div class="th"><a>Customer Name</a></div>
+                    <div class="th"><a>Total Sales</a></div>
+                    <div class="th"><a>Client Sales Tax</a></div>
+                    <div class="th"><a>Client Shipping</a></div>
+                    <div class="th"><a>Lab Product Costs</a></div>
+                    <div class="th"><a>Lab Addon Costs</a></div>
+                    <div class="th"><a>Lab Shipping</a></div>
+                    <div class="th"><a>Payment Processing Sale</a></div>
+                    <div class="th"><a>Payment Processing Voids/Refunds</a></div>
+                    <div class="th"><a>Payment Processing Fees</a></div>
+                  </div>
+                </div>
+                <div class="table-body">
+                  <% @checkouts.each do |checkout| %>
+                    <div class="tr">
+                      <div class="td"><%= checkout.created_at.strftime("%d-%b-%Y") %></div>
+                      <div class="td"><%= checkout.id %></div>
+                      <div class="td">
+                        <%= checkout.gallery_visitor.gallery.name %>
+                      </div>
+                      <div class="td">
+                        <% if checkout.checkout_values[3].nil? %>
+                          -
+                        <% else %>
+                          <%= checkout.checkout_values[3] %>
+                        <% end %>
+                      </div>
+                      <div class="td"><%= checkout.shipping_first_name %> <%= checkout.shipping_last_name %></div>
+                      <div class="td"><%= number_with_precision(checkout.amount,precision: 2) %></div>
+                      <div class="td">
+                        <%= checkout.checkout_values[0] %>
+                      </div>
+                      <div class="td">
+                        <% @shipping_options.each do |shipping_option| %>
+                          <% if checkout.shipping_option_id == shipping_option.id %>
+                            <%= number_with_precision(shipping_option.price,precision: 2) %>
+                          <% end %>
+                        <% end %>
+                      </div>
+                      <div class="td">0.00</div>
+                      <div class="td">0.00</div>
+                      <div class="td">0.00</div>
+                      <div class="td">0.00</div>
+                      <div class="td">0.00</div>
+                      <div class="td">0.00</div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script>
+  $("#ordered_filter").click(function(){
+    $.ajax({
+      type: "get",
+      url: "/reports/orders?days="+$(this).val(),
+      data: {year: $(this).parent().find('select[name="year"]').val(),gallery: $("#ordered_filter").parent().find('select[name="gallery"]').val()}
+    }).success();
+  });
+  </script>

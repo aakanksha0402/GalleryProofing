@@ -1,0 +1,32 @@
+<p id="notice"><%= notice %></p>
+<%= form_for @gallery, remote: true do |f| %>
+<div class="field">
+  <%= f.hidden_field :contact_id, value: params[:link] %>
+</div>
+<div class="field form-group">
+  <%= f.label :name %><br>
+  <%= f.text_field :name,class: "form-control" %>
+  <p id="nameError" style="display: none; color: red;">Please specify a name for this gallery.</p>
+</div>
+
+<div class="field form-group">
+  <%= f.label :shoot_date,"Shoot Date"%><br>
+  <div id="datetimepicker1" class="input-append date">
+  <%= f.text_field :shoot_date,value: "#{Date.today.to_s}", 'data-format': "yyyy-mm-dd" , required: true %>
+  <span class="add-on">
+   <span class="celender"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+  </span>
+</div>
+</div>
+<div class="field form-group">
+  <%= f.label :gallery_layout_id,"Default Gallery Settings"%><br>
+  <%= f.select 'gallery_layout_id', options_from_collection_for_select(current_user.gallery_layouts.all, :id, :name,selected: @default_layout.id),{},{class: "form-control input-lg selectpicker"} %>
+</div>
+<div class="form-group">
+  <%= f.hidden_field :status, value: "Active" ,class: 'form-control' %>
+</div>
+<div class="actions modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+  <%= f.submit "Create",class: "btn btn-primary"%>
+</div>
+<%end%>

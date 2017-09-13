@@ -1,0 +1,27 @@
+var id = <%= @label.id %>;
+
+alert(jQuery.type(id.toString()));
+'<% if @label.present? %>'
+  $("#Item-Delete").modal('show');
+'<% end %>'
+$("#delete_label").click(function(){
+  $.ajax({
+    type: "get",
+    url: "/galleries/delete_label",
+    data: {label_id: <%= @label.id %>, contact_id: <%= params[:contact_id] %>, id: <%= params[:id] %>}
+  }).success(
+    $("#tagList li").each(function(){
+      if ($(this).find('input[id^="tag_"]').data('id') == id){
+        $(this).remove();
+      }
+    })
+  );
+  alert($("#tags_ids1").val());
+  var ids = $("#tags_ids1").val().split(",");
+  var index = ids.indexOf(id.toString());
+  if (index > -1){
+    ids.splice(index,1);
+  }
+  $("#tags_ids1").val(ids.toString());
+  $("#Item-Delete").modal('hide');
+})

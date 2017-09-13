@@ -1,0 +1,53 @@
+<%= form_for(@mobileapp) do |f| %>
+  <% if @mobileapp.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@mobileapp.errors.count, "error") %> prohibited this mobileapp from being saved:</h2>
+
+      <ul>
+      <% @mobileapp.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :contact_info %><br>
+    <%= f.check_box :contact_info %>
+  </div>
+  <div class="field">
+    <%= f.label :social_sharing %><br>
+    <%= f.check_box :social_sharing %>
+  </div>
+  <div class="field">
+    <%= f.label :layout %><br>
+    <%= f.check_box :layout %>
+  </div>
+  <div class="field">
+    <%= f.label :language %><br>
+    <%= f.text_field :language %>
+  </div>
+  <div class="field">
+    <%= f.label :mobileapp_photo_id %><br>
+    <%= f.text_field :mobileapp_photo_id %>
+  </div>
+  <div class="field">
+    <%= f.label :color_logo_id %><br>
+    <%= f.text_field :color_logo_id %>
+  </div>
+  <div class="field">
+    <%= f.label :mobileapp_custom_link_id %><br>
+    <%= f.text_field :mobileapp_custom_link_id %>
+  </div>
+  <div class="field">
+    <%= f.label :gallery_id %><br>
+    <%= f.text_field :gallery_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

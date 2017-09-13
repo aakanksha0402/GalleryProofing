@@ -1,0 +1,49 @@
+$('#rename-image').find('.modal-dialog').remove();
+$('#rename-image').append('<div class="modal-dialog" role="document">'+
+    '<div class="modal-content">'+
+      '<div class="modal-header">'+
+
+        '<%=link_to "&times;".html_safe, galleries_galleryhome_path(id: params[:id]),class: "close",  "data-dismiss": "modal" %>'+
+
+        '<h4 class="modal-title" id="myModalLabel">Rename Filename</h4>'+
+      '</div>'+
+     ' <%= form_for @photo,url: galleries_rename_image_path(id: @photo.id), method: :post, remote: true do |f| %>'+
+      '<div class="modal-body">'+
+        '<div class="field">'+
+          '<%= f.label :image_file_name, "Rename photo"  %><br>'+
+          '<div class="input-group">' +
+          '<%= f.text_field :image_file_name , class: "form-control"%><span class= "input-group-addon">.jpg </span>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="modal-footer">'+
+        '<div class="actions">'+
+          '<button type="button" class="btn btn-default" data-dismiss="modal" id = "cancel_id">Cancel</button>'+
+          '<%= f.submit "Rename",id: "Submit", class: "btn btn-primary rename_submit"%>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<% end %>'+
+'</div>');
+$('#rename-image').modal('show');
+
+$('#rename-image').on('shown.bs.modal', function()
+{
+    $('#photo_image_file_name').val('<%= @photo_name %>');
+});
+
+$('.rename_submit').click(function(e)
+{
+    filename1 = $('#photo_image_file_name').val() + '.jpeg';
+    var img_name = filename1.substr(0, filename1.lastIndexOf('.'));
+    if(img_name == "")
+    {
+      event.preventDefault();
+    }
+    if(img_name != "")
+    {
+      // img_full_name = img_name + '.jpeg';
+      $("#photo_image_file_name").val(img_name + '<%= @photo_ext %>');
+    }
+
+});

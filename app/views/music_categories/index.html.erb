@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Music Categories</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @music_categories.each do |music_category| %>
+      <tr>
+        <td><%= music_category.name %></td>
+        <td><%= link_to 'Show', music_category %></td>
+        <td><%= link_to 'Edit', edit_music_category_path(music_category) %></td>
+        <td><%= link_to 'Destroy', music_category, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Music category', new_music_category_path %>

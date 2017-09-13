@@ -1,0 +1,538 @@
+<%= content_for :body_class, "contact-index"%>
+
+<nav class="navbar navbar-default checkout-nav">
+  <div class="container-fluid">
+    <%= link_to view_cart_path(params[:brand], params[:gallery]), class: "navigation-icon-link" do %>
+      <svg class="sp-svg" version="1.1" viewBox="0 0 11.736 9.19">
+      <path d="M11.236,3.595H4.288l2.496-1.901c0.22-0.167,0.262-0.481,0.095-0.701L6.272,0.197c-0.167-0.22-0.481-0.262-0.701-0.095L0.197,4.197c-0.263,0.2-0.263,0.595,0,0.795l5.374,4.095c0.22,0.167,0.533,0.125,0.701-0.095l0.607-0.796c0.167-0.22,0.125-0.533-0.095-0.701L4.288,5.595h6.948c0.276,0,0.5-0.224,0.5-0.5v-1C11.736,3.819,11.512,3.595,11.236,3.595z"></path></svg>
+      <span class="font-text button-label ng-binding" ng-bind-html=" 'Back to cart' | translate ">Back to cart</span>
+    <% end %>
+  </div>
+</nav>
+  <!--nav-over-->
+
+  <!-- main -->
+
+  <div class="container-fluid">
+    <div class="row cartHeader">
+      <div class="col-xs-12">
+        <div class="client-page">
+          <div class="Album-name"> <span class="main-heaing-album">Checkout</span> <span class="down-side-text"><%= @total_items %> ITEM, TOTAL: $<%= @total_price %></span> </div>
+          <div class="header-btn pull-right">
+            <div class="brand-logo">
+              <% if @gallery.cover_url.present? %>
+              <%= image_tag @gallery.cover_url.url %>
+              <% else %>
+              <p><%= @gallery.name %></p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="client-checkout">
+    <div class="container-fluid">
+      <div class="checkout-wrap">
+        <%# if @checkout.errors.any? %>
+          <%# @checkout.errors.full_messages.each do |message| %>
+            <!-- <li><%#= message %><li> -->
+          <%# end %>
+        <%# end %>
+        <%= form_for @checkout, url: create_path(gallery: params[:gallery]), html: {id: "checkoutForm"} do |f| %>
+
+          <%= f.hidden_field :brand_id, value: params[:brand] %>
+          <% if @custom_gallery_layout.pickup_option == true %>
+            <div class="btn-combo">
+              <div class="btn-selct">
+                <%= f.radio_button :shipping_method, true , :checked => true %>
+                <label>
+                  <i class="fa fa-check" aria-hidden="true"></i>Ship to Me
+                </label>
+              </div>
+              <div class="btn-selct">
+                <!-- <input type="radio" name="btn-both" value="female"> -->
+                <%= f.radio_button :shipping_method, false %>
+                <label>
+                  <i class="fa fa-check" aria-hidden="true"></i>I'll Pickup
+                </label>
+              </div>
+            </div>
+          <% end %>
+          <div class="form-group">
+            <%= f.label :email %>
+            <%= f.text_field :email, class: "form-control", placeholder: "Email", value: session["email_visitor_#{params[:gallery]}"] %>
+            <div style = "color:red;">
+              <% if @checkout.errors.messages[:email].present? %>
+              <% error = @checkout.errors.messages[:email] %>
+              <%= "Email " + error[0] %>
+              <% end %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.label :phone_number%>
+            <%= f.text_field :phone_number, class: "form-control", placeholder: "Phone" %>
+            <div style = "color:red;">
+              <% if @checkout.errors.messages[:phone_number].present? %>
+              <% error = @checkout.errors.messages[:phone_number] %>
+              <%= "Phone Number " + error[0] %>
+              <% end %>
+            </div>
+          </div>
+          <h4>
+            <span class="font-text ng-binding" >Contact / Shipping Address</span>
+          </h4>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+              <%= f.label :shipping_first_name, "First Name"%>
+              <%= f.text_field :shipping_first_name, class: "form-control", placeholder: "First Name" %>
+              <div style = "color:red;">
+                <% if @checkout.errors.messages[:shipping_first_name].present? %>
+                <% error = @checkout.errors.messages[:shipping_first_name] %>
+                <%= "First Name " + error[0] %>
+                <% end %>
+              </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <%= f.label :shipping_last_name, "Last Name"%>
+                <%= f.text_field :shipping_last_name, class: "form-control", placeholder: "Last Name" %>
+                <div style = "color:red;">
+                  <% if @checkout.errors.messages[:shipping_last_name].present? %>
+                  <% error = @checkout.errors.messages[:shipping_last_name] %>
+                  <%= "Last Name " + error[0] %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <%= f.label :shipping_addr1, "Address" %>
+                <%= f.text_field :shipping_addr1, class: "form-control", placeholder: "Street Name" %>
+                <div style = "color:red;">
+                  <% if @checkout.errors.messages[:shipping_addr1].present? %>
+                  <% error = @checkout.errors.messages[:shipping_addr1] %>
+                  <%= "Address  " + error[0] %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="shipping_addr2">&nbsp;</label>
+                <%= f.text_field :shipping_addr2, class: "form-control", placeholder: "Landmark" %>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group set-select-Access">
+                <%= f.label :shipping_country_id, "Country" %>
+                <%= f.collection_select :shipping_country_id, Country.all, :id, :name, {}, {class: "selectpicker", "data-live-search": true, remote: true} %>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <%= f.label :shipping_city, "City" %>
+                <%= f.text_field :shipping_city, class: "form-control", placeholder: "City" %>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group set-select-Access"  id = "shipping_state">
+                <%= f.label :shipping_state_id, "State/Province" %>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <%= f.label :shipping_postal_code, "Postal Code" %>
+                <%= f.text_field :shipping_postal_code, class: "form-control", placeholder: "Postal Code" %>
+              </div>
+            </div>
+          </div>
+          <% if @gateway_found %>
+
+              <div class="row">
+                <div class="col-lg-12">
+                  <label for="Payment"><br>Payment option</label>
+                  <div class="btn-combo">
+                    <div class="btn-selct">
+                      <%= f.radio_button :payment_option, true, :checked => true %>
+                      <label>
+                        <i class="fa fa-check" aria-hidden="true"></i>Pay Now
+                      </label>
+                    </div>
+                    <div class="btn-selct">
+                      <%= f.radio_button :payment_option, false %>
+                      <label>
+                        <i class="fa fa-check" aria-hidden="true"></i>Pay Later
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            <% if @gateway_found.name != "standard" %>
+              <div id="pay_later_row">
+              <h4>
+                <span class="font-text ng-binding" >Billing Information</span>
+              </h4>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="city">Card Number</label>
+                    <%= f.text_field "card", class: "form-control card", id: "card", placeholder: "Card Number" %>
+                    <div class="card-icon"></div>
+                    <div style = "color:red;">
+                      <% if @checkout.errors.messages[:card].present? %>
+                      <% error = @checkout.errors.messages[:card] %>
+                      <%= "Credit Card  " + error[0] %>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="month">Month</label>
+                        <%= f.text_field "month", class: "form-control", id: "month", placeholder: "MM" %>
+                        <!-- <input type="text" class="form-control" id="month" placeholder="Month"> -->
+                        <div style = "color:red;">
+                          <% if @checkout.errors.messages[:month].present? %>
+                          <% error = @checkout.errors.messages[:month] %>
+                          <%= "Month  " + error[0] %>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="year">Year</label>
+                        <%= f.text_field "year", class: "form-control", id: "year", placeholder: "YYYY" %>
+                        <!-- <input type="text" class="form-control" id="year" placeholder="Year"> -->
+                        <div style = "color:red;">
+                          <% if @checkout.errors.messages[:year].present? %>
+                          <% error = @checkout.errors.messages[:year] %>
+                          <%= "Year  " + error[0] %>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="cvc">CVC</label>
+                        <%= f.text_field "cvc", class: "form-control", id: "cvc", placeholder: "CVC" %>
+                        <!-- <input type="text" class="form-control" id="cvc" placeholder="CVC"> -->
+                        <div style = "color:red;">
+                          <% if @checkout.errors.messages[:cvc].present? %>
+                          <% error = @checkout.errors.messages[:cvc] %>
+                          <%= "CVC  " + error[0] %>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="check-box-set">
+                <div class="checkbox">
+                  <%= f.check_box :same_billing_address %>
+                  <label for="ShippingAddress">Billing address same as shipping address</label>
+                </div>
+              </div>
+              <div id="billing_info_row">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                    <%= f.label :billing_first_name, "First Name"%>
+                    <%= f.text_field :billing_first_name, class: "form-control", placeholder: "First Name" %>
+                    <div style = "color:red;">
+                      <% if @checkout.errors.messages[:billing_first_name].present? %>
+                      <% error = @checkout.errors.messages[:billing_first_name] %>
+                      <%= "First Name " + error[0] %>
+                      <% end %>
+                    </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <%= f.label :billing_last_name, "Last Name"%>
+                      <%= f.text_field :billing_last_name, class: "form-control", placeholder: "Last Name" %>
+                      <div style = "color:red;">
+                        <% if @checkout.errors.messages[:billing_last_name].present? %>
+                        <% error = @checkout.errors.messages[:billing_last_name] %>
+                        <%= "Last Name " + error[0] %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <%= f.label :billing_addr1, "Address" %>
+                      <%= f.text_field :billing_addr1, class: "form-control", placeholder: "Street Name" %>
+                      <div style = "color:red;">
+                        <% if @checkout.errors.messages[:billing_addr1].present? %>
+                        <% error = @checkout.errors.messages[:billing_addr1] %>
+                        <%= "Address  " + error[0] %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="billing_addr2">&nbsp;</label>
+                      <%= f.text_field :billing_addr2, class: "form-control", placeholder: "Landmark" %>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group set-select-Access">
+                      <%= f.label :billing_country_id, "Country" %>
+                      <%= f.collection_select :billing_country_id, Country.all, :id, :name, {}, {class: "selectpicker", "data-live-search": true, remote: true} %>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <%= f.label :billing_city, "City" %>
+                      <%= f.text_field :billing_city, class: "form-control", placeholder: "City" %>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group set-select-Access"  id = "billing_state">
+                      <%= f.label :billing_state_id, "State/Province" %>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <%= f.label :billing_postal_code, "Postal Code" %>
+                      <%= f.text_field :billing_postal_code, class: "form-control", placeholder: "Postal Code" %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% else %>
+              <%= f.hidden_field :payed_using, value: "PAYPALPAYMENTSTANDARD" %>
+            <% end %>
+          <% end %>
+          <div class="row" id="shipping_row">
+            <% if @pricing && @shipping %>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="shipping"><br><%= @shipping.title %></label>
+                  <% if @shipping_option %>
+                    <% @shipping_option.each do |shipping_option| %>
+                      <div class="radio-btn">
+                        <input type="radio" id="gp1_<%= shipping_option.id %>" name="shipping_option" onchange="apply_shipping(<%= shipping_option.id %>)" remote="true" <%= shipping_option.id == @shipping_option.first.id ? "checked" : "" %>>
+                        <div class="radio-option theme-button">
+                          <svg class="sp-svg" version="1.1" viewBox="0 0 13.615 11.057"><path d="M3.41,10.911L0.146,7.647c-0.195-0.195-0.195-0.512,0-0.707l0.707-0.707c0.195-0.195,0.512-0.195,0.707,0l2.203,2.203l8.291-8.29c0.195-0.195,0.512-0.195,0.707,0l0.707,0.707c0.195,0.195,0.195,0.512,0,0.707l-9.351,9.35C3.922,11.106,3.605,11.106,3.41,10.911z"></path></svg>
+                        </div>
+                        <div class="option-description">
+                          <span class="shipping-name ng-binding"><%= shipping_option.title %></span>
+                          <span class="shipping-price ng-binding">$<%= shipping_option.price.to_d %></span>
+                        </div>
+                      </div>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <h4>
+                  <span class="font-text ng-binding" >Notes</span>
+                </h4>
+                <a id="addNotes" class="link" >+ Add Note to Studio</a>
+                <div class="show-hide-add">
+                  <textarea class="form-control" id="notes" ></textarea>
+                  <div class="notes-controls">
+                    <a  class="link remove-note">Remove Note</a>
+                    <a href="#" class="btn btn-sm button-black">Save Note</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <%= f.hidden_field :amount, value: @total_price.to_d %>
+          <div class="form-end">
+            <%= f.submit "Place Order", class: "btn button-black active" %>
+            <!-- <button id="checkoutSubmit" class="btn button-black active" >Place Order</button> -->
+            <p><span class="font-text ng-binding" >Your order will process immediately</span></p>
+            <p><a class="ng-binding" href="#">Return to Cart</a></p>
+          </div>
+      <% end %>
+      <div id="orderSummaryContainer">
+            <h4>
+              <span class="font-text ng-binding" ng-bind-html="'orderSummary' | translate">Order Summary</span>
+            </h4>
+            <div class="summary subtotal">
+              <span class="value-name">Subtotal</span>
+              <span class="value-amount" id= "subtotal">$<%= @subtotal_price %></span>
+            </div>
+            <div class="summary subtotal" id="shipping_summary_row">
+            <% if @pricing && @shipping && @shipping_option.present? %>
+              <span class="value-name">Shipping</span>
+              <span class="value-amount" id = "shipping_option">$<%= @shipping_option.first.price.to_d %></span></br>
+            <% end %>
+             <% if @discount.present? %>
+              <span class="value-name">Promotions & discounts</span>
+              <span class="value-amount" id= "subtotal">-$<%= @total_discount %></span>
+            <% end %>
+            </div>
+            <div id="promoContainer">
+              <div  id="addPromoCode" class="cart-action "  on="showPromoCodeEntry">
+              <% if @cart.used_promocodes.present? %>
+              <% @cart.used_promocodes.each do |promo| %>
+                <span class="font-text"><%= promo.promocode %> Applied <%= link_to 'Remove', carts_remove_promocode_path(brand: params[:brand], gallery: params[:gallery],from: params[:from],promo: promo.id,from_checkout: "checkout"),:method => :post %></span></br>
+              <% end %>
+              <% end %>
+              <p id="notice"><%= notice %></p>
+              <a id="addPromoCodeLink" class="text-only ">
+              <span class="font-text">Add Promo Code</span>
+              </a>
+              </div>
+              <div id="promoCodesContainer" class="cart-action" style="display:none;">
+                <%= form_tag  add_promocode_path(brand: params[:brand], gallery: params[:gallery],from: params[:from]) do %>
+                <%= text_field_tag :promo,"", class: 'form-control',style: 'width: 100px;' %>
+                <%= hidden_field_tag :from_checkout, value: "checkout" %>
+                <%= submit_tag "Apply", :class => "btn btn-default",style: 'min-width: 10px;' %>
+                <span id= "promocodeCancle" class="btn btn-default" style="min-width: 10px;">Cancle</span>
+                <% end %>
+              </div>
+            </div>
+            <hr>
+            <div class="summary grand-total" ng-if="summary.grandTotal !== false">
+              <h3 class="value-name theme-color-primary">Total</h3>
+              <span class="value-amount theme-color-primary" id = "total_price">$<%= @total_price.to_d %></span>
+              
+            </div>
+          </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    $("#addNotes").click(function(){
+      $(".show-hide-add").show();
+      $("#addNotes").hide();
+    });
+
+    $(".remove-note").click(function(){
+      $("#addNotes").show();
+      $(".show-hide-add").hide();
+    });
+
+    $(".checkbox input").click(function(){
+      if($(this).is(':checked')){
+        $(this).parent('.checkbox').addClass('checked-box');
+      }
+      else{
+       $(this).parent('.checkbox').removeClass('checked-box');
+      }
+    });
+
+  });
+</script>
+
+<script>
+$(document).ready(function(){
+  $('#checkout_shipping_country_id, #checkout_billing_country_id').change(function(){
+    $.ajax({
+      type: "post",
+      headers: {
+        'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+      },
+      url: "/checkouts/get_states",
+      data: {shipping_country_id: $('#checkout_shipping_country_id').val(), billing_country_id: $('#checkout_billing_country_id').val()},
+      dataType: 'script',
+      error: function(jqXHR, textStatus, errorThrown)
+      { alert("Error=" + errorThrown); }
+    });
+  });
+
+  $('#checkout_same_billing_address').change(function(){
+    $('#billing_info_row').toggle('slow');
+  });
+
+  $('#checkout_payment_option_false').change(function(){
+    $('#pay_later_row').hide();
+    $('#checkout_same_billing_address').prop('checked', true);
+    $('.checkbox').addClass('checked-box');
+    $("#billing_info_row").hide();
+  });
+
+  $('#checkout_payment_option_true').change(function(){
+    $('#pay_later_row').show();
+  });
+
+  $('#checkout_shipping_method_false').click(function(){
+    $.ajax({
+      type: "post",
+      headers: {
+        'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+      },
+      url: "/checkouts/remove_shipping",
+      data: {gallery: '<%= params[:gallery] %>'},
+      dataType: 'script',
+      error: function(jqXHR, textStatus, errorThrown)
+      { alert("Error=" + errorThrown); }
+    });
+  });
+
+
+
+  // $('#checkout_shipping_method_true').click(function(){
+  //   $.ajax({
+  //     type: "post",
+  //     headers: {
+  //       'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+  //     },
+  //     url: "/checkouts/apply_shipping",
+  //     data: {shipping_option: '<%#= @shipping_option.first.id %>', gallery: '<%#= params[:gallery] %>'},
+  //     dataType: 'script',
+  //     error: function(jqXHR, textStatus, errorThrown)
+  //     { alert("Error=" + errorThrown); }
+  //   });
+  // });
+
+});
+
+function apply_shipping(shipping_option){
+  $.ajax({
+    type: "post",
+    headers: {
+      'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+    },
+    url: "/checkouts/get_shipping",
+    data: {shipping_option: shipping_option, gallery: '<%= params[:gallery] %>' },
+    dataType: 'script',
+    error: function(jqXHR, textStatus, errorThrown)
+    { alert("Error=" + errorThrown); }
+  });
+}
+
+</script>
+<script type="text/javascript">
+        $('#addPromoCodeLink').click(function(){
+          $('#addPromoCodeLink').toggle();
+          $('#promoCodesContainer').toggle();
+        });
+        $('#promocodeCancle').click(function(){
+          $('#promoCodesContainer').toggle();
+          $('#addPromoCodeLink').toggle();
+        });
+      </script>

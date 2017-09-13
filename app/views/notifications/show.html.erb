@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Notification from:</strong>
+  <%= @notification.notification_from %>
+</p>
+
+<p>
+  <strong>Id from:</strong>
+  <%= @notification.id_from %>
+</p>
+
+<p>
+  <strong>Brand:</strong>
+  <%= @notification.brand %>
+</p>
+
+<p>
+  <strong>Is dismiss:</strong>
+  <%= @notification.is_dismiss %>
+</p>
+
+<%= link_to 'Edit', edit_notification_path(@notification) %> |
+<%= link_to 'Back', notifications_path %>

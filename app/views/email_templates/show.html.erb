@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @email_template.name %>
+</p>
+
+<p>
+  <strong>Email subject:</strong>
+  <%= @email_template.email_subject %>
+</p>
+
+<p>
+  <strong>Headline:</strong>
+  <%= @email_template.headline %>
+</p>
+
+<p>
+  <strong>Button text:</strong>
+  <%= @email_template.button_text %>
+</p>
+
+<p>
+  <strong>Email body:</strong>
+  <%= @email_template.email_body %>
+</p>
+
+<p>
+  <strong>Default email template:</strong>
+  <%= @email_template.default_email_template %>
+</p>
+
+<p>
+  <strong>Brand:</strong>
+  <%= @email_template.brand %>
+</p>
+
+<%= link_to 'Edit', edit_email_template_path(@email_template) %> |
+<%= link_to 'Back', email_templates_path %>

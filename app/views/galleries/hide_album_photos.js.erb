@@ -1,0 +1,8 @@
+var v = $("#HideRecord").prop('checked');
+$(".gallery-edit #gallery-body").html("<%=j render partial: 'allgalleryphotos'%>");
+$("#HideRecord").prop('checked',v);
+if ($("#HideRecord").prop('checked') == true){
+  $("#HideRecord").parent().addClass('checked-box');
+}else{
+  $("#HideRecord").parent().removeClass('checked-box');
+}

@@ -1,0 +1,61 @@
+<%= form_for @order,url: edit_order_path(@order) do |f| %>
+  <% if @order.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h2>
+
+      <ul>
+      <% @order.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :email %><br>
+    <%= f.text_field :email %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_first_name %><br>
+    <%= f.text_field :shipping_first_name %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_last_name %><br>
+    <%= f.text_field :shipping_last_name %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_addr1 %><br>
+    <%= f.text_area :shipping_addr1 %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_city %><br>
+    <%= f.text_field :shipping_city %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_country_id %><br>
+    <%= f.text_field :shipping_country_id %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_postal_code %><br>
+    <%= f.number_field :shipping_postal_code %>
+  </div>
+  <div class="field">
+    <%= f.label :phone_number %><br>
+    <%= f.number_field :phone_number %>
+  </div>
+  <div class="field">
+    <%= f.label :notes_to_studio %><br>
+    <%= f.text_area :notes_to_studio %>
+  </div>
+  <div class="field">
+    <%= f.label :studio_internal_notes %><br>
+    <%= f.text_area :studio_internal_notes %>
+  </div>
+  <div class="field">
+    <%= f.label :checkout_status_id %><br>
+     <%= f.select :checkout_status_id, CheckoutStatus.all %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

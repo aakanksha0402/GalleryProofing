@@ -1,0 +1,186 @@
+<% content_for :head, "GalleryProofing | Plan and Billing" %>
+<% content_for :body_class, "account-planbilling" %>
+<% if @not_authorized == true %>
+  <%= render partial: "/dashboards/no_authorization" %>
+<% else %>
+  <p id="notice"><%= notice %></p>
+  <!-- top -->
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+              <div id="pageTitleHeaderText">Plan & Billing</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><%= link_to "#", target: "_blank" do %>
+                  <span class="email"><i class="fa fa-envelope"></i></span>Email-Us
+                  <% end %></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /title -->
+      </div>
+    </div>
+  </div>
+  <!-- /top -->
+  <div class="container-fluid">
+    <div class="row">
+      <% if flash[:notice].present? %>
+      <div class="col-lg-12 alert alert-success">
+        <%= flash[:notice] %>
+      </div>
+      <% end %>
+      <div class="col-lg-12" id="braintree_error">
+
+      </div>
+      <div class="col-lg-12" id = "payment-errors">
+        <span class="payment-errors"></span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <ul class="nav nav-pills in-pills">
+          <li id = "plans" class="type"><%= link_to "Plan Info", plans_billings_planbilling_path %></li>
+          <li id = "credit" class="active "><%= link_to "Credit Card" %></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="tab-content clearfix">
+          <div class="tab-pane active">
+            <!-- in-side -->
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <h4>Billing Information</h4>
+                      <% if @customer_id == true %>
+                        <p>Card Present.</p>
+                      <% else %>
+                        <p>No card on file.</p>
+                        <h4>New Credit Card</h4>
+                        <%= form_tag plans_billings_chargecreditcard_path, id: "payment-form" do%>
+                          <div class="row">
+                            <div class="col-lg-3">
+                              <div class="form-group">
+                                <label>Card Number</label>
+                                <div id="card-number"  class="my-hosted-fields-container"></div>
+                              </div>
+                            </div>
+                            <div class="col-lg-2">
+                              <div class="form-group">
+                                <label>CVC</label>
+                                <div id="cvv"  class="my-hosted-fields-container"></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-lg-12">
+                              <div class="form-group">
+                                <label>Expiration Date(MM/YY)</label>
+                                <div id="expiration-month"  class="col-lg-2 my-hosted-fields-container" style="margin-right: 30px;"></div>
+                                <div id="expiration-year"  class="col-lg-2 my-hosted-fields-container"></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-lg-12">
+                              <div class="form-group">
+                                <%= submit_tag "Save Card", class: "btn btn-primary", id: "payment-form-button" %>
+                              </div>
+                            </div>
+                          </div>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /main -->
+<% end %>
+<script src="https://js.braintreegateway.com/v2/braintree.js"></script>
+<script>
+$(document).ready(function(){
+  var clientToken = '<%= @client_token %>';
+  braintree.setup(clientToken, "custom", {
+    id: "payment-form",
+    hostedFields: {
+      styles: {
+        'input': {
+          'font-family': "SourceSans",
+          'font-size': "14px"
+        },
+        'input.invalid': {
+          'color': 'tomato'
+        },
+        'input.valid': {
+          'color': 'limegreen'
+        }
+      },
+      number: {
+        selector: "#card-number",
+        placeholder: '4111 1111 1111 1111'
+      },
+      cvv: {
+        selector: "#cvv",
+        placeholder: '123'
+      },
+      expirationMonth: {
+        selector: "#expiration-month",
+        placeholder: 'MM'
+      },
+      expirationYear: {
+        selector: "#expiration-year",
+        placeholder: 'YYYY'
+      },
+    },
+    onError :function(obj){
+      if (obj.type == 'VALIDATION')
+      {
+        $('#braintree_error').find('p').remove();
+        // Validation errors contain an array of error field objects:
+        $('#braintree_error').addClass('alert');
+        $('#braintree_error').addClass('alert-danger');
+        $('#braintree_error').append("<p>Please enter your credit card details properly. Ensure that the details are filled correctly.</p>");
+        return false
+      }
+      else if (obj.type == 'SERVER')
+      {
+        $(".payment-errors").html("There was an error submitting your form, Please try again.");
+        // If the customer's browser cannot connect to Braintree:
+        obj.message; // "Connection error"
+        // If the credit card failed verification:
+        obj.message; // "Credit card is invalid"
+        obj.details; // Object with error-specific information
+      }
+    }
+  });
+});
+</script>

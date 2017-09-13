@@ -1,0 +1,11 @@
+<p id="notice"><%= notice %></p>
+
+<%= image_tag @gallery_photo.photo.url%>
+<p>
+  <strong>Gallery:</strong>
+  <%= @gallery_photo.gallery %>
+  <%= @gallery_photo.photo_file_name%>
+</p>
+
+<%= link_to 'Edit', edit_gallery_photo_path(@gallery_photo) %> |
+<%= link_to 'Back', gallery_photos_path %>

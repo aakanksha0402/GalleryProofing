@@ -1,0 +1,643 @@
+<% content_for :head, "GalleryProofing | Color Logos"%>
+<% content_for :body_class, "brand-themeedit" %>
+<% content_for :studio_class, "active"%>
+
+<% if @not_authorized == true %>
+<%= render partial: "/dashboards/no_authorization" %>
+<% else %>
+
+<%= form_for(@color_logo) do |f| %>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-12">
+            <%= link_to color_logos_path do %><span class="fa circle fa-arrow-left back-btn"></span><% end %>
+            <h2>
+              <div id="pageTitleHeaderText"><%= @color_logo.name %></div>
+            </h2>
+            <%= link_to "#rename-modal", "data-toggle": "modal" do %>
+            <span class="fa fa-pencil circle"></span>
+            <% end %>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-12">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><%= link_to "#", target: "_blank" do %>
+                  <span class="email"><i class="fa fa-envelope"></i></span>Email-Us
+                  <% end %></li>
+                </ul>
+              </div>
+
+              <div class="right-buttons text-right tempbuttons">
+                <%= f.submit "Save", class: "btn btn-primary" %>
+                <% if @nope == 0 %>
+                <%= link_to "Delete", "#delete-color-set", "data-toggle": "modal",class: "btn btn-default" %>
+                <% else %>
+                <%= link_to "Delete", "#cannot-delete-color-set", "data-toggle": "modal",class: "btn btn-default" %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /title -->
+      </div>
+    </div>
+  </div>
+  <!-- /top -->
+
+  <!-- main -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-9">
+        <ul class="nav nav-pills in-pills">
+          <li class="active"><a id="tab1"  href="#color-edit-1" data-toggle="tab">Desktop Gallery</a></li>
+          <li class="type"><a id="tab2" href="#color-edit-2" data-toggle="tab">Mobile Gallery</a></li>
+          <li class="type"><a id="tab3" href="#color-edit-3" data-toggle="tab">Email</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12 col-sm-8  col-md-9">
+        <div class="tab-content scrolly-color-view clearfix">
+          <!--first-tab-->
+          <div class="tab-pane active effects-from-theme" id="color-edit-1">
+            <nav class="navbar navbar-default client-nav effects-from-primary-background-color">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-lg-12 text-center">
+                    <div class="tabing-client effects-from-font-set">
+                      <ul class="nav nav-pills">
+                        <li class="type"><a data-toggle="tab" href="#client-gallery"><span class="more-icon-color fa fa-picture-o"></span><span class= "effects-from-secondary-color-links">Gallery</span></a></li>
+                        <li class="type"><a data-toggle="tab" href="client-Favorites"><span class="more-icon-color fa fa-info-circle"></span><span class= "effects-from-secondary-color-links">Info</span></a></li>
+                        <li class="type"><a data-toggle="tab" href="client-Favorites"><span class="more-icon-color fa fa-star"></span><span class= "effects-from-secondary-color-links">Favorites</span><span class="badge badge-notify effects-from-secondary-background-color effects-from-secondary-color-links">3</span></a></li>
+                        <li class="type"><a data-toggle="tab" href="client-Favorites"><span class="more-icon-color fa fa-shopping-cart"></span><span class= "effects-from-secondary-color-links">Cart</span><span class="badge badge-notify effects-from-secondary-background-color effects-from-secondary-color-links">0</span></a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nav>
+
+            <div class="client-page">
+              <% if @color_logo.gallery_logo.exists? %>
+              <center><%= image_tag @color_logo.gallery_logo.url(:small), id: "show_gallery", width: "180", height: "100", class: "heading-client-view" %></center>
+              <% else %>
+              <center><%= image_tag @color_logo.gallery_logo.url(:small), id: "show_gallery", width: "180", height: "100", class: "heading-client-view", style: "display:none;" %></center>
+              <h2 class="heading-client-view effects-from-font-set effects-from-primary-color" id="brand_name"><%= current_brand.brand_name%></h2>
+              <% end %>
+              <div class="names-color-title">
+                <span class="client-sub-name effects-from-font-set effects-from-primary-color">Jennifer+Brandon</span>
+                <span class="grid-sub-count effects-from-font-set">672 Photos</span>
+              </div>
+              <div class="gallary-button effects-from-primary-color">
+                <ul>
+                  <li><a href="#"><span class="fa fa-share"></span>Share</a></li>
+                  <li><a href="#"><span class="fa fa-cloud-download"></span>Download</a></li>
+                  <li><a href="#"><span class="fa fa-caret-right"></span>Slideshow</a></li>
+                  <li><a href="#"><span class="fa fa-shopping-cart"></span>Buy all</a></li>
+                </ul>
+              </div>
+              <div id="album">
+              <div class="albumsContainer effects-from-font-set">
+                <div class="album">
+                  <div class="album-cover" style="background-image: url(/assets/preparation.jpg);background-size: 300px 450px;background-position: 0px -126px;">
+                  </div>
+                  <h4 class="album-name">
+                    <span class="font-text effects-from-secondary-color">Preparation</span>
+                  </h4>
+                  <h6 class="album-photo-count">
+                    <span>115 Photos</span>
+                  </h6>
+                </div>
+                <div class="album">
+                  <div class="album-cover"style="background-image: url(/assets/pre-ceremony.jpg);background-size: 300px 450px;background-position: 0px -126px;">
+                  </div>
+                  <h4 class="album-name">
+                    <span class="font-text effects-from-secondary-color">Pre Ceremony Potraits</span>
+                  </h4>
+                  <h6 class="album-photo-count">
+                    <span class="font-text">110 Photos</span>
+                  </h6>
+                </div>
+                <div class="album">
+                  <div class="album-cover"style="background-image: url(/assets/ceremony.jpg);background-size: 300px 450px;background-position: 0px -126px;">
+                  </div>
+                  <h4 class="album-name">
+                    <span class="font-text effects-from-secondary-color">Ceremony</span>
+                  </h4>
+                  <h6 class="album-photo-count">
+                    <span class="font-text">103 Photos</span>
+                  </h6>
+                </div>
+                <div class="album">
+                  <div class="album-cover"style="background-image: url(/assets/family.jpg);background-size: 300px 450px;background-position: -68px -46px;">
+                  </div>
+                  <h4 class="album-name">
+                    <span class="font-text effects-from-secondary-color">Family + Couple Photos</span>
+                  </h4>
+                  <h6 class="album-photo-count">
+                    <span class="font-text">116 Photos</span>
+                  </h6>
+                </div>
+                <div class="album">
+                  <div class="album-cover"style="background-image: url(/assets/reception.jpg);background-size: 300px 450px;background-position: -68px -46px">
+                  </div>
+                  <h4 class="album-name">
+                    <span class="font-text effects-from-secondary-color">Reception</span>
+                  </h4>
+                  <h6 class="album-photo-count">
+                    <span class="font-text">130 Photos</span>
+                  </h6>
+                </div>
+                <div class="album">
+                  <div class="album-cover"style="background-image: url(/assets/highlights.jpg);background-size: 300px 450px;background-position: -68px -46px;">
+                  </div>
+                  <h4 class="album-name">
+                    <span class="font-text effects-from-secondary-color">Highlights</span>
+                  </h4>
+                  <h6 class="album-photo-count">
+                    <span class="font-text">98Photos</span>
+                  </h6>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+
+          <!--second-tab-->
+          <div class="tab-pane" id="color-edit-2">
+            <div id="exampleMobileGallery" class="preview-tab" style="display: block ;">
+              <div class="row">
+                <div class="col-md-4 effects-from-theme" style="width: 375px; height: 667px; overflow-y: auto; overflow-x: hidden; padding: 0;">
+                  <nav class="navbar navbar-default client-nav effects-from-primary-background-color">
+                    <div class="container-fluid">
+                      <div classs="row">
+                        <div class="col-lg-12 text-center">
+                          <div class="tabing-client">
+                            <ul class="nav nav-pills">
+                              <li class="type"><a data-toggle="tab" href="#client-gallery"><span class="more-icon-color fa fa-picture-o"></span></a></li>
+                              <li class="type"><a data-toggle="tab" href="client-Favorites"><span class="more-icon-color fa fa-info-circle"></span></a></li>
+                              <li class="type"><a data-toggle="tab" href="client-Favorites"><span class="more-icon-color fa fa-star"></span><span class="badge badge-notify effects-from-secondary-background-color effects-from-secondary-color-links">3</span></a></li>
+                              <li class="type"><a data-toggle="tab" href="client-Favorites"><span class="more-icon-color fa fa-shopping-cart"></span><span class="badge badge-notify effects-from-secondary-background-color effects-from-secondary-color-links">0</span></a></li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </nav>
+
+                  <div class="client-page">
+                    <% if @color_logo.gallery_logo.exists? %>
+                    <center><%= image_tag @color_logo.gallery_logo.url(:small), id: "show_gallery", width: "180", height: "100", class: "heading-client-view" %></center>
+                    <% else %>
+                    <center><%= image_tag @color_logo.gallery_logo.url(:small), id: "show_gallery", width: "180", height: "100", class: "heading-client-view", style: "display:none;" %></center>
+                    <h2 class="heading-client-view effects-from-font-set effects-from-primary-color" id="brand_name"><%= current_brand.brand_name%></h2>
+                    <% end %>
+                    <div class="names-color-title">
+                      <span class="client-sub-name effects-from-font-set effects-from-primary-color">Jennifer+Brandon</span>
+                      <span class="grid-sub-count effects-from-font-set">672 Photos</span>
+                    </div>
+                    <div class="gallary-button">
+                      <ul>
+                        <li><a href="#"><span class="fa fa-share"></span>Share</a></li>
+                        <li><a href="#"><span class="fa fa-cloud-download"></span>Download</a></li>
+                        <li><a href="#"><span class="fa fa-caret-right"></span>Slideshow</a></li>
+                        <li><a href="#"><span class="fa fa-shopping-cart"></span>Buy all</a></li>
+                      </ul>
+                    </div>
+                    <div id="album in-mobile">
+                      <div class="albumsContainer mobile-s">
+                        <div class="album">
+                          <div class="album-cover" style="background-image: url(/assets/preparation.jpg);background-size: 300px 450px;background-position: 0px -126px;">
+                          </div>
+                          <h4 class="album-name">
+                            <span class="font-text effects-from-secondary-color">Preparation</span>
+                          </h4>
+                          <h6 class="album-photo-count">
+                            <span class="font-text">115 Photos</span>
+                          </h6>
+                        </div>
+                        <div class="album">
+                          <div class="album-cover"style="background-image: url(/assets/pre-ceremony.jpg);background-size: 300px 450px;background-position: 0px -126px;">
+                          </div>
+                          <h4 class="album-name">
+                            <span class="font-text effects-from-secondary-color">Pre Ceremony Potraits</span>
+                          </h4>
+                          <h6 class="album-photo-count">
+                            <span class="font-text">110 Photos</span>
+                          </h6>
+                        </div>
+                        <div class="album">
+                          <div class="album-cover"style="background-image: url(/assets/ceremony.jpg);background-size: 300px 450px;background-position: 0px -126px;">
+                          </div>
+                          <h4 class="album-name">
+                            <span class="font-text effects-from-secondary-color">Ceremony</span>
+                          </h4>
+                          <h6 class="album-photo-count">
+                            <span class="font-text">103 Photos</span>
+                          </h6>
+                        </div>
+                        <div class="album">
+                          <div class="album-cover"style="background-image: url(/assets/family.jpg);background-size: 300px 450px;background-position: -68px -46px;">
+                          </div>
+                          <h4 class="album-name">
+                            <span class="font-text effects-from-secondary-color">Family + Couple Potraits</span>
+                          </h4>
+                          <h6 class="album-photo-count">
+                            <span class="font-text">116 Photos</span>
+                          </h6>
+                        </div>
+                        <div class="album">
+                          <div class="album-cover"style="background-image: url(/assets/reception.jpg);background-size: 300px 450px;background-position: -68px -46px">
+                          </div>
+                          <h4 class="album-name">
+                            <span class="font-text effects-from-secondary-color">Reception</span>
+                          </h4>
+                          <h6 class="album-photo-count">
+                            <span class="font-text">130 Photos</span>
+                          </h6>
+                        </div>
+                        <div class="album">
+                          <div class="album-cover"style="background-image: url(/assets/highlights.jpg);background-size: 300px 450px;background-position: -68px -46px;">
+                          </div>
+                          <h4 class="album-name">
+                            <span class="font-text effects-from-secondary-color">Highlights</span>
+                          </h4>
+                          <h6 class="album-photo-count">
+                            <span class="font-text">198 Photos</span>
+                          </h6>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <iframe src="mobile-iframe.html" id="mobilePreview" frameborder="1" width="375px" height="667px"></iframe> -->
+
+            </div>
+          </div>
+          <!--third-tab-->
+          <div class="tab-pane" id="color-edit-3">
+            <div id="exampleEmail" class="preview-tab email-container">
+              <div class="browser-chrome">
+                <div class="browser-chrome-button"></div>
+                <div class="browser-chrome-button"></div>
+                <div class="browser-chrome-button"></div>
+              </div>
+              <div class="email-window">
+                <ul class="list-view list-unstyled left">
+                  <li>
+                    <h5>Lorem ipsum dolor</h5>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sit amet semper tortor, vel facilisis ipsum. Mauris non sodales lorem.</p>
+                  </li>
+                  <li>
+                    <h5>Lorem ipsum dolor</h5>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sit amet semper tortor, vel facilisis ipsum. Mauris non sodales lorem.</p>
+                  </li>
+                  <li class="selected">
+                    <h5>Lorem ipsum dolor</h5>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sit amet semper tortor, vel facilisis ipsum. Mauris non sodales lorem.</p>
+                  </li>
+                  <li>
+                    <h5>Lorem ipsum dolor</h5>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sit amet semper tortor, vel facilisis ipsum. Mauris non sodales lorem.</p>
+                  </li>
+                  <li>
+                    <h5>Lorem ipsum dolor</h5>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sit amet semper tortor, vel facilisis ipsum. Mauris non sodales lorem.</p>
+                  </li>
+                  <li>
+                    <h5>Lorem ipsum dolor</h5>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sit amet semper tortor, vel facilisis ipsum. Mauris non sodales lorem.</p>
+                  </li>
+                  <li>
+                    <h5>Lorem ipsum dolor</h5>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sit amet semper tortor, vel facilisis ipsum. Mauris non sodales lorem.</p>
+                  </li>
+                </ul>
+                <div class="email-view left">
+                  <!--- emailgoes heer -->
+
+                  <table cellpadding="0" cellspacing="0" border="0" class="backgroundTable">
+
+                    <tbody>
+                      <tr>
+                        <td style="padding: 20px 13px">
+                          <table width="520px" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#ffffff" style="background-color: #ffffff">
+                            <tbody>
+                              <tr>
+                                <td style="border-bottom: 5px solid #646464; height: 80px;">
+                                  <% if @color_logo.email_logo.exists? %>
+                                  <%= image_tag @color_logo.email_logo.url(:small), id: "emailLogo"%>
+                                  <% else %>
+                                  <img id="emailLogo" src="">
+                                  <% end %>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 20px 5px">
+                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sit amet semper tortor, vel facilisis ipsum.</p>
+                                  <p>Mauris non sodales lorem. Fusce et cursus libero. Vivamus id eros sit amet magna tincidunt dignissim. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td height="60px" style="border-top: 1px solid #656565;">
+                                  <table width="100%">
+                                    <tbody><tr>
+                                      <td valign="middle" style="color: #646464; font-size: 12px">
+                                        Copyright © 2016 <%= current_brand.brand_name %>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="theme-sidebar">
+        <h5>Logos</h5>
+        <label>Gallery Logo</label>
+        <%= f.hidden_field :hidden_remove,value: false %>
+        <% unless @color_logo.gallery_logo.exists? %>
+          <div class="fileinput-new" id="span_for_gallery">
+            <span class="icon-coloe-in fa fa-picture-o"></span>
+            <%= f.file_field :gallery_logo, onchange: "document.getElementById('targetForGallery').src = window.URL.createObjectURL(this.files[0]); $('#no_image').css('display','block'); $('#change_to_edit_gallery').text('Edit');$('#span_for_gallery').css('display', 'none'); document.getElementById('show_gallery').src = window.URL.createObjectURL(this.files[0]); $('#show_gallery').css('display','block');$('#brand_name').remove();" %>
+          </div>
+        <% end %>
+        <div class="fileinput-preview">
+          <% if @color_logo.gallery_logo.exists? %>
+          <%= image_tag @color_logo.gallery_logo.url(:small), id: "targetForGallery" %>
+          <% else %>
+          <div style= 'display: none;' id="no_image">
+            <%= image_tag @color_logo.gallery_logo.url(:small), id: "targetForGallery" %>
+          </div>
+          <% end %>
+        </div>
+        <div class="text-right">
+          <span class="btn-file">
+            <%= link_to "#", class: "fileinput-exists", "data-dismiss": "fileinput" do %>
+            <%= f.file_field :gallery_logo, onchange: "document.getElementById('targetForGallery').src = window.URL.createObjectURL(this.files[0]); $('#no_image').css('display','block'); $('#span_for_gallery').css('display', 'none'); $('#change_to_edit_gallery').text('Edit'); document.getElementById('show_gallery').src = window.URL.createObjectURL(this.files[0]); $('#show_gallery').css('display','block');$('#brand_name').remove();" %>
+            <% if @color_logo.gallery_logo.exists? %>
+            <div id = "change_to_edit_gallery">Edit</div>
+            <% else %>
+            <div id = "change_to_edit_gallery">Upload</div>
+            <% end %>
+            <% end %>
+            <%= link_to "Remove", "#", class: "fileinput-exists" , id: "remove_logo"%>
+
+          </span>
+        </div>
+        <div class="emailLogoUploader">
+          <label>Invoice/Email Logo</label>
+          <%= f.hidden_field :hidden_email_logo_remove,value: false%>
+          <div class="fileinput-new">
+            <% if @color_logo.email_logo.exists? %>
+            <div style="margin-left:9px;">
+              <%= image_tag @color_logo.email_logo.url(:small), id: "targetForEmail"%>
+            </div>
+            <% else %>
+              <span class="icon-coloe-in fa fa-picture-o" id="span_for_email"></span>
+              <%= image_tag @color_logo.email_logo.url(:small), id: "targetForEmail", style: "display: none" %>
+            <% end %>
+            <%= f.file_field :email_logo, onchange: "document.getElementById('targetForEmail').src = window.URL.createObjectURL(this.files[0]); $('#targetForEmail').css('display','block'); $('#span_for_email').css('display','none');$('#change_to_edit_email').text('Edit');document.getElementById('emailLogo').src = window.URL.createObjectURL(this.files[0]); $('#emailLogo').css('display','block');" %>
+          </div>
+          <div class="text-right">
+            <span class="btn-file">
+              <%= link_to "#", class: "fileinput-exists", "data-dismiss": "fileinput" do %>
+              <%= f.file_field :email_logo, onchange: "document.getElementById('targetForEmail').src = window.URL.createObjectURL(this.files[0]); $('#targetForEmail').css('display','block'); $('#span_for_email').css('display','none');$('#change_to_edit_email').text('Edit');document.getElementById('emailLogo').src = window.URL.createObjectURL(this.files[0]); $('#emailLogo').css('display','block');" %>
+              <% if @color_logo.email_logo.exists? %>
+              <div id = "change_to_edit_email">Edit</div>
+              <% else %>
+              <div id = "change_to_edit_email">Upload</div>
+              <% end %>
+              <% end %>
+              <%= link_to "Remove", "#", class: "fileinput-exists", id:"remove_email_logo" %>
+            </span>
+          </div>
+        </div>
+        <div class="color-form-edit">
+          <h5>Appearance</h5>
+          <div class="form-group">
+            <%= f.label :font_set %>
+            <%= f.select :font_set,ColorLogo::FONT_SET, {},class: "selectpicker" %>
+          </div>
+          <div class="form-group">
+            <%= f.label :theme %>
+            <%= f.select :theme,ColorLogo::THEME, {},class: "selectpicker" %>
+          </div>
+          <div class="form-group">
+            <%= f.label :primary_color %>
+            <div id="cp2" class="input-group colorpicker-component">
+              <span class="input-group-addon" id = "changeText"><i id="get-primary-color"></i></span>
+              <%= f.text_field :primary_color, class: "form-control" %>
+            </div>
+            <p id="primaryColorError" style="display: none; color: red;">Value cannot be empty</p>
+          </div>
+          <div class="form-group">
+            <%= f.label :secondary_color %>
+            <div id="cp3" class="input-group colorpicker-component">
+              <span class="input-group-addon" id="span-check"><i></i></span>
+              <%= f.text_field :secondary_color, class: "form-control" %>
+            </div>
+            <p id="secondaryColorError" style="display: none; color: red;">Value cannot be empty</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- main -->
+<% end %>
+
+<!-- Modal -->
+<div class="modal" id="rename-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Rename</h4>
+      </div>
+      <%= form_for @color_logo do |f| %>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <%= f.text_field :name, class: "form-control"%>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <%= link_to "Cancel", "#", "data-dismiss": "modal", class: "btn btn-default" %>
+        <%= f.submit "Rename", class: "btn btn-primary" %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+
+<!-- Delete Modal -->
+<div class="modal fade" id="delete-color-set" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="myModalLabel">Delete Color Set?</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete the color set <b> <%= @color_logo.name %> </b>? Once deleted this action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <%= link_to "Yes, Delete", color_logo_path(id: params[:id]),method: :delete, class: "btn btn-sm btn-danger" %>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Delete Modal -->
+
+<!-- Cannot Delete Modal -->
+<div class="modal fade" id="cannot-delete-color-set" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="myModalLabel">Color Set In Use</h4>
+      </div>
+      <div class="modal-body">
+        <% unless @custom_gallery_layout.nil? %>
+        <p>
+          This Color Set is being used by the galleries:
+          <ul>
+            <% @galleries.each do |g| %>
+            <li><%= g.name %></li>
+            <% end %>
+          </ul>
+        </p>
+        <% end %>
+        <% unless @home_page.nil? %>
+        <p>
+          This Color Set is being used as the brand homepage theme.
+        </p>
+        <% end %>
+        <% unless @default_gallery_layout.nil? %>
+        <p>
+          This Color Set is currently set as an gallery default.
+        </p>
+        <% end %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Cannot Delete Modal -->
+
+<script>
+$(function() {
+  $('#cp2').colorpicker();
+});
+$(function() {
+  $('#cp3').colorpicker();
+});
+</script>
+<script>
+$(function() {
+  $('#cp2').colorpicker().on('changeColor', function(e) {
+    $('.effects-from-primary-background-color').css("background-color",$(this).colorpicker('getValue'))
+    $('.effects-from-primary-color').css("color",$(this).colorpicker('getValue'))
+  });
+  $('#cp3').colorpicker().on('changeColor', function(e) {
+    $('.effects-from-secondary-background-color').css("background-color",$(this).colorpicker('getValue'))
+    $('.effects-from-secondary-color').css("color",$(this).colorpicker('getValue'))
+  });
+});
+
+$("#color_logo_font_set").change(function(){
+  selected_option = $("#color_logo_font_set").val();
+  if (selected_option == "A - Branadon, Baskerville")
+  {
+    $(".effects-from-font-set").css('font-family', 'Arial');
+  }
+  else if (selected_option == "B- ProximaNova")
+  {
+    $(".effects-from-font-set").css('font-family', 'Comic Sans MS');
+  }
+  else if (selected_option == "C - Baskerville, OpenSans")
+  {
+    $(".effects-from-font-set").css('font-family', 'Verdana');
+  }
+});
+
+$("#color_logo_theme").change(function(){
+  selected_option = $("#color_logo_theme").val();
+  if (selected_option == "Light")
+  {
+    $(".effects-from-theme").css('background-color', '#ffffff');
+    $('.effects-from-secondary-color-links').css('color', 'white');
+    $('.effects-from-secondary-background-color').css('background-color', 'black');
+  }
+  else if (selected_option == "Dark")
+  {
+    $(".effects-from-theme").css('background-color', '#242424');
+    $('.effects-from-secondary-color-links').css('color', 'black');
+    $('.effects-from-secondary-background-color').css('background-color', 'white');
+  }
+});
+</script>
+
+<script>
+<% if flash[:errorforprimarycolor].present? %>
+$("#color_logo_primary_color").css("border-color","red");
+$("#primaryColorError").css("display", "block");
+<% elsif flash[:errorforsecondarycolor].present? %>
+$("#color_logo_secondary_color").css("border-color","red");
+$("#secondaryColorError").css("display", "block");
+<% end %>
+</script>
+<% end %>
+<script>
+$('#color_logo_gallery_logo').click(function()
+{
+      $('#color_logo_hidden_remove').val('false');
+});
+$('#remove_logo').click(function()
+{
+      // $('#span_for_gallery').css('display','block');
+      // $('#targetForGallery').css('display','none');
+       $('#targetForGallery').attr('src', '/assets/icon_gallery_cover.svg');
+       $("#show_gallery").remove();
+       $('#color_logo_hidden_remove').val('true');
+});
+$('#remove_email_logo').click(function()
+{
+  $('#span_for_email').css('display','block');
+  $('#targetForEmail').css('display','none');
+  $('#color_logo_hidden_email_logo_remove').val(true);
+});
+
+
+</script>

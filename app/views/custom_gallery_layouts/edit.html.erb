@@ -1,0 +1,293 @@
+<%= render 'form'%>
+
+<script type="text/javascript">
+$(".myradio").click(function() {
+  $(this).parent(".radiocon").find('.selected').removeClass('selected');
+  $(this).addClass('selected');
+});
+$(".myradio1").click(function() {
+  $(this).parent(".radiocon1").find('.selected').removeClass('selected');
+  $(this).addClass('selected');
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $(".checkbox input").click(function(){
+    if($(this).is(':checked')){
+      $(this).parent('.checkbox').addClass('checked-box');
+      if ($(this).attr("id") == "custom_gallery_layout_social_sharing_link"){
+        $("#social").attr("disabled",false);
+      }
+
+    }
+    else{
+      $(this).parent('.checkbox').removeClass('checked-box');
+      if ($(this).attr("id") == "custom_gallery_layout_social_sharing_link"){
+        $("#social").attr("disabled",true);
+      }
+
+    }
+  })
+});
+
+</script>
+<script type="text/javascript">
+$(function() {
+  $('#datetimepicker2').datetimepicker({
+    language: 'pt-BR'
+  });
+  $('#datetimepicker2').on('changeDate', function(ev){
+      $('#datetimepicker2').datetimepicker('hide');
+  });
+});
+</script>
+<script type="text/javascript">
+$(function() {
+  $('#datetimepicker3').datetimepicker({
+    language: 'pt-BR'
+  });
+  $('#datetimepicker3').on('changeDate', function(ev){
+      $('#datetimepicker3').datetimepicker('hide');
+  });
+});
+</script>
+<script type="text/javascript">
+$(function() {
+  $('#datetimepicker4').datetimepicker({
+    language: 'pt-BR'
+  });
+  $('#datetimepicker4').on('changeDate', function(ev){
+      $('#datetimepicker4').datetimepicker('hide');
+  });
+});
+</script>
+<script type="text/javascript">
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+<script type="text/javascript">
+// $(window).on("scroll touchmove", function (){
+// $('.page-title').toggleClass('setting-fixed', $(document).scrollTop() > 50);
+// $('#navbar-example').addClass('side-menu-sticky');
+// });
+</script>
+<script type="text/javascript">
+$(window).on("scroll touchmove", function (){
+  if($(document).scrollTop() > 50){
+    $('.page-title').addClass('setting-fixed');
+    $('#navbar-example').addClass('side-menu-sticky');
+  }
+  else{
+    $('.page-title').removeClass('setting-fixed');
+    $('#navbar-example').removeClass('side-menu-sticky');
+  }
+});
+</script>
+<script type="text/javascript">
+$('body').scrollspy({ target: '#navbar-example' })
+</script>
+
+<script type="text/javascript">
+$('input[name="rdinterested"]').click(function(){
+  if($(this).attr('id')=='gallery_layout_introduction_page_layout_limelight'){
+    $('.gallery-settings div#TypeDemo').removeClass();
+    $('.gallery-settings div#TypeDemo').addClass('full-bottom');
+  }
+  else if($(this).attr('id')=='gallery_layout_introduction_page_layout_marquee'){
+    $('.gallery-settings div#TypeDemo').removeClass();
+    $('.gallery-settings div#TypeDemo').addClass('full-center');
+  }
+  else if($(this).attr('id')=='gallery_layout_introduction_page_layout_detail'){
+    $('.gallery-settings div#TypeDemo').removeClass();
+    $('.gallery-settings div#TypeDemo').addClass('split');
+  }
+});
+</script>
+<script>
+$(document).ready(function(){
+  var val = document.getElementById('Archive').value;
+  if (val == 'Do Not Archive'){
+    $("#custom_gallery_layout_archiving").val("");
+  }else{
+    $("#custom_gallery_layout_archiving").val($("#Archive").val());
+  }
+
+  <%if @custom_gallery_layout.email_require == true%>
+    $("#email_require").addClass('checked-box');
+  <% end %>
+  <%if @custom_gallery_layout.preregistration == true%>
+    $("#preregistration").addClass('checked-box');
+  <% end %>
+  <%if @custom_gallery_layout.cropping == true%>
+    $("#cropping").addClass('checked-box');
+  <% end %>
+  <%if @custom_gallery_layout.black_and_white_filtering == true%>
+    $("#black_and_white_filtering").addClass('checked-box');
+  <% end %>
+  <%if @custom_gallery_layout.social_sharing_link == true%>
+    $("#social_sharing_link").addClass('checked-box');
+    $("#social").attr("disabled",false);
+  <% end %>
+  <%if @custom_gallery_layout.add_photo_to_cart == true%>
+    $("#add_photo_to_cart").addClass('checked-box');
+  <% end %>
+  <%if @custom_gallery_layout.pay_later == true%>
+    $("#pay_later").addClass('checked-box');
+  <% end %>
+  <%if @custom_gallery_layout.digital_download == true%>
+    $('#digital_download').addClass('checked-box');
+    // $("#digital_download").addClass('checked-box');
+  <% end %>
+  <%if @custom_gallery_layout.entire_gallery_download == true %>
+
+  $('#entire_gallery_download_check_box').parent().addClass('checked-box');
+    // $("#entire_gallery_download").addClass('checked-box');
+  <% end %>
+  <% if @custom_gallery_layout.entire_gallery_download == false %>
+    $('#entire_gallery_download_check_box').parent().removeClass('checked-box');
+  <% end %>
+  <%if @custom_gallery_layout.hide_photos == true%>
+    $("#hide_photos").addClass('checked-box');
+  <% end %>
+  <%if @custom_gallery_layout.require_PIN == true%>
+    $('#require_PIN_check_box').parent().addClass('checked-box');
+    $("#require_PIN_text").attr("disabled",false);
+      // $("#require_PIN_check_box").addClass('checked-box');
+  <% end %>
+  <%if @custom_gallery_layout.require_PIN == false%>
+  $("#require_PIN_text").attr("disabled",true);
+  <% end %>
+  <% if @custom_gallery_layout.show_filename == true %>
+    $('#custom_gallery_layout_show_filename').parent().addClass('checked-box');
+  <% end %>
+
+  <%if @custom_gallery_layout.introduction_page_layout == 'LimeLight' %>
+    $("#LimeLight").addClass('selected');
+  <%elsif @custom_gallery_layout.introduction_page_layout == "Marquee"%>
+    $("#Marquee").addClass('selected');
+  <%elsif @custom_gallery_layout.introduction_page_layout == "Detail"%>
+    $("#Detail").addClass('selected');
+  <%elsif @custom_gallery_layout.introduction_page_layout == "Accent"%>
+    $("#Accent").addClass('selected');
+  <%else%>
+    $("#HeadLine").addClass('selected');
+  <%end%>
+
+  <% if @custom_gallery_layout.photo_page_layout == "Cascade"%>
+    $("#Cascade").addClass('selected');
+  <%else%>
+    $("#Subway").addClass('selected');
+  <%end%>
+
+
+});
+</script>
+<script>
+$("#Archive").change(function(){
+  var val = document.getElementById('Archive').value;
+  if (val == 'Do Not Archive'){
+    $("#custom_gallery_layout_archiving").val("");
+  }else{
+    $('#custom_gallery_layout_archiving').val(val);
+  }
+});
+</script>
+<script>
+$(document).ready(function(){
+  var v = $("#gallery_access_privacy").val();
+  if (v.indexOf("No") > -1){
+    $("#custom_gallery_layout_password").attr("disabled",true);
+  }else{
+    $("#custom_gallery_layout_password").attr("disabled",false);
+  }
+});
+$("#gallery_access_privacy").change(function(){
+  var v = $("#gallery_access_privacy").val();
+  if (v.indexOf("No") > -1){
+    $("#custom_gallery_layout_password").attr("disabled",true);
+  }else{
+    $("#custom_gallery_layout_password").attr("disabled",false);
+  }
+});
+</script>
+<script>
+$("#custom_gallery_layout_pricing_id").change(function(){
+  if ($(this).val()!=""){
+    $("#min_order_label").prop("disabled",false);
+    $("#add_photo_to_cart_label").prop("disabled",false);
+    $("#pay_later_label").prop("disabled",false);
+    $("#min_order_field").prop("disabled",false);
+    $("#add_photo_to_cart_check_box").prop("disabled",false);
+    $("#pay_later_check_box").prop("disabled",false);
+  }else{
+    $("#min_order_label").prop("disabled",true);
+    $("#add_photo_to_cart_label").prop("disabled",true);
+    $("#pay_later_label").prop("disabled",true);
+    $("#min_order_field").prop("disabled",true);
+    $("#add_photo_to_cart_check_box").prop("disabled",true);
+    $("#pay_later_check_box").prop("disabled",true);
+  }
+});
+</script>
+<script>
+$(document).ready(function(){
+  if($("#custom_gallery_layout_digital_download").hasClass("checked-box")){
+    $("#entire_gallery_download_label").attr("disabled",true);
+    $("#entire_gallery_download_check_box").attr("disabled",true);
+  }else {
+    $("#entire_gallery_download_label").attr("disabled",false);
+    $("#entire_gallery_download_check_box").attr("disabled",false);
+  }
+});
+  $("#custom_gallery_layout_digital_download").change(function(){
+    if($(this).is(':checked')){
+      $("#entire_gallery_download_check_box").attr("disabled",false);
+      $("#entire_gallery_download_label").attr("disabled",false);
+      $("#require_PIN_check_box").attr("disabled",false);
+      $("#require_PIN_label").attr("disabled",false);
+      // $("#require_PIN_text").attr("disabled",false);
+    }
+    else{
+      $("#entire_gallery_download_check_box").attr("disabled",true);
+      $("#entire_gallery_download_label").attr("disabled",true);
+      $("#require_PIN_check_box").attr("disabled",true);
+      $("#require_PIN_label").attr("disabled",true);
+      $("#require_PIN_text").attr("disabled",true);
+      $('#require_PIN_check_box').parent().removeClass('checked-box');
+      $('#entire_gallery_download_check_box').parent().removeClass('checked-box');
+    }
+  });
+
+  $("#require_PIN_check_box").change(function()
+  {
+    if($(this).is(':checked'))
+    {
+      $("#require_PIN_text").attr("disabled",false);
+    }
+    else
+    {
+      $("#require_PIN_text").val(' ')
+      $("#require_PIN_text").attr("disabled",true);
+    }
+  });
+
+  // $("#entire_gallery_download_check_box").change(function(){
+  //   if($(this).is(':checked')){
+  //
+  //     $('#entire_gallery_download_check_box').parent().removeClass('checked-box');
+  //   }
+  //   else{
+  //     $('#entire_gallery_download_check_box').parent().addClass('checked-box');
+  //   }
+  // });
+
+
+  // checked-box
+</script>
+<script>
+<% unless flash[:notice1].present? %>
+// alert("hello");
+$("#notice1").css("display","block");
+<% end %>
+</script>

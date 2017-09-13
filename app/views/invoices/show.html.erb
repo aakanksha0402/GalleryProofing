@@ -1,0 +1,74 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Brand:</strong>
+  <%= @invoice.brand %>
+</p>
+
+<p>
+  <strong>Client contact:</strong>
+  <%= @invoice.client_contact %>
+</p>
+
+<p>
+  <strong>Automation series:</strong>
+  <%= @invoice.automation_series %>
+</p>
+
+<p>
+  <strong>Color logo:</strong>
+  <%= @invoice.color_logo %>
+</p>
+
+<p>
+  <strong>Issue date:</strong>
+  <%= @invoice.issue_date %>
+</p>
+
+<p>
+  <strong>Final due date:</strong>
+  <%= @invoice.final_due_date %>
+</p>
+
+<p>
+  <strong>Sales label:</strong>
+  <%= @invoice.sales_label %>
+</p>
+
+<p>
+  <strong>Sales rate:</strong>
+  <%= @invoice.sales_rate %>
+</p>
+
+<p>
+  <strong>Notes to client:</strong>
+  <%= @invoice.notes_to_client %>
+</p>
+
+<p>
+  <strong>Discount type:</strong>
+  <%= @invoice.discount_type %>
+</p>
+
+<p>
+  <strong>Deposit amount:</strong>
+  <%= @invoice.deposit_amount %>
+</p>
+
+<p>
+  <strong>Allow payment cash cheque:</strong>
+  <%= @invoice.allow_payment_cash_cheque %>
+</p>
+
+<p>
+  <strong>Allow payment credit card:</strong>
+  <%= @invoice.allow_payment_credit_card %>
+</p>
+
+<p>
+  <strong>Payment confirmation text:</strong>
+  <%= @invoice.payment_confirmation_text %>
+</p>
+
+<%= link_to 'Edit', edit_invoice_path(@invoice) %> |
+<%= link_to 'Back', invoices_path %>

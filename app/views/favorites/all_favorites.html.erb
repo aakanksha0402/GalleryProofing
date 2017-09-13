@@ -1,0 +1,218 @@
+<% content_for :body_class, "contact-index gallery_default-style" %>
+<% content_for :favorite, "active" %>
+<!--nav-->
+
+<%= render "/views/navbar" %>
+<!-- main -->
+<div class="container-fluid">
+  <div class="row">
+    <% if session["email_visitor_#{params[:gallery]}"] %>
+      <% if @favorites.present? %>
+        <div class="container-fluid">
+          <div class="row">
+             <div class="col-lg-12">
+              <div class="text-right-side">
+                  <span class="main-heaing-album">Favorites</span>
+              </div>
+              <div class="text-left-side">
+                <% if @favorites.count > 1 %>
+                  <div class="back-btn"><a data-toggle="modal" data-target="#slide-show" href="#"><span class="fa fa-caret-right"></span>SLIDESHOW</a></div>
+                <% end %>
+                <div class="back-btn"><a data-toggle="modal" data-target="#modal-empltycart" href="#"><span class="fa fa-caret-right"></span>Share</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-12">
+          <div class="photos">
+            <% @favorite_photos.each do |f| %>
+              <div class="images-Favorites">
+                <div class="main-img">
+                  <%= image_tag f.image.url %>
+                </div>
+                <div class="side-menu-social" id= "fav_<%= f.id %>">
+                  <span class="icon-social star-icon" id = "span_<%= f.id %>">
+                      <svg class="sp-svg" version="1.1" viewBox="0 0 14.619 13.967"><path d="M5.236,4.797l1.542-4.414c0.178-0.511,0.901-0.51,1.078,0.002l1.529,4.419l4.675,0.102c0.541,0.012,0.763,0.7,0.332,1.026l-3.73,2.819l1.347,4.478c0.156,0.518-0.43,0.942-0.873,0.633l-3.834-2.677L3.459,13.85c-0.445,0.308-1.029-0.117-0.871-0.635l1.361-4.474L0.226,5.91C-0.204,5.583,0.02,4.895,0.561,4.885L5.236,4.797z"></path></svg>
+                  </span>
+                </div>
+                <div class="photo-actions-tray" id = 'div_<%= f.id %>'>
+
+                  <%= link_to view_items_path(brand: params[:brand], gallery: params[:gallery], photo: f.id), class: "btn photo-action", remote: true do%>
+                    <%= render "/views/cart" %>
+                  <% end %>
+                  <%= link_to "#", onclick: "remove_favorite(#{f.id})", id: "remove_span_#{f.id}", class: "btn photo-action active-span" do %>
+                    <!-- <button class="btn photo-action active-span" onclick = "remove_favorite(<%= f.id %>)" id = "remove_span_<%= f.id %>"> -->
+                        <svg class="sp-svg" version="1.1" viewBox="0 0 14.619 13.967"><path d="M5.236,4.797l1.542-4.414c0.178-0.511,0.901-0.51,1.078,0.002l1.529,4.419l4.675,0.102c0.541,0.012,0.763,0.7,0.332,1.026l-3.73,2.819l1.347,4.478c0.156,0.518-0.43,0.942-0.873,0.633l-3.834-2.677L3.459,13.85c-0.445,0.308-1.029-0.117-0.871-0.635l1.361-4.474L0.226,5.91C-0.204,5.583,0.02,4.895,0.561,4.885L5.236,4.797z"></path></svg>
+                    <!-- </button> -->
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="modal fade" id="modal-empltycart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              </div>
+              <div class="modal-body text-center">
+                <h2 class="font-text1">SHARE FAVORITES</h2>
+                <p><%= @gallery.name %> - <%= @favorites.count %> Favorites</p>
+                <%= form_tag favorites_share_fav_path, remote: true do%>
+                <%= hidden_field_tag :gallery, params[:gallery] %>
+                <%= hidden_field_tag :gallery_visitor_id, @gallery_visitor.id %>
+                <%= hidden_field_tag :brand_id, @brand.id %>
+                <div class="form-group">
+                  <%= label_tag :from, "FROM: " %>
+                  <%= text_field_tag :name, nil, class: "form-control", required: true, placeholder: "Your Name"%>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :to, "TO: " %>
+                  <%= email_field_tag :to_email, nil, class: "form-control", required: true, placeholder: "johndoe@email.com"%>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :to, "MESSAGE: " %>
+                  <%= text_area_tag :message, nil, class: "form-control", required: true%>
+                </div>
+                <div class="btn-style text-center">
+                  <%= submit_tag "Send", class: "btn btn-primary", disabled: true, id: "share_fav", data: { disable_with: "Please wait..." } %>
+                </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          $(document).ready(function(){
+            $('#to, #name, #message').keyup(function(){
+              var to = $('#to_email').val();
+              var name = $('#name').val();
+              var message = $('#message').val();
+              to.length == 0 || name.length == 0 || message.length == 0 ? $('#share_fav').prop('disabled', true) : $('#share_fav').prop('disabled', false)
+              var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+              email_test = pattern.test(to);
+              email_test ? $('#share_fav').prop('disabled', false) : $('#share_fav').prop('disabled', true)
+            });
+          });
+        </script>
+      <% else%>
+        <div class="row mange-block">
+          <h2 class="no-photo-value">THERE ARE 0 FAVORITES SAVED.</h2>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="row mange-block">
+        <h2 class="no-photo-value">THERE ARE 0 FAVORITES SAVED.</h2>
+        <h5 class="text-center">Have you already chosen Favorites for this gallery? <%= link_to "Enter Email", "#modal-empltycart", "data-toggle": "modal" %> <%= session["email_visitor_#{params[:gallery]}"] %></h5>
+      </div>
+      <div class="modal fade" id="modal-empltycart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body text-center">
+              <h2 class="font-text1">RECOVER FAVORITES</h2>
+              <p>Enter your email address to recover your favorites from another device, web browser, or a previous session.</p>
+              <p>This will also recover any items you have in your cart.</p>
+              <%= form_tag favorites_verify_email_path, remote: true do%>
+              <%= hidden_field_tag :gallery, params[:gallery] %>
+              <div class="form-group">
+                <%= label_tag :email, "EMAIL ADDRESS" %>
+                <%= email_field_tag :email, nil, class: "form-control", required: true%>
+              </div>
+              <div class="form-group">
+                <%= label_tag :email, "CONFIRM EMAIL ADDRESS" %>
+                <%= email_field_tag :confirm_email, nil, class: "form-control", required: true%>
+              </div>
+              <div id = "email_error">
+
+              </div>
+              <div class="btn-style text-center">
+                <%= submit_tag "OK", class: "btn btn-primary", disabled: true, id: "verify_email" %>
+              </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        $(document).ready(function(){
+          var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+          $('#email, #confirm_email').keyup(function(){
+            $('#email').val().length == 0 || $('#confirm_email').val().length == 0 ? $('#verify_email').attr('disabled', true) : $('#verify_email').attr('disabled', false)
+            $('#confirm_email').val() == $('#email').val() ?  $('#verify_email').attr('disabled', false) : $('#verify_email').attr('disabled', true)
+            email_test = pattern.test($('#email').val());
+            email_test1 = pattern.test($('#confirm_email').val());
+            email_test && email_test1 ?  $('#verify_email').attr('disabled', false) : $('#verify_email').attr('disabled', true)
+          });
+        });
+      </script>
+    <% end %>
+  </div>
+</div>
+
+<div id="ad-to-cart">
+</div>
+
+
+  <!-- /main -->
+
+  <script>
+    function remove_favorite(id) {
+      id = id;
+      $('#remove_'+id).prop('disabled', true);
+      $.ajax({
+        headers: {
+          'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+        },
+        type: 'post',
+        url: '/favorites/remove_favorite',
+        data: {photo_id: id, gallery: '<%= params[:gallery] %>'}
+      });
+    }
+
+    function add_to_favorite(id) {
+      id = id;
+      $('#add_fav_'+id).prop('disabled', true);
+      $.ajax({
+        headers: {
+          'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+        },
+        type: 'post',
+        url: '/favorites/add_favorite',
+        data: {photo_id: id, gallery: '<%= params[:gallery] %>'}
+      });
+    }
+  </script>
+  <style>
+    #password.form-control, #email.form-control, #confirm_email.form-control {
+        width: 220px;
+        display: inline-block;
+        background-image: none;
+        background-color: <%= session[:text] %>;
+    }
+     #email.form-control:hover, #confirm_email.form-control:hover {
+        border-color: <%= session[:primary_color] %>
+    }
+    .btn.btn-primary {
+        background-color: <%= session[:text] %>;
+        border-color: <%= session[:primary_color] %>;
+        color: <%= session[:primary_color] %>;
+        border-radius: 2px;
+        min-width: 160px;
+        padding: 8px 19px;
+        font-size: 16px;
+    }
+    .btn.btn-primary:hover{
+        background-color: <%= session[:primary_color] %> !important;
+        border-color: <%= session[:primary_color] %> !important;
+        color: #000000 !important;
+    }
+    a.btn.photo-action.active-span {
+        color: #2C3E47;
+        fill: #2C3E47;
+    }
+  </style>

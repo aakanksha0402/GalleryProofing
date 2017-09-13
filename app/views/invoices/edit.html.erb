@@ -1,0 +1,1189 @@
+<% content_for :body_class, "new-invoice-index"%>
+
+<%= nested_form_for @invoice do |f| %>
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5">
+            <h2>
+                <div id="pageTitleHeaderText">Invoice <%= @invoice.id %></div>
+            </h2>
+            <h5 id="pageTitleSubHeaderText">Issued <%= @invoice.created_at.strftime("%d-%b-%Y") %> <span class='<%="invoice-status invoice-status-#{@status.id}"%>'> <%= @status.status %> </span></h5>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="right-buttons text-right">
+              <% if @invoice.status_id != 4 %>
+                <%= f.submit "Save",class: "btn btn-primary" %>
+              <% end %>
+              <!-- <a class="btn btn-primary" href="#" data-toggle="modal" data-target="#new-invoice" >Save</a> -->
+              <!-- <a class="btn btn-default" href="#" data-toggle="modal" data-target="#newauto-filter" >Client View</a> -->
+              <%= link_to "Client View", client_view_invoices_path(:invoice_id => @invoice.id), class:"btn btn-default" %>
+              <%#= link_to "New Bid", new_bid_path(:project => @project.id) %>
+              <%= link_to "Send Email", "#ShareInvoice", class: "btn btn-default", "data-toggle": "modal" %>
+              <!-- <span class="small-btn"><a class="btn btn-default" href="#"><span class="fa fa-ellipsis-h"><span></span></span></a></span> -->
+              <% if @invoice.status_id != 4 %>
+                <span class="small-btn dropdown ">
+                  <a class="btn btn-default" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" href="#"><span class="fa fa-ellipsis-h"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><%= link_to "Add payment","#",'data-toggle': "modal" ,'data-target': "#invoice_add_payment" %></li>
+                    <li><%= link_to "Cancel Invoice","#", 'data-toggle': "modal", 'data-target': "#cancel_invoice" %></li>
+                  </ul>
+                </span>
+              <% end %>
+            </div>
+
+            <% if @invoice.status_id != 4 %>
+              <div class="save-new-template">
+                <div class="checkbox">
+                  <%= f.check_box :is_template %>
+                  <label>Save New Template?</label>
+                </div>
+              </div>
+            <% end %>
+
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+
+<div class="container-fluid">
+      <div class="row">
+          <div class="col-lg-3 edit-invoice-none">
+            <div class="client-contact">
+              <div class="form-group">
+                <h5>Contact</h5>
+                <%= hidden_field_tag "contact_id",@invoice.client_contact_id %>
+               <div class="address-display"><p><%= @client_contact.firstname %> <%= @client_contact.lastname %><br><%= @client_contact.email %> <br> <%= @client_contact.phone %> <br> <%= @client_contact.address1 %> <% if @client_contact.address2.present? %> <br> <%= @client_contact.address2 %> <% end %> <br> <%= @client_contact.city %> <br> <%= @client_contact.postal_code %> <br> <% if @client_contact.country_id.present? %> <%= @client_contact.country.name %> <% end %> </p></div>
+               <a class="show-addres" href="#">Edit Address</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 edit-invoice" style="display: none;">
+            <h5>Contact</h5>
+            <div class="row">
+              <div class="col-xs-12">
+                  <a class="btn btn-default hidden-addres">Done Editing</a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12"></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                   <div class="form-group">
+                     <label>First Name</label>
+                     <span><%= @client_contact.firstname %></span>
+                       <!-- <input type="text" class="form-control"></input> -->
+                   </div>
+                </div>
+                <div class="col-lg-3">
+                   <div class="form-group">
+                     <label>Last Name</label>
+                     <span><%= @client_contact.lastname %></span>
+                       <!-- <input type="text" class="form-control"></input> -->
+                   </div>
+                </div>
+                <div class="col-lg-3">
+                   <div class="form-group">
+                     <label>Email</label>
+                     <span><%= @client_contact.email %></span>
+                       <!-- <input type="text" class="form-control"></input> -->
+                   </div>
+                </div>
+                <div class="col-lg-3">
+                   <div class="form-group">
+                     <label>Phone</label>
+                     <span><%= @client_contact.phone %></span>
+                       <!-- <input type="text" class="form-control"></input> -->
+                   </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-group">
+                     <label>Address</label>
+                     <%= text_field_tag "address1", @client_contact.address1, class: "form-control",placeholder: "Street Address Line 1" %>
+                       <!-- <input type="text" class="form-control" placeholder="Street Address Line 1"></input> -->
+                   </div>
+                   <div class="form-group">
+                     <%= text_field_tag "address2", @client_contact.address2, class: "form-control", placeholder: "Street Address Line 2 (optional)" %>
+                       <!-- <input type="text" class="form-control" placeholder="Street Address Line 2 (optional)"></input> -->
+                   </div>
+                   <div class="form-group">
+                     <%= collection_select(:client_contact,:country_id,Country.all,:id,:name,{selected: @client_contact.country_id},{class: "selectpicker brands-set",'data-live-search': true}) %>
+
+                   </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <%= text_field_tag "city", @client_contact.city, class: "form-control", placeholder: "City" %>
+                    <!-- <input type="text" class="form-control" placeholder="City"></input> -->
+                  </div>
+                </div>
+                <% if @state_province.present?  %>
+                  <div class="col-lg-4">
+                    <div class="form-group" id="state_and_province">
+                      <%= collection_select(:client_contact,:state_province_id,@state_province.all,:id,:name,{},{class: "selectpicker brands-set",'data-live-search': true}) %>
+                    </div>
+                  </div>
+                <% else %>
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                    </div>
+                  </div>
+                <% end %>
+
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <%= text_field_tag "postal_code", @client_contact.postal_code, class: "form-control", placeholder: "Postal Code" %>
+                     <!-- <input type="text" class="form-control" placeholder="Postal Code"></input> -->
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                    <%= check_box_tag "update_contact_address"%>&nbsp;&nbsp;Update Contact address?
+                </div>
+              </div>
+          </div>
+          <div class="col-lg-3">
+            <h5>From</h5>
+            <div class="brand-name">techbit</div>
+            <div class="brand-address">High Street<br/>Aa 789456</div>
+            <div class="lightbox">
+              <div class="hover-alert" style="display:none">
+                You have turned watermarks <strong>on</strong> by default for all techbit<br/> galleries.
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="main-form-group">
+            <div class="form-group ">
+              <label>Automated Emails</label>
+                <select class="selectpicker brands-set" data-live-search="true"> <!-- form-control input-lg -->
+                 <option>- None (off) -</option>
+               </select>
+            </div>
+
+            <div class="form-group ">
+              <label>Language</label>
+                <select class="selectpicker brands-set" data-live-search="true"> <!-- form-control input-lg -->
+                 <option>Danish</option>
+                 <option>Dutch</option>
+                 <option>English (UK)</option>
+                 <option>English (US)</option>
+                 <option>German</option>
+                 <option>Italian</option>
+                 <option>Norwegian</option>
+                 <option>Polish</option>
+                 <option>Portuguese (Brazil)</option>
+                 <option>Portuguese (Portugal)</option>
+                 <option>Slovenian</option>
+                 <option>Spanish</option>
+                 <option>Swedish</option>
+               </select>
+            </div>
+
+            <div class="form-group ">
+              <label>Invoice Theme</label>
+                <%= f.collection_select(:color_logo_id, current_brand.color_logos.all, :id, :name, {include_blank: "Select one",selected: @invoice.color_logo_id}, class: "selectpicker brands-set") %>
+              </div>
+
+            <div class="form-group">
+              <label>Issued Date</label>
+              <!-- <input type="text" class="form-control"></input> -->
+             <div class="input-append date ">
+                 <div id="datetimepicker-in-2">
+                   <%= f.text_field :issue_date,value: @invoice.created_at.strftime("%Y-%m-%d"),'data-format': "yyyy-MM-dd"  %>
+                    <!-- <input type="text" data-format="dd/MM/yyyy"> -->
+                    <span class="add-on">
+                      <span class="celender"><i aria-hidden="true" class="fa fa-calendar icon-calendar"></i></span>
+                    </span>
+                  </div>
+              </div>
+            </div>
+
+             <div class="form-group">
+              <label>Final Due Date</label>
+              <%#= render partial: "shared/flash_messages", flash: flash %>
+              <ul class="form-error list-unstyled" style="display:none" id= "date_error"><li>Final payment due date must be on or after the issued date.</li></ul>
+              <!-- <input type="text" class="form-control"></input> -->
+             <div class="input-append date ">
+                 <div id="datetimepicker-in-1">
+                   <%= f.text_field :final_due_date, value: @invoice.final_due_date.strftime("%Y-%m-%d"),'data-format': "yyyy-MM-dd"  %>
+                    <!-- <input type="text" data-format="dd/MM/yyyy"> -->
+                    <span class="add-on">
+                      <span class="celender"><i aria-hidden="true" class="fa fa-calendar icon-calendar"></i></span>
+                    </span>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12 table-view-tag">
+        <div class="row">
+           <div class="col-lg-1 empty-shell"><span class="heading-table"></span></div>
+           <div class="col-lg-1 sec-empty-shell"><span class="heading-table">#</span></div>
+           <div class="col-lg-3"><span class="heading-table">Name</span></div>
+           <div class="col-lg-3"><span class="heading-table">Description</span></div>
+           <div class="col-lg-1"><span class="heading-table">Quantity</span></div>
+           <div class="col-lg-2 third-empty-shell"><span class="heading-table">Item Price</span></div>
+           <div class="col-lg-1 total-empty-shell"><span class="heading-table">Total Price</span></div>
+           <div class="col-lg-1 four-empty-shell"><span class="heading-table">Taxable</span></div>
+           <div class="col-lg-1 clear-empty-shell"><span class="heading-table"></span></div>
+           <div class="col-lg-1 link-empty-shell"><span class="heading-table"></span></div>
+        </div>
+            <%= f.fields_for :invoice_line_items do |ff| %>
+            <div class="row table-tag-view " style="background: #F0F4F5;padding-top: 15px;">
+              <input type="hidden" class="invoice-item-id">
+              <%= hidden_field_tag "invoice_item_template_id",'',class: "invoice-item-template-id" %>
+              <%= ff.hidden_field :display_order,class: "invoice-item-display-order" %>
+             <div class="col-lg-1 empty-shell"><span class="table-view"></span></div>
+             <div class="col-lg-1 sec-empty-shell"><span class="table-view"><%= ff.object.display_order %></span></div>
+             <div class="col-lg-3">
+              <span class="table-view">
+                <div class="form-group">
+                  <%= ff.text_field :name, class: "form-control  typeahead name prevent-enter tt-input", placeholder: "Name",style: "position: relative; vertical-align: top; background-color: transparent;" %>
+                </div>
+              </span>
+              </div>
+             <div class="col-lg-3">
+              <span class="table-view">
+                <div class="form-group">
+                  <%= ff.text_area :description, class: "form-control", placeholder: "Description" %>
+                </div>
+              </span>
+            </div>
+             <div class="col-lg-1">
+              <span class="table-view">
+                <div class="form-group">
+                  <%= ff.text_field :quantity, class: "form-control", placeholder: "Qty" %>
+                </div>
+              </span>
+            </div>
+             <div class="col-lg-2 third-empty-shell">
+              <span class="table-view">
+                <div class="input-group">
+                  <div class="input-group-addon">$</div>
+                  <%= ff.text_field :price,class: "form-control", placeholder: "Item Price"%>
+                </div>
+              </span>
+            </div>
+             <div class="col-lg-1 total-empty-shell">
+              <span class="table-view price-set">
+                <label class="price-display"><%= ff.object.total_price %></label>
+                <%= ff.hidden_field :total_price,class: "form-control price money-only" %>
+              </span>
+            </div>
+              <div class="col-lg-1 four-empty-shell">
+              <span class="table-view price-set">
+                <% if ff.object.is_taxable == true %>
+                <div class="checkbox checked-box">
+                  <%= ff.hidden_field :tax %>
+                  <%= ff.check_box :is_taxable %>
+                 <label class="optional" for="remember"></label>
+               </div>
+                <% else %>
+                   <div class="checkbox">
+                     <%= ff.hidden_field :tax %>
+                     <%= ff.check_box :is_taxable %>
+                    <label class="optional" for="remember"></label>
+                  </div>
+                <% end %>
+              </span>
+            </div>
+          <div class="col-lg-1 clear-empty-shell">
+            <span class="table-view  price-set">
+            <div class="remove-item js-remove-invoice-item">
+              <%= ff.link_to_remove "&times;".html_safe %>
+            </div>
+          </span>
+          </div>
+          <div class="col-lg-1 link-empty-shell">
+            <span class="heading-table">
+              <%= link_to "Save to Use Again" , "#", class: "js-save-as-invoice-item-template",onclick: "SaveLineItem(this)",style: "display:none" %>
+            </span>
+          </div>
+        </div>
+        <% end %>
+      </div>
+      </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <%= f.link_to_add "Add Item", :invoice_line_items, class: "btn btn-default" %>
+          </div>
+        </div>
+
+      <div class="row">
+        <div class="col-sm-8">
+          <div class="row">
+            <div class="col-lg-6">
+              <h5>Sales Tax</h5>
+              <div class="form-group pull-left sector-second">
+                <label>Label</label>
+                <%= f.text_field :sales_label, class: "form-control" %>
+                <!-- <input type="text" class="form-control"></input> -->
+              </div>
+              <div class="form-group pull-left">
+                  <label>Rate</label>
+                  <div class="input-group sales-tax-percent-container">
+                    <%= f.text_field :sales_rate, class: "form-control" %>
+                      <!-- <input type="text" id="sales_tax_percent"  class="form-control"> -->
+                      <div class="input-group-addon">%</div>
+                  </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <h5>Deposit</h5>
+              <div class="form-group invoice-dropdown">
+                <label>Type</label>
+                <%= f.collection_select(:deposit_type_id,DepositType.all,:id,:deposit_type,{include_blank: "None",selected: @invoice.deposit_type_id},{class: "selectpicker brands-set"}) %>
+              </div>
+              <% if @invoice.deposit_type_id.present? %>
+                <div class="form-group" id="deposit_amount">
+                  <label>Amount</label >
+                  <div class="input-group Item-Price second-timer pull-left">
+                    <% if @invoice.deposit_type_id == 2 %>
+                      <div class="input-group-addon" id="fixed_amt">$</div>
+                    <% else %>
+                      <div class="input-group-addon" id="fixed_amt" style="display:none">$</div>
+                    <% end %>
+                    <%= f.text_field :deposit_amount,class: "form-control" %>
+                    <% if @invoice.deposit_type_id == 1 %>
+                      <div class="input-group-addon" id="percent">%</div>
+                    <% else %>
+                      <div class="input-group-addon" id="percent" style="display:none">%</div>
+                    <% end %>
+                  </div>
+                </div>
+              <% else %>
+                <div class="form-group" id="deposit_amount"  style="display:none">
+                  <label>Amount</label >
+                  <div class="input-group Item-Price second-timer pull-left">
+                    <div class="input-group-addon" id="fixed_amt">$</div>
+                    <%= f.text_field :deposit_amount,class: "form-control" %>
+                    <div class="input-group-addon" id="percent">%</div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div Class="form-group text-type-side">
+                <h5>Notes to Client</h5>
+                <%= f.text_area :notes_to_client,class: "form-control" %>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <h5>Payment Options</h5>
+              <% if @invoice.allow_payment_cash_cheque == true%>
+                <div class="checkbox inside-check checked-box">
+                  <%= f.check_box :allow_payment_cash_cheque %>
+                  <label>Cash/Check</label>
+                </div>
+              <% else %>
+                <div class="checkbox inside-check">
+                  <%= f.check_box :allow_payment_cash_cheque %>
+                  <label>Cash/Check</label>
+                </div>
+              <% end %>
+              <% if @invoice.allow_payment_credit_card == true %>
+                <div class="checkbox inside-check checked-box">
+                  <%= f.check_box :allow_payment_credit_card %>
+                  <label>Credit Card</label>
+                </div>
+              <% else %>
+                <div class="checkbox inside-check">
+                  <%= f.check_box :allow_payment_credit_card %>
+                  <label>Credit Card</label>
+                </div>
+              <% end %>
+              <p>Your studio is not setup to accept credit card payments.<a href="#">Setup credit card payments</a> to enable this option.</p>
+              <div class="form-group">
+                <h5>Payment Confirmation Text</h5>
+                <%= f.text_area :payment_confirmation_text,class: "form-control" %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="row">
+            <div class="col-lg-12">
+                <table id="totalsTable" class="text-right pull-right">
+                    <tbody>
+                      <tr>
+                        <td class="value-name top-row">Subtotal</td>
+                        <td class="value-amount top-row">
+                          $<span class="subtotal"><%= f.object.sub_total %></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="value-name">Sales Tax<span class="sales-tax-percent-display" style="display: none;"></span></td>
+                        <td class="value-amount">
+                          $<span class="sales-tax-amount"><%= f.object.invoice_line_items.where(is_taxable:  true).sum('tax') %> </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="value-name bold">Grand Total</td>
+                        <td class="value-amount bold">
+                         $<span class="grand-total"><%= f.object.grand_total %></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="value-name">Deposit</td>
+                        <td class="value-amount">
+                            $<span class="deposit-total"><% if f.object.deposit_type_id.present? %> <% if f.object.deposit_type_id == 2 %><%= f.object.deposit_amount %> <% else %> <%= f.object.deposit_amount * f.object.grand_total/100 %> <% end %><% else %> 0.00 <% end %> </span>
+                        </td>
+                      </tr>
+                      <tr>
+                          <td class="value-name bottom-row bold">Total Paid</td>
+                          <td class="value-amount bottom-row bold">
+                            -$<span class="total-paid"><%= f.object.add_payments.sum('amount') %></span>
+                          </td>
+                      </tr>
+                      <tr>
+                        <td class="value-name balance-due-cell bold">Balance Due</td>
+                        <td class="value-amount balance-due-cell bold">
+                          $<span class="balance-due"><%= f.object.grand_total - f.object.add_payments.sum('amount') %></span>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+      </div>
+        <%= @invoice.add_payments.present? %>
+       <div class="row <%= @invoice.add_payments.present? ? "payments-show" : "payments-hide" %>">
+          <div class="col-lg-6">
+            <h2>Payments</h2>
+              <table class="table table-striped table-responsive">
+                    <thead>
+                        <tr>
+                          <th>Date Received</th>
+                          <th>Payment Date</th>
+                          <th>Amount</th>
+                          <th>Type</th>
+                          <th>Memo</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% @invoice.add_payments.each do |payment| %>
+                          <tr>
+                            <td><%= payment.created_at.strftime("%d-%b-%Y %I:%M:%S %P %Z") %></td>
+                            <td><%= payment.payment_date %></td>
+                            <td>$&nbsp;<%= payment.amount %></td>
+                            <td><%= payment.cheque_no.present? ? "Cheque" : "Cash" %></td>
+                            <td><%= payment.cash_cheque_memo %></td>
+                          </tr>
+                        <% end %>
+                      </tbody>
+              </table>
+          </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div id="template_name" class="modal fade description-modal" role="dialog" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Create new invoice template after save?</h4>
+          </div>
+          <div class="modal-body">
+            <p>To save this invoice as a template for future use, you must provide a name for the template.</p>
+
+            <p>Once your changes to the invoice have been saved, the template will be created from it.</p>
+            <div class="form-group">
+              <label>Template Name</label>
+              <%= f.text_field :template_name, class: "form-control", maxlength: 100, size: 30 %>
+              <!-- <input name="invoice_template_name" id="invoice_template_name" class="form-control" maxlength="100" size="30" type="text"> -->
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <%= f.submit "Save and Create Template",class: "btn btn-primary" %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+<% end %>
+
+<!-- Modal -->
+<div id="invoice_add_payment" class="modal description-modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Add Payment</h4>
+      </div>
+
+      <%= form_for @add_payment,url: save_payment_invoices_path(invoice_id: params[:id]),method: :post, remote: true do |f| %>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="form-group">
+                <label for="paymentMethod">Pay with:</label>
+                <%= f.collection_select(:payment_with,PaymentWith.all,:id, :mode,{selected: 2},{id: "paymentMethod",class: "form-control selectpicker"})%>
+                <!-- <span style="width: auto;" dir="ltr" class="select2 select2-container select2-container--default"><span class="selection"><span aria-labelledby="select2-paymentMethod-container" tabindex="0" class="select2-selection select2-selection--single" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false"><span title="Credit Card" id="select2-paymentMethod-container" class="select2-selection__rendered">Credit Card</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span> -->
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div>
+                <label for="balance">Balance:</label>
+                <span class="balance"><%= @invoice.grand_total - @invoice.add_payments.where('success != ?',false).sum('amount') %></span>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <label>Payments:</label>
+              <ul>
+              <% @invoice.add_payments.each do |payment| %>
+                <% if payment.success != 'f' %>
+                  <li>$<%= payment.amount %> on <%= payment.payment_date.strftime("%d-%b-%Y") %></li>
+                <% end %>
+              <% end %>
+            </ul>
+            </div>
+          </div>
+          <div style="display:block;" id="creditCardInputs">
+              <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label for="payment_date" class="required">Payment Date</label>
+                      <input name="payment_date" id="payment_date" value="" class="date-field form-control" size="10" maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="text">
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                      <label for="amount" class="required">Amount</label>
+                      <div class="form-group">
+                        <div class="input-group">
+                          <div class="input-group-addon">$</div>
+                          <%= f.text_field :credit_amount,class: "form-control money-only"%>
+                          <!-- <input name="amount" id="amount" value="" class="form-control money-only" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="text"> -->
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-group"><label for="cc_num" class="required">Card Number</label>
+                    <%= f.text_field "cc_num", class: "form-control", id: "cc_num" %>
+                    <!-- <input name="cc_num" id="cc_num" value="" placeholder="XXXX XXXX XXXX XXXX" class="form-control" autocomplete="off" maxlength="19" autocorrect="off" autocapitalize="off" spellcheck="false" type="text"> -->
+                    <ul class="form-error list-unstyled" style="display:none"><li>'42424242' contains an invalid amount of digits</li></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="exp_month" class="required">Expiration Month</label>
+                        <%= f.text_field "exp_month", class: "form-control", id: "exp_month" %>
+                        <!-- <input name="exp_month" id="exp_month" value="" placeholder="MM" class="form-control" autocomplete="off" maxlength="2" autocorrect="off" autocapitalize="off" spellcheck="false" type="text"> -->
+                      </div>
+                    </div>
+                  <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="exp_year" class="required">Expiration Year</label>
+                        <%= f.text_field "exp_year", class: "form-control", id: "exp_year" %>
+                        <!-- <input name="exp_year" id="exp_year" value="" placeholder="YY" class="form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="text"> -->
+                      </div>
+                    </div>
+                  <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="cc_cvs" class="required">CSC Code</label>
+                        <%= f.text_field "cc_cvs", class: "form-control", id: "cc_cvs" %>
+                        <!-- <input name="cc_cvs" id="cc_cvs" value="" placeholder="XXX" class="form-control" autocomplete="off" size="4" maxlength="4" autocorrect="off" autocapitalize="off" spellcheck="false" type="text"> -->
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <label for="noteCreditCard" class="optional">Memo</label>
+                    <%= f.text_area :credit_card_memo, class: "form-control", maxlength: 1000 %>
+                    <!-- <textarea name="note" id="noteCreditCard" class="form-control" maxlength="1000"></textarea> -->
+                  </div>
+                </div>
+              </div>
+          </div>
+          <div style="display: none;" id="cashCheckInputs">
+          <div class="row">
+              <div class="col-lg-4">
+
+                  <div class="input-append date ">
+                      <div id="datetimepicker1">
+                        <label for="payment_date" class="required">Payment Date</label>
+                        <%= f.text_field :payment_date,'data-format': "yyyy-MM-dd" %>
+                         <!-- <input type="text" data-format="dd/MM/yyyy"> -->
+                         <span class="add-on">
+                           <span class="celender"><i aria-hidden="true" class="fa fa-calendar icon-calendar"></i></span>
+                         </span>
+                       </div>
+                       <ul class="form-error list-unstyled" style="display:none"><li>Value is required and can't be empty</li></ul>
+                   </div>
+                </div>
+              <div class="col-lg-4">
+                  <label for="amount" class="required">Amount</label>
+                  <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-addon">$</div>
+                        <%= f.text_field :cash_amount, class: "form-control money" %>
+                      </div>
+                      <ul class="form-error list-unstyled" style="display:none"><li>Amount must be between $0.01 and $100.00</li></ul>
+                  </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group"><label for="check_number" class="optional">Check #</label>
+                  <input name="check_number" id="check_number" value="" class="form-control" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="text">
+                </div>
+              </div>
+          </div>
+          <div class="form-group">
+            <label for="noteCashCheck" class="optional">Memo</label>
+            <%= f.text_area :cash_cheque_memo, class: "form-control", maxlength: 1000 %>
+            <!-- <textarea name="note" id="noteCashChecque" class="form-control" maxlength="1000"></textarea> -->
+          </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <%= f.submit "Add Payment", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="cancel_invoice" class="modal description-modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Are you sure you want to cancel this invoice?</h4>
+      </div>
+      <div class="modal-body">
+          <p>When an invoice is canceled:</p>
+          <ul>
+              <li>Payments cannot be added by you or received by your clients online</li>
+              <li>The invoice will be visible, but it cannot be changed in any manner</li>
+              <li>If you cancel this invoice, you are responsible for handling any refunds or any other transactions with your client</li>
+          </ul>
+          <p>Once canceled, this action cannot be undone!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <%= link_to "Cancel Invoice", invoice_path(id: params[:id]),method: :delete,class: "btn btn-danger" %>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- /mModal -->
+
+<!-- Share Modal -->
+<div class="modal" id="ShareInvoice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+
+  <div class="modal-dialog" id="New1" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Send Invoice Email</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
+
+            <%#= form_for @gallery_share,url: galleries_share_details_path(id: gallery.id) do |f|%>
+            <%= form_for @invoice_shares,url: send_invoice_email_invoices_path do |f| %>
+            <% @buttontext ="View Invoice"%>
+            <%@subject="Your Invoice is Ready!"%>
+            <%#@gallery_cover_url=gallery.cover_url.url%>
+            <%#= f.hidden_field :gallery_id,value: gallery.id%>
+            <div class="row">
+              <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                <%= f.hidden_field :invoice_id, value: params[:id] %>
+                <%= f.hidden_field :recipient, value: @client_contact.email %>
+
+                <%=f.label :recipient,"Client email:"%>
+                <%= @client_contact.email %>
+              </div>
+            </div>
+            <!-- <div class="row">
+              <div class="col-lg-12">
+                <div class="templateDescription">
+                  <p>Use the Gallery Link template to share a gallery with your clients (i.e. - your gallery is ready!)</p>
+                </div>
+              </div>
+            </div> -->
+            <!-- <div class="row">
+              <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                <%=f.label :email_template_id,"Template"%>
+                <%= f.collection_select :email_template_id, current_brand.email_templates.all, :id,:name, {prompt: "Select Email Template" },{class: "form-control input-lg email-add-1 selectpicker"} %>
+              </div>
+            </div> -->
+            <div class="row">
+              <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                <%=f.label :subject,"Subject"%>
+                <%=f.text_field :subject,value: "An Invoice from #{@current_brand_name}",class: "form-control"%>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                <%=f.label :headline,"HeadLine"%>
+                <%=f.text_field :headline,value: "Your invoice is ready.", class: "form-control"%>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 form-group">
+                <%= f.label :button_text %>
+                <!-- <p class="form-input-description">Clicking button will open gallery</p> -->
+                <div class="row">
+                  <div class="col-lg-8 col-md-7 col-sm-8 col-xs-12">
+                    <%= f.text_field :buttontext, value: "VIEW INVOICE", class: "form-control" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12 form-group">
+                <%= f.label :message %>
+                <%= f.text_area :message,value: "Hi!
+
+                Your payment of ₹ #{@invoice.grand_total} is due on #{@invoice.final_due_date}.
+
+                Click the button above for details and payment options.
+
+                Thanks,
+                #{@current_brand_name}", class: "form-control" %>
+              </div>
+            </div>
+            <div class="actions pull-left">
+              <%=link_to "Cancel",galleries_galleryhome_path(id: params[:id]),class: "btn btn-default"%>
+              <%=f.submit "Send",class: "btn btn-primary"%>
+            </div>
+            <% end %>
+          </div>
+
+
+          <div class="col-md-7">
+            <label>Email Preview</label>
+            <%=render "preview",invoice: @invoice%>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /mMdal -->
+
+<script>
+  $('.show-addres').click(function(){
+     $('.edit-invoice').css('display','block');
+     $('.edit-invoice-none').css('display','none');
+  });
+  $('.hidden-addres').click(function(){
+    $(".address-display").find("p").remove();
+    $(".address-display").append('<p>'+$("#first_name").val()+' '+$("#last_name").val()+' <br>'+$("#email").val()+'<br>'+$("#phone").val()+' <br>'+$("#address1").val()+'<br>'+$("#address2").val()+'<br>'+$("#city").val()+' <br>'+$("#postal_code").val()+'<br>'+$("#client_contact_country_id option:selected").text()+' </p>');
+   $('.edit-invoice-none').css('display','block');
+   $('.edit-invoice').css('display','none');
+  });
+</script>
+<script>
+$("#client_contact_country_id").change(function(){
+  $.ajax({
+    type: 'get',
+    url: '/invoices/state_list',
+    data: {country_id: $(this).val()}
+  }).success();
+});
+</script>
+<script>
+  $("#invoice_deposit_type_id").change(function(){
+    if($(this).val() == 1){
+      $("#deposit_amount").show();
+      $("#fixed_amt").hide();
+      $("#percent").show();
+    }else if ($(this).val() == 2) {
+      $("#deposit_amount").show();
+      $("#fixed_amt").show();
+      $("#percent").hide();
+    }else{
+      $("#deposit_amount").hide();
+    }
+  });
+</script>
+<script type="text/javascript">
+  $(function() {
+    $('#datetimepicker-in-1').datetimepicker({
+    language: 'pt-BR'
+    });
+    $('#datetimepicker-in-1').on('changeDate', function(ev){
+        $('#datetimepicker-in-1').datetimepicker('hide');
+    });
+  });
+</script>
+
+<script type="text/javascript">
+  $(function() {
+    $('#datetimepicker-in-2').datetimepicker({
+    language: 'pt-BR'
+    });
+    $('#datetimepicker-in-2').on('changeDate', function(ev){
+        $('#datetimepicker-in-2').datetimepicker('hide');
+    });
+  });
+</script>
+<script>
+  $('input[type="submit"]').click(function(event){
+    if($(this).val() == "Save" && $("#invoice_is_template").prop('checked') == true ){
+      event.preventDefault();
+      $("#template_name").modal('show');
+    }
+
+    $(".new-invoice-index").find(".has_error").removeClass("has_error");
+    if($("#invoice_final_due_date").val() == ""){
+      hoveralert("Please choose a final payment due date.");
+      $("#invoice_final_due_date").addClass('has_error');
+      $("#invoice_final_due_date").parent().find(".icon-calendar").addClass('has_error');
+      event.preventDefault();
+    }else if ($("#invoice_allow_payment_cash_cheque").prop('checked') == false && $("#invoice_allow_payment_credit_card").prop('checked') == false) {
+      hoveralert("Please choose a payment method.");
+      event.preventDefault();
+    }else if ($("#contact_name").val() == "" && $("#contact_id").val() == "" ){
+      $("#contact_name").addClass('has_error');
+      $("#first_name").addClass('has_error');
+      $("#email").addClass('has_error');
+      hoveralert("You have not chosen a Contact, or entered information for a new Contact.");
+      console.log("1234");
+      event.preventDefault();
+    }else if ($("#contact_name_search").css("display") == "none"   &&   $("#contact_id").val() == "") {
+      if($("#first_name").val() == "" && $("#email").val() == ""){
+        $("#first_name").addClass('has_error');
+        $("#email").addClass('has_error');
+        console.log("both");
+        hoveralert("You have not chosen a Contact, or entered information for a new Contact.");
+        event.preventDefault();
+      }else if($("#first_name").val() == "" ){
+        $("#first_name").addClass('has_error');
+        hoveralert("You have not chosen a Contact, or entered information for a new Contact.");
+        console.log("first_name");
+        event.preventDefault();
+      }else if($("#email").val() == ""){
+        $("#email").addClass('has_error');
+        hoveralert("You have not chosen a Contact, or entered information for a new Contact.");
+        console.log("email");
+        event.preventDefault();
+      }
+    }else if ($('#invoice_issue_date').val() > $('#invoice_final_due_date').val()){
+       $('#date_error').css("display","block");
+       event.preventDefault();
+    }
+  });
+  function hoveralert(alert_text)
+   {
+      console.log(alert_text);
+      $(".hover-alert").text(alert_text);
+      $(".hover-alert").fadeIn('slow').delay(1000);
+      $(".hover-alert").fadeOut('slow').delay(1000);
+    }
+</script>
+<script>
+  $("#invoice_sales_rate").on('focusout',function(){
+    if ($(this).val() > 100){
+      console.log(($(this).val()));
+    }
+    if($(this).val() > 100 || isNaN($(this).val()) == true){
+      console.log(($(this).val()));
+      if(isNaN($(this).val()) == true){
+        $("#invoice_sales_rate").val(0.000);
+      }
+      $(this).addClass('has_error');
+      $(this).parent().find(".input-group-addon").addClass('has_error');
+      $(".hover-alert").text("Please enter a valid sales tax percentage.");
+      $(".hover-alert").fadeIn('slow').delay(1000);
+      $(".hover-alert").fadeOut('slow').delay(1000);
+      event.preventDefault();
+    }
+  });
+</script>
+<script>
+$("#paymentMethod").change(function(){
+  if($(this).val() == 1){
+    $("#creditCardInputs").hide();
+    $("#cashCheckInputs").show();
+  }else {
+    $("#creditCardInputs").show();
+    $("#cashCheckInputs").hide();
+  }
+});
+</script>
+
+<script>
+
+  $(document).on('nested:fieldAdded', function(event){
+    var field = event.field;
+    var qtyField = field.find('input[id$="_quantity"]');
+    var priceField = field.find('input[id$="_price"]');
+    var priceDisplayField = field.find(".price-display");
+    var priceValueField = field.find('input[id$="_total_price"]');
+    var tax = field.find('input[id$="_tax"]');
+    var sum = 0;
+    qtyField.focusout(function(){
+      console.log("qtyField");
+      priceDisplayField.text((qtyField.val() * priceField.val()).toFixed(2));
+      priceValueField.val(qtyField.val() * priceField.val());
+      tax.val(priceValueField.val() * $("#invoice_sales_rate").val()/100);
+      summation();
+      tax_summation();
+      grand_total();
+      tax_changed();
+    });
+    priceField.focusout(function(){
+      console.log("priceField");
+      priceDisplayField.text((qtyField.val() * priceField.val()).toFixed(2));
+      priceValueField.val(qtyField.val() * priceField.val());
+      tax.val(priceValueField.val() * $("#invoice_sales_rate").val()/100);
+      summation();
+      tax_summation();
+      grand_total();
+      tax_changed();
+    });
+    fieldsCount = $('form .fields').length;
+    var displayOrderField = field.find('input[id$="_display_order"]');
+    var display = field.find(".sec-empty-shell .table-view");
+    display.text((fieldsCount);
+    displayOrderField.val(fieldsCount);
+    var checkbox = field.find(".checkbox input");
+    checkbox.click(function(){
+      if($(this).is(':checked')){
+        $(this).parent('.checkbox').addClass('checked-box');
+        // alert($(this).parent().parent().parent().find('input[id$="_total_price"]').val() * $("#invoice_sales_rate").val()/100);
+      }
+      else{
+       $(this).parent('.checkbox').removeClass('checked-box');
+      }
+      if(checkbox.parent().hasClass('checked-box')){
+        tax_summation();
+        grand_total();
+        tax_changed();
+      }else{
+        tax_summation();
+        grand_total();
+        tax_changed();
+      }
+    });
+
+    // var fields = $(document).find('.fields').length;
+    // for(i = 1; i <= fields; i++ ){
+    //   $('input[id$="_display_order"]').each(function(){
+    //     $(this).parent().find(".display-order").text(i);
+    //     break;
+    //   })
+    //   // $('input[id$="_display_order"]').val($('input[id$="_display_order"]').parent().find(".display-order").text());
+    // }
+  });
+
+  function summation(){
+    var sum = 0;
+    $('form .fields').find('input[id$="_total_price"]').each(function(){
+      sum = sum + parseInt($(this).val());
+    });
+    $(".subtotal").text((sum).toFixed(2));
+    // console.log("**********"+sum);
+  }
+  function tax_summation(){
+    var tax_sum = 0;
+    $('form .fields').find('input[id$="_tax"]').each(function(){
+      if($(this).parent().find('input[id$="_is_taxable"]').prop('checked') == true){
+        tax_sum = tax_sum + parseInt($(this).val());
+      }
+    });
+    $(".sales-tax-amount").text((tax_sum).toFixed(2));
+  }
+  function grand_total(){
+    $(".grand-total").text((parseInt($(".sales-tax-amount").text()) + parseInt($(".subtotal").text())).toFixed(2));
+  }
+  function tax_changed(){
+    if($("#invoice_deposit_type_id").val() == "1"){
+      if ($("#invoice_deposit_amount").val() > 100){
+        $(("#invoice_deposit_amount")).addClass('has_error');
+        $(("#invoice_deposit_amount")).parent().find("#percent").addClass('has_error');
+        hoveralert("Deposit amount cannot be greater than the grand total.");
+      }else if ($("#invoice_deposit_amount").val() < 0) {
+        $(("#invoice_deposit_amount")).addClass('has_error');
+        $(("#invoice_deposit_amount")).parent().find("#percent").addClass('has_error');
+        hoveralert("Deposit amount cannot be greater than the grand total.");
+      }else if($("#invoice_deposit_amount").val() < 0.1){
+        $("#invoice_deposit_amount").val(0.1);
+        $(".deposit-total").text(($(".grand-total").text() * $("#invoice_deposit_amount").val()/100).toFixed(2));
+      }else{
+        $(".deposit-total").text(($(".grand-total").text() * $("#invoice_deposit_amount").val()/100).toFixed(2));
+      }
+    }else if ($("#invoice_deposit_type_id").val() == "2"){
+      if($(("#invoice_deposit_amount")).val() > parseInt($(".grand-total").text())){
+        $(("#invoice_deposit_amount")).addClass('has_error');
+        $(("#invoice_deposit_amount")).parent().find("#fixed_amt").addClass('has_error');
+        hoveralert("Deposit amount cannot be greater than the grand total.");
+      }else if ($(("#invoice_deposit_amount")).val() < 0) {
+        $(("#invoice_deposit_amount")).addClass('has_error');
+        $(("#invoice_deposit_amount")).parent().find("#fixed_amt").addClass('has_error');
+        hoveralert("Deposit amount cannot be less than 0.");
+      }else{
+        $(".deposit-total").text(($(("#invoice_deposit_amount")).val()).toFixed(2));
+      }
+    }else{
+      // alert("3");
+      $(".deposit-total").text((0.00).toFixed(2));
+    }
+  }
+  function due_amount(){
+    $(".balance-due").text((parseInt($(".total-paid").text()) - parseInt($(".grand-total").text())).toFixed(2));
+  }
+});
+</script>
+<script>
+$(document).ready(function(){
+  $("#invoice_deposit_amount").on('focusout',function(){
+    $(".new-invoice-index").find(".has_error").removeClass("has_error");
+    tax_changed();
+    due_amount();
+  });
+});
+</script>
+<script>
+$(document).ready(function(){
+  $('input[id$="_quantity"]').on('focusout',function(){
+    var v
+    if (isNaN($(this).val())){
+      v = "";
+      $(this).val("");
+    }else{
+      v= $(this).val();
+    }
+    $(this).parent().parent().parent().parent().find('input[id$="_total_price"]').val($(this).parent().parent().parent().parent().find('input[id$="_price"]').val() * v);
+    $(this).parent().parent().parent().parent().find(".price-display").text($(this).parent().parent().parent().parent().find('input[id$="_total_price"]').val());
+    $(this).parent().parent().parent().parent().parent().find('input[id$="_tax"]').val($('input[id$="_total_price"]').val() * $("#invoice_sales_rate").val()/100);
+    tax_summation();
+    summation();
+    grand_total();
+    tax_changed();
+    due_amount();
+    // alert($(this).attr('id'));
+  });
+  $('input[id$="_price"]:not(input[id$="_total_price"])').on('focusout',function(){
+    var v
+    if (isNaN($(this).val())){
+      v = "";
+      $(this).val("");
+    }else{
+      v= $(this).val();
+    }
+    $(this).parent().parent().parent().parent().find('input[id$="_total_price"]').val($(this).parent().parent().parent().parent().find('input[id$="_quantity"]').val() * v);
+    $(this).parent().parent().parent().parent().find(".price-display").text($(this).parent().parent().parent().parent().parent().find('input[id$="_total_price"]').val());
+    $(this).parent().parent().parent().parent().parent().find('input[id$="_tax"]').val($('input[id$="_total_price"]').val() * $("#invoice_sales_rate").val()/100);
+    summation();
+    tax_summation();
+    grand_total();
+    tax_changed();
+    due_amount();
+  });
+  $('input[id$="_display_order"]').each(function(){
+      $(this).val($(this).parent().find(".sec-empty-shell").text());
+    });
+  $("#tax").val($('input[id$="_total_price"]').val() * $("#invoice_sales_rate").val()/100);
+  $("#invoice_sales_rate").on('focusout',function(){
+    $("form .fields").find('input[id$="_tax"]').each(function(){
+      $(this).val($(this).parent().parent().parent().parent().find('input[id$="_total_price"]').val() * $("#invoice_sales_rate").val()/100);
+    });
+    tax_summation();
+    grand_total();
+    tax_changed();
+    due_amount();
+  });
+  $('input[id$="_is_taxable"]').click(function(){
+    if($(this).parent().hasClass('checked-box')){
+      tax_summation();
+      grand_total();
+      tax_changed();
+      due_amount();
+    }else{
+      tax_summation();
+      grand_total();
+      tax_changed();
+      due_amount();
+    }
+  });
+});
+</script>
+<script type="text/javascript">
+  $(function(){
+    $('#datetimepicker1').datetimepicker();
+  });
+</script>
+<script>
+function SaveLineItem(id){
+  console.log(id);
+  var field = $(".fields").find(id);
+  var  name = field.parent().parent().parent().find('input[id$="_name"]').val();
+  var description = field.parent().parent().parent().find('.description-container').find('textarea').val();
+  var quantity = field.parent().parent().parent().find('input[id$="_quantity"]').val();
+  var price = field.parent().parent().parent().find('input[id$="price"]').val();
+  var total_price = field.parent().parent().parent().find('input[id$="_total_price"]').val();
+  if (field.parent().parent().parent().find('input[id$="_is_taxable"]').parent().hasClass('checked-box')){
+    var is_taxable = true;
+  }else{
+    var is_taxable = false;
+  }
+  $.ajax({
+    type: "get",
+    url: "/invoice_line_items/save_invoice_line_item",
+    data: {name: name, description: description, quantity: quantity, price: price,is_taxable: is_taxable,total_price: total_price}
+  }).success();
+}
+</script>
+<script>
+  $("#invoice_deposit_type_id").change(function(){
+    tax_changed();
+  });
+</script>
+<script>
+  $('input[id$="_name"]:not("#contact_name, #first_name, #last_name, #invoice_template_name")').each(function(){
+    $(this).keyup(function(){
+      if($(this).val().length == 0){
+        $(this).parent().parent().parent().parent().find(".link-empty-shell").find(".js-save-as-invoice-item-template").css("display","none");
+      }else{
+        $(this).parent().parent().parent().parent().find(".link-empty-shell").find(".js-save-as-invoice-item-template").css("display","block");;
+      }
+    });
+  });
+</script>

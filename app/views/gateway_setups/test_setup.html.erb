@@ -1,0 +1,89 @@
+<% content_for :head, "Test Payment Gateway Credentials | Accounts"%>
+<% content_for :body_class, "account-acceptpayments" %>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-5"> <a href="#"><%= link_to "", new_gateway_setup_path, class: "fa circle fa-arrow-left back-btn" %></a>
+            <h2>
+              <div id="pageTitleHeaderText">Test Payment Gateway Credentials</div>
+            </h2>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-7">
+            <div class="btn-group on-page-help-container"> <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown"> <span class="fa fa-question"></span> </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><a href="#">Email Us</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<div class="container-fluid"><br>
+  <%= form_tag  setup_gateway_setups_path do %>
+    <div class="row">
+      <div class="col-sm-12">
+        <p style="color: red;"><%= notice %></p>
+        <p>We will run a test transaction with your current payment gateway settings. No charges will remain on your card.</p>
+      </div>
+    </div>
+    <% if @gateway_found.name == "Pro" %>
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="form-group">
+            <%= label_tag :card_type, "Card Type" %>
+            <%= select_tag("type", options_for_select([["Visa","VISA"],["Master Card","Master Card"],["Discover","Discover"],["American Express","American Express"]]),class: "selectpicker",prompt: '-  Select  -',selected: params[:type],"data-live-search" => "true",required: true) %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="form-group">
+          <!-- <label for="cc_num">Credit Card Number</label> -->
+          <%= label_tag :card_no, "Credit Card Number" %>
+          <%= text_field_tag :card_no,params[:card_no], class: "form-control",required: true %>
+          <!-- <input type="text" name="cc_num" id="cc_num" class="form-control" /> -->
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="form-group">
+          <%= label_tag :cvs, "CVS Number" %>
+          <%= text_field_tag :cvs,params[:cvs], class: "form-control",required: true %>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-2">
+        <div class="form-group set-select-Access">
+          <%= label_tag :expiration_month, "Expiration Month" %>
+          <%= select_month(0,{:use_month_numbers => true,prompt: params[:month].present? ? params[:month] : '-  Month  -',selected: params[:month]},{class: "selectpicker",id: "exp_month","data-live-search" => "true",required: true})  %>
+          
+            <p style="color: red;"><%= flash[:error] %></p>
+          
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="form-group set-select-Access">
+          <%= label_tag :expiration_year, "Expiration Year" %>
+          <%= select_year(0,{:start_year => Date.current.year,prompt: params[:year].present? ? params[:year] : '-  Year  -',selected: params[:year]},{class: "selectpicker",id: "exp_year","data-live-search" => "true",required: true})  %>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <%= submit_tag "Test Credential", class: "btn btn-primary" %>
+        <%= link_to "Cancel", new_gateway_setup_path, class: "btn btn-default" %></div>
+    </div>
+  <% end %>
+
+</div>

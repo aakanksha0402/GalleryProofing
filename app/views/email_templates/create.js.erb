@@ -1,0 +1,29 @@
+<% if @email_template.errors.any? %>
+  $name = $('.container-fluid.email-preview').find('.name');
+  $name.find('p').remove();
+  $email_subject = $('.container-fluid.email-preview').find('.email_subject');
+  $email_subject.find('p').remove();
+  $headline = $('.container-fluid.email-preview').find('.headline');
+  $headline.find('p').remove();
+  $button_text = $('.container-fluid.email-preview').find('.button_text');
+  $button_text.find('p').remove();
+  $email_body = $('.container-fluid.email-preview').find('.email_body');
+  $email_body.find('p').remove();
+  <% if @email_template.errors[:name].present? %>
+    $name.append('<p style="color:red" >Name <% error = @email_template.errors.messages[:name] %><%= error[0] %></p>');
+  <% end %>
+  <% if @email_template.errors[:email_subject].present? %>
+    $email_subject.append('<p style="color:red" >Subject <% error = @email_template.errors.messages[:email_subject] %><%= error[0] %></p>');
+  <% end %>
+  <% if @email_template.errors[:headline].present? %>
+    $headline.append('<p style="color:red" >Headline <% error = @email_template.errors.messages[:headline] %><%= error[0] %></p>');
+  <% end %>
+  <% if @email_template.errors[:button_text].present? %>
+    $button_text.append('<p style="color:red" >Button Text <% error = @email_template.errors.messages[:button_text] %><%= error[0] %></p>');
+  <% end %>
+  <% if @email_template.errors[:email_body].present? %>
+    $email_body.append('<p style="color:red" >Email Body <% error = @email_template.errors.messages[:email_body] %><%= error[0] %></p>');
+  <% end %>
+<% else %>
+  location.href = "/email_templates"
+<% end %>

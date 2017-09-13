@@ -1,0 +1,54 @@
+<% content_for :body_class, "pricing-print" %>
+  <h1>Pricing - <%= @pricing.name %></h1>
+
+  <table class="table full-width">
+    <tbody>
+      <% @item_list_id_array1 = @catalog_items.uniq.pluck(:item_list_id) %>
+      <% @item_list_id_array = @item_list_id_array1.sort{|a,b| a && b ? a <=> b : a ? -1 : 1 } %>
+      <% @groups.order(id: :asc).each do |group| %>
+        <% if @pricing_groups.include?group.id %>
+          <% if @catalog_items.where(group_id: group.id).count != 0%>
+            <tr class="group">
+              <td colspan="2"><%= group.name %></td>
+            </tr>
+            <% @catalog_items.group(:item_list_id,:id).each do |catalog_item| %>
+              <% if catalog_item.checked == true %>
+                <% if catalog_item.fix_group_id != 2 %>
+                  <% if @item_list_id_array1.include? catalog_item.item_list_id %>
+                    <% if catalog_item.group_id == group.id%>
+                      <tr class="bounds-name">
+
+                        <td colspan="2"><%= catalog_item.print_size_one %> x <%= catalog_item.print_size_two %></td>
+                      </tr>
+                      <% @catalog_items.order(id: :asc).each do |catalog_item_1|%>
+                        <% if catalog_item_1.checked == true %>
+                          <% if catalog_item_1.group_id == catalog_item.group_id && catalog_item_1.item_list_id == catalog_item.item_list_id%>
+                            <tr>
+                              <td class="bound-item"> <%= catalog_item_1.sub_item_name %></td>
+                              <td class="text-right">$<% if catalog_item_1.price.present? %> <%= catalog_item_1.price %> <% else %> <%= 0.00 %> <% end %> </td>
+                            </tr>
+                          <% end %>
+                        <% end %>
+                      <% end %>
+
+
+                      <% @item_list_id_array1.delete(catalog_item.item_list_id)%>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+
+
+  <!-- <script type="text/javascript" src="https://d1icb03h9nte03.cloudfront.net/201607081468016708/studio/v2/js/build_production_studio_v2.js"></script> -->
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $(".navbar-collapse").parent().parent().hide();
+    window.print();
+  });
+  </script>

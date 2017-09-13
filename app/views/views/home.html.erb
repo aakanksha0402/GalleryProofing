@@ -1,0 +1,78 @@
+<% content_for :body_class, "contact-index clientview-home" %>
+<% content_for :gallery, "active" %>
+  <!--nav-->
+
+<%= render "navbar" %>
+  <!-- main -->
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <div class="tab-content clearfix">
+            <div class="logo-Client inner-side">
+              <% if @color_set.gallery_logo.present?%>
+              <h5 class="logo-style"><%= image_tag @color_set.gallery_logo.url(:small) %></h5>
+              <%else%>
+              <h5 class="logo-style"><%= @brand.brand_name %></h5>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="side-count-value">
+              <h1 class="count-head-style"><%= @gallery.name %></h1>
+              <span class="count-style"><%= @total%> Photos</span>
+            </div>
+          </div>
+        </div>
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <% @gallery_albums.each do |gallery_album| %>
+            <div class="item-set-inside">
+              <div class="item-styel">
+                <%= link_to view_album_path(album: gallery_album), "data-toggle": "modal" do %>
+                <div class="gride-img-set">
+                  <% if gallery_album.cover_url.present? %>
+                    <%= image_tag gallery_album.cover_url.url %>
+                  <% else %>
+                  <%= image_tag Photo.find(gallery_album.album_photo_id).image.url :thumb %>
+                    <!-- <span class="empty-state-icon fa fa-picture-o"></span> -->
+                  <% end %>
+                  <% if gallery_album.password.present? %>
+                    <span class="requiresPassword"><span class="empty-state-icon-up fa fa-lock"></span></span>
+                  <% end %>
+                </div>
+                 <div class="side-count-img">
+                    <h1 class="count-img-style"><%= gallery_album.title %></h1>
+                    <% sub_album = gallery_album.array_checking([] ,gallery_album.level) %>
+                    <% @total = 0 %>
+                    <% sub_album.each do |s| %>
+                      <% @total += @gallery.albums.find(s).photos.count %>
+                    <% end %>
+                    <span class="count-style-img"><%= @total %> Photos</span>
+                 </div>
+              </div>
+              <% end %>
+            </div>
+          <% end %>
+
+          <% unless @hide_photos || @gallery.photos.count == 0 %>
+            <div class="item-set-inside">
+              <div class="item-styel">
+                <%= link_to view_album_path(album: 'all'), "data-toggle": "modal" do %>
+                <div class="gride-img-set">
+                  <span class="empty-state-icon fa fa-picture-o"></span>
+                </div>
+                 <div class="side-count-img">
+                    <h1 class="count-img-style">All Photos</h1>
+                    <span class="count-style-img"><%= @gallery.photos.count %> Photos</span>
+                 </div>
+              </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+        </div>
+        </div>

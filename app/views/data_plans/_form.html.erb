@@ -1,0 +1,37 @@
+<%= form_for(@data_plan) do |f| %>
+  <% if @data_plan.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@data_plan.errors.count, "error") %> prohibited this data_plan from being saved:</h2>
+
+      <ul>
+      <% @data_plan.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :photos_number %><br>
+    <%= f.text_field :photos_number %>
+  </div>
+  <div class="field">
+    <%= f.label :mobile_apps_number %><br>
+    <%= f.text_field :mobile_apps_number %>
+  </div>
+  <div class="field">
+    <%= f.label :invoices_number %><br>
+    <%= f.text_field :invoices_number %>
+  </div>
+  <div class="field">
+    <%= f.label :data_period %><br>
+    <%= f.text_field :data_period %>
+  </div>
+  <div class="field">
+    <%= f.label :plan_price %><br>
+    <%= f.text_field :plan_price %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

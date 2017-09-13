@@ -1,0 +1,43 @@
+<%= form_for(@default_email_template) do |f| %>
+  <% if @default_email_template.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@default_email_template.errors.count, "error") %> prohibited this default_email_template from being saved:</h2>
+
+      <ul>
+      <% @default_email_template.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :email_type %><br>
+    <%= f.text_field :email_type %>
+  </div>
+  <div class="field">
+    <%= f.label :email_subject %><br>
+    <%= f.text_field :email_subject %>
+  </div>
+  <div class="field">
+    <%= f.label :headline %><br>
+    <%= f.text_field :headline %>
+  </div>
+  <div class="field">
+    <%= f.label :button_text %><br>
+    <%= f.text_field :button_text %>
+  </div>
+  <div class="field">
+    <%= f.label :email_body %><br>
+    <div class="redactor-box">
+      <%= f.text_area :email_body, class: "form-control", size: "30x10" %>
+    </div>
+  </div>
+  <div class="field">
+    <%= f.label :default_email_template_type_id %><br>
+    <%= f.collection_select :default_email_template_type_id, DefaultEmailTemplateType.all, :id, :name %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

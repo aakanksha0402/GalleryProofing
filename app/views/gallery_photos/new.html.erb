@@ -1,0 +1,207 @@
+<% content_for :head, "GalleryProofing | Add Photos"%>
+<% content_for :body_class, "gallery-addphoto"%>
+<!-- top -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- title -->
+      <div class="page-title">
+        <div class="row">
+          <div class="col-md-6 col-sm-5 col-xs-12">
+            <%=link_to galleries_galleryhome_path(id: params[:gallery_id]) do%><span class="fa circle fa-arrow-left back-btn"></span><%end%>
+            <h2>
+              <div id="pageTitleHeaderText">Add Photos</div>
+            </h2>
+            <h5><%= @gallery.name%></h5>
+          </div>
+          <div class="col-md-6 col-sm-7 col-xs-12">
+            <div class="btn-group on-page-help-container">
+              <a href="#" class="on-page-help dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-question"></span>
+              </a>
+              <ul id="onPageHelp" class="dropdown-menu dropdown-menu-right arrow-upper-right" role="menu">
+                <li><a href="#" target="_blank">Can I download all of my contacts' information?</a></li>
+                <li><a href="#" target="_blank">How do I add and edit contacts?</a></li>
+                <li><a href="#" target="_blank">How do I view a contact's activity?</a></li>
+                <li><a href="#" class="bold" target="_blank">Browse Full Knowledge Base</a></li>
+                <li><a href="#" >Email Us</a></li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- /title -->
+    </div>
+  </div>
+</div>
+<!-- /top -->
+<!-- main -->
+<div class="container-fluid">
+  <div class="add-photos">
+    <div class="row">
+      <div id="Two" class="col-lg-6 col-lg-offset-3">
+        <div class="dropzone">
+          <!-- upload -->
+          <div class="upload-options-section">
+            <a href="#" class="upload-options-toggle"><span class="fa fa-plus circle"></span> Upload Options</a>
+            <!-- options -->
+            <div class="options" style="display:none;">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Add to Album:</td>
+                    <td>
+                      <!-- <select class="form-control input-lg"> -->
+                      <select class="selectpicker">
+                        <option >- No Album (Skip) -</option>
+                        <option >hu1</option>
+                      </select>
+                      <a href="#" data-toggle="modal" data-target="#newalbum-modal"><span class="fa fa-plus circle"></span> New Album</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Allow Duplicates:</td>
+                    <td><input type="checkbox"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- /options -->
+            </div>
+            <!-- /upload -->
+            <!-- watermark -->
+            <div class="watermark-settings">
+              <span class="text-uppercase">Watermark:</span>
+              <select class="selectpicker" data-live-search="true"> <!-- form-control input-lg -->
+                <option>No Watermark</option>
+                <option>Studio Watermark</option>
+              </select>
+            </div>
+            <!-- /watermark -->
+            <!-- upload main -->
+            <div class="text-center main-text">
+              <div class="wrapper">
+                <div class="queue-empty">
+                  <h3>Drag Photos Here</h3>
+                  <p>or</p>
+                </div>
+                <div class="photos-queued" style="display: none;">
+                  <p><span class="fa fa-image"></span><span class="queue-count"> 1</span> photos in queue</p>
+                </div>
+                <%= form_for @gallery_photo,html: {:class => "upload", multipart: true},url: {controller: "gallery_photos", action: "create",id: params[:gallery_id]} do |f| %>
+                <% if @gallery_photo.errors.any? %>
+                <div id="error_explanation">
+                  <h2><%= pluralize(@gallery_photo.errors.count, "error") %> prohibited this gallery_photo from being saved:</h2>
+
+                  <ul>
+                    <% @gallery_photo.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+                <% end %>
+                <div class="queue-empty">
+                  <span class="btn btn-primary btn-file">
+                    <div>
+                      <%= f.hidden_field :gallery_id, value: params[:gallery_id]%>
+                    </div>
+                    <span class="fileinput-new">Click to Browse</span>
+                    <%=f.file_field :photo,multiple: true,id: "File-Upload"%>
+                  </span>
+                </div>
+                <div class="actions photos-queued margin-top" style="display: none;">
+                  <p><%= f.submit "Start Upload",id: "Upload", class: "btn btn-primary actions"%></p>
+                  <p>or add more</p>
+                  <p>
+                    Drag or
+                    <span class="btn btn-default btn-xs btn-file">
+                      <span class="fileinput-new">Browse</span>
+                      <input type="file" id="files" multiple="" accept="image/jpeg">
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- /upload main -->
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <div id="One">1234567890</div>
+    </div>
+  </div>
+  <!-- /main -->
+
+  <!-- Add Album Modal -->
+  <div class="modal fade" id="newalbum-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Create a New Album</h4>
+        </div>
+        <%= form_for @album do |f| %>
+        <div class="modal-body">
+          123
+          <div class="field">
+            <%= f.label :title,"New Album Name: " %><br>
+            <%= f.text_field :title ,  class: "form-control"%>
+          </div>
+          <% if params[:album_id].present?%>
+          <div>
+            <%= f.hidden_field :gallery_id, value: params[:id]%>
+            <%= f.hidden_field :parent, value: params[:album_id]%>
+            <%= f.hidden_field :level, value: @level.level+1%>
+          </div>
+          <%else%>
+          <div>
+            <%= f.hidden_field :gallery_id, value: params[:id]%>
+            <%= f.hidden_field :parent, value: 0%>
+            <%= f.hidden_field :level, value: 0%>
+          </div>
+          <%end%>
+
+
+        </div>
+        <div class="modal-footer">
+          <div class="actions">
+            <%=link_to "Cancel",galleries_galleryhome_path(id: params[:id]),class: "btn btn-default"%>
+            <%= f.submit "Add Album",class: "btn btn-primary"%>
+          </div>
+        </div>
+      </div>
+      <%end%>
+    </div>
+  </div>
+  <!-- /mMdal -->
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('.upload-options-toggle').click(function(){
+        $('.options').toggle();
+      });
+    });
+  </script>
+
+  <script>
+  $(document).ready(function(){
+    $('input[type=file]').change(function(e){
+      filename = $(this).val();
+      $("#hidden_filename").attr("value", filename);
+      if($("#hidden_filename").val()!="")
+      {
+        $(".queue-empty").css("display","none");
+        $(".photos-queued").css("display","block");
+      }
+
+    });
+
+  })
+  </script>
+  <script>
+  $("#File-Upload").change(function(){
+    var inp = document.getElementById('File-Upload');
+    $(".queue-count").text(inp.files.length);
+  });
+  </script>

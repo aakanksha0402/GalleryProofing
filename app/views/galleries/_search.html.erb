@@ -1,0 +1,18 @@
+<div class="form-group">
+ <%= label_tag :search,"Gallery Name"%>
+ <%= text_field_tag :search, params[:search], class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= label_tag :gallery_access, "Gallery Access"%>
+  <%= select_tag :gallery_access_privacy,'<option selected="selected">Public No Password</option><option>Public Password</option><option>Private No Password</option><option>Private Password</option>'.html_safe,{:include_blank => '-Any-',id: "gallery_access_privacy",class: "input-lg form-control"} %>
+
+</div>
+<div class="form-group">
+  <%if @galleries.count != 0%>
+    <%= label_tag :shoot_year, "Shoot Year" %>
+    <%= select_tag :shoot_year,options_for_select((@galleries.minimum("shoot_date")).year..(@galleries.maximum("shoot_date")).year),{:include_blank => '-Any-',class: "input-lg form-control"} %>
+  <%else%>
+    <%= label_tag :shoot_year, "Shoot Year" %>
+    <%= select_tag :shoot_year,options_for_select(2014..2024),{:include_blank => '-Any-',class: "input-lg form-control selectpicker",id: "shoot_year_list"} %>
+  <%end%>
+</div>
